@@ -286,19 +286,18 @@ html, body {
     letter-spacing: 0.1em;
 }
 
-.home-quote-rotator {
+#dailyQuote {
     width: 100%;
-}
-
-#homeQuoteText,
-#homeQuoteSource {
+    font-size: 0.95rem;
+    font-style: italic;
     text-align: center;
+    color: rgba(212, 168, 83, 0.9);
+    animation: dailyQuoteFade 0.6s ease;
 }
 
-#homeQuoteSource {
-    opacity: 0.8;
-    font-size: 0.9em;
-    margin-top: 4px;
+@keyframes dailyQuoteFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* ============================================
@@ -1222,10 +1221,7 @@ html, body {
                     <div class="stat-value" id="statStreak">0</div>
                     <div class="stat-label">Best Streak</div>
                 </div>
-                <div id="homeQuoteRotator" class="home-quote-rotator">
-                    <div id="homeQuoteText"></div>
-                    <div id="homeQuoteSource"></div>
-                </div>
+                <div id="dailyQuote"></div>
             </div>
         </div>
     </div>
@@ -1419,32 +1415,19 @@ const CATEGORY_META = {
     "Streaming Hits": { emoji: "📺" }
 };
 
-const HOME_QUOTES = [
-    { quote: "May the Force be with you.", source: "Star Wars" },
-    { quote: "I’m gonna make him an offer he can’t refuse.", source: "The Godfather" },
-    { quote: "Here’s looking at you, kid.", source: "Casablanca" },
-    { quote: "Why so serious?", source: "The Dark Knight" },
-    { quote: "You can’t handle the truth!", source: "A Few Good Men" },
-    { quote: "I’ll be back.", source: "The Terminator" },
-    { quote: "To infinity and beyond!", source: "Toy Story" },
-    { quote: "My precious.", source: "The Lord of the Rings" },
-    { quote: "Life finds a way.", source: "Jurassic Park" },
-    { quote: "I see dead people.", source: "The Sixth Sense" },
-    { quote: "Just keep swimming.", source: "Finding Nemo" },
-    { quote: "You’re gonna need a bigger boat.", source: "Jaws" },
-    { quote: "Roads? Where we’re going we don’t need roads.", source: "Back to the Future" },
-    { quote: "I am your father.", source: "Star Wars: The Empire Strikes Back" },
-    { quote: "I volunteer as tribute!", source: "The Hunger Games" },
-    { quote: "Wakanda forever!", source: "Black Panther" },
-    { quote: "With great power comes great responsibility.", source: "Spider-Man" },
-    { quote: "Hakuna Matata.", source: "The Lion King" },
-    { quote: "I’m the king of the world!", source: "Titanic" },
-    { quote: "Keep your friends close, but your enemies closer.", source: "The Godfather Part II" },
-    { quote: "Houston, we have a problem.", source: "Apollo 13" },
-    { quote: "You had me at hello.", source: "Jerry Maguire" },
-    { quote: "There’s no place like home.", source: "The Wizard of Oz" },
-    { quote: "I drink your milkshake!", source: "There Will Be Blood" },
-    { quote: "Show me the money!", source: "Jerry Maguire" }
+const DAILY_QUOTES = [
+    { quote: "Placeholder line about destiny and popcorn.", source: "Placeholder Film A" },
+    { quote: "Placeholder line about the hero arriving late.", source: "Placeholder Film B" },
+    { quote: "Placeholder line about a plot twist no one saw.", source: "Placeholder Film C" },
+    { quote: "Placeholder line about the last reel and the truth.", source: "Placeholder Film D" },
+    { quote: "Placeholder line about chasing dreams under neon.", source: "Placeholder Film E" },
+    { quote: "Placeholder line about the quiet before the finale.", source: "Placeholder Film F" },
+    { quote: "Placeholder line about love surviving the credits.", source: "Placeholder Film G" },
+    { quote: "Placeholder line about a villain with a plan.", source: "Placeholder Film H" },
+    { quote: "Placeholder line about a montage of hope.", source: "Placeholder Film I" },
+    { quote: "Placeholder line about one last impossible shot.", source: "Placeholder Film J" },
+    { quote: "Placeholder line about stars, screens, and second chances.", source: "Placeholder Film K" },
+    { quote: "Placeholder line about a secret hidden in plain sight.", source: "Placeholder Film L" }
 ];
 
 // ============================================
@@ -1598,8 +1581,6 @@ class PlotTwisted {
         
         this.clueBank = null;
         this.stats = this.loadStats();
-        this.quoteInterval = null;
-        this.quoteIndex = 0;
     }
 
     async init() {
@@ -1692,9 +1673,7 @@ class PlotTwisted {
             finalScore: document.getElementById('finalScore'),
             finalSubtitle: document.getElementById('finalSubtitle'),
             finalBreakdown: document.getElementById('finalBreakdown'),
-            homeQuoteRotator: document.getElementById('homeQuoteRotator'),
-            homeQuoteText: document.getElementById('homeQuoteText'),
-            homeQuoteSource: document.getElementById('homeQuoteSource'),
+            dailyQuote: document.getElementById('dailyQuote'),
             resetBtn: document.getElementById('resetBtn')
         };
     }
@@ -1789,9 +1768,7 @@ class PlotTwisted {
         this.state.currentScreen = name;
 
         if (name === 'start') {
-            this.startHomeQuoteRotator();
-        } else {
-            this.stopHomeQuoteRotator();
+            this.loadDailyQuote();
         }
     }
 
@@ -2358,36 +2335,30 @@ Can you beat my score?`;
         }
     }
 
-    startHomeQuoteRotator() {
-        if (!this.dom.homeQuoteRotator || !this.dom.homeQuoteText) return;
+    loadDailyQuote() {
+        if (!this.dom.dailyQuote || !DAILY_QUOTES.length) return;
 
-        this.dom.homeQuoteRotator.style.display = '';
-        this.stopHomeQuoteRotator();
+        const now = Date.now();
+        const storedIndex = Number.parseInt(localStorage.getItem('ptQuoteIndex'), 10);
+        const storedTime = Number.parseInt(localStorage.getItem('ptQuoteTime'), 10);
+        const twelveHours = 12 * 60 * 60 * 1000;
 
-        this.quoteIndex = Math.floor(Math.random() * HOME_QUOTES.length);
-        this.renderHomeQuote();
+        const indexIsValid = Number.isInteger(storedIndex)
+            && storedIndex >= 0
+            && storedIndex < DAILY_QUOTES.length;
+        const timeIsValid = Number.isFinite(storedTime);
+        const isExpired = !timeIsValid || now - storedTime >= twelveHours;
 
-        this.quoteInterval = setInterval(() => {
-            this.quoteIndex = (this.quoteIndex + 1) % HOME_QUOTES.length;
-            this.renderHomeQuote();
-        }, 6000);
-    }
+        let quoteIndex = indexIsValid ? storedIndex : null;
 
-    stopHomeQuoteRotator() {
-        if (this.quoteInterval) {
-            clearInterval(this.quoteInterval);
-            this.quoteInterval = null;
+        if (!indexIsValid || isExpired) {
+            quoteIndex = Math.floor(Math.random() * DAILY_QUOTES.length);
+            localStorage.setItem('ptQuoteIndex', String(quoteIndex));
+            localStorage.setItem('ptQuoteTime', String(now));
         }
-    }
 
-    renderHomeQuote() {
-        const item = HOME_QUOTES[this.quoteIndex];
-        if (!item) return;
-
-        this.dom.homeQuoteText.textContent = `“${item.quote}”`;
-        if (this.dom.homeQuoteSource) {
-            this.dom.homeQuoteSource.textContent = `— ${item.source}`;
-        }
+        const item = DAILY_QUOTES[quoteIndex] || DAILY_QUOTES[0];
+        this.dom.dailyQuote.textContent = `“${item.quote}” — ${item.source}`;
     }
 
     loadStats() {
