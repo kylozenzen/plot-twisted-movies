@@ -18,27 +18,20 @@
     --bg-dark: #12121a;
     --bg-card: #1a1a24;
     --bg-elevated: #242430;
-    
     --gold-primary: #d4a853;
     --gold-light: #f0d078;
     --gold-dark: #a67c32;
     --gold-glow: rgba(212, 168, 83, 0.4);
-    
     --red-primary: #c41e3a;
     --red-light: #e63950;
     --red-glow: rgba(196, 30, 58, 0.5);
-    
     --cream: #f5f0e6;
     --cream-muted: #c9c4b8;
     --text-muted: #6b6b7b;
-    
     --font-display: 'Playfair Display', serif;
     --font-title: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-typewriter: 'Special Elite', monospace;
-    
-    --shadow-glow: 0 0 30px var(--gold-glow);
-    --shadow-deep: 0 10px 40px rgba(0,0,0,0.5);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
@@ -52,492 +45,89 @@ html, body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Film Grain */
 .film-grain {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.04;
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.04;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* Screens */
-.screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    flex-direction: column;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
+.screen { display: none; position: fixed; inset: 0; flex-direction: column; opacity: 0; transition: opacity 0.4s ease; }
+.screen.active { display: flex; opacity: 1; }
 
-.screen.active {
-    display: flex;
-    opacity: 1;
-}
-
-/* ============================================
-   START SCREEN
-   ============================================ */
-
+/* START SCREEN */
 #startScreen {
-    background: 
-        radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 100%, rgba(196, 30, 58, 0.1) 0%, transparent 40%),
-        var(--bg-deep);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(196, 30, 58, 0.1) 0%, transparent 40%), var(--bg-deep);
+    justify-content: center; align-items: center; padding: 20px;
 }
 
-.marquee-frame {
-    position: relative;
-    padding: 40px 30px;
-    max-width: 400px;
-    width: 100%;
-}
-
-.marquee-frame::before,
-.marquee-frame::after {
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border: 3px solid var(--gold-primary);
-    opacity: 0.6;
-}
-
+.marquee-frame { position: relative; padding: 40px 30px; max-width: 400px; width: 100%; }
+.marquee-frame::before, .marquee-frame::after { content: ''; position: absolute; width: 60px; height: 60px; border: 3px solid var(--gold-primary); opacity: 0.6; }
 .marquee-frame::before { top: 0; left: 0; border-right: none; border-bottom: none; }
 .marquee-frame::after { bottom: 0; right: 0; border-left: none; border-top: none; }
 
 .main-title { text-align: center; margin-bottom: 15px; }
+.title-plot { font-family: var(--font-display); font-size: clamp(3.5rem, 12vw, 5rem); font-weight: 900; color: var(--cream); letter-spacing: 0.02em; line-height: 0.9; text-shadow: 0 2px 0 var(--gold-dark), 0 0 40px var(--gold-glow); }
+.title-twisted { font-family: var(--font-title); font-size: clamp(2rem, 8vw, 3rem); color: var(--red-primary); letter-spacing: 0.3em; margin-top: -5px; }
+.tagline { font-family: var(--font-typewriter); font-size: 1rem; color: var(--cream-muted); text-align: center; margin-bottom: 30px; }
 
-.title-plot {
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 12vw, 5rem);
-    font-weight: 900;
-    color: var(--cream);
-    letter-spacing: 0.02em;
-    line-height: 0.9;
-    text-shadow: 0 2px 0 var(--gold-dark), 0 4px 0 rgba(0,0,0,0.3), 0 0 40px var(--gold-glow);
-}
-
-.title-twisted {
-    font-family: var(--font-title);
-    font-size: clamp(2rem, 8vw, 3rem);
-    color: var(--red-primary);
-    letter-spacing: 0.3em;
-    margin-top: -5px;
-    text-shadow: 0 0 20px var(--red-glow), 0 2px 0 rgba(0,0,0,0.5);
-}
-
-.tagline {
-    font-family: var(--font-typewriter);
-    font-size: 1rem;
-    color: var(--cream-muted);
-    text-align: center;
-    margin-bottom: 30px;
-    letter-spacing: 0.05em;
-}
-
-.divider { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 35px; }
-.divider-line { width: 50px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-primary), transparent); }
-.divider-star { color: var(--gold-primary); font-size: 0.8rem; }
-
-/* Buttons */
-.btn {
-    font-family: var(--font-body);
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: wait;
-}
+.btn { font-family: var(--font-body); font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 4px; }
+.btn:disabled { opacity: 0.5; cursor: wait; }
 
 .btn-play-daily {
     display: flex; align-items: center; justify-content: center; gap: 12px;
     width: 100%; padding: 20px 30px; font-size: 1.2rem;
     background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
-    color: var(--bg-deep); border-radius: 4px;
-    box-shadow: 0 4px 15px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
-    margin-bottom: 12px;
-    font-weight: 900;
+    color: var(--bg-deep); box-shadow: 0 4px 15px var(--gold-glow); margin-bottom: 12px; font-weight: 900;
 }
 
-.btn-play-daily:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 25px var(--gold-glow); }
-
-.btn-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-.btn-row .btn { flex: 1; padding: 16px 10px; font-size: 0.85rem; border-radius: 4px; }
-
+.btn-row { display: flex; gap: 12px; margin-bottom: 12px; width: 100%; }
+.btn-row .btn { flex: 1; padding: 16px 10px; font-size: 0.85rem; }
 .btn-arcade { background: var(--bg-elevated); color: var(--gold-light); border: 1px solid var(--gold-dark); }
-.btn-arcade:hover:not(:disabled) { background: var(--bg-card); border-color: var(--gold-primary); }
-
 .btn-pass { background: var(--bg-elevated); color: var(--cream); border: 1px solid var(--text-muted); }
-.btn-pass:hover:not(:disabled) { background: var(--bg-card); border-color: var(--cream-muted); }
+.btn-secondary-flat { background: transparent; color: var(--text-muted); }
 
-.btn-secondary-flat {
-    background: transparent; color: var(--text-muted); border: 1px solid transparent;
-}
-.btn-secondary-flat:hover { color: var(--cream); border-color: var(--text-muted); }
-
-.btn-quit {
-    width: 36px; height: 36px; padding: 0; background: var(--bg-elevated);
-    color: var(--cream-muted); border-radius: 50%; font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-}
-.btn-quit:hover { background: var(--red-primary); color: var(--cream); }
-
-/* Premium buttons */
 .btn-premium {
     background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
-    color: var(--bg-deep);
-    border: 1px solid var(--cream);
-    box-shadow: 0 4px 15px var(--gold-glow), 0 0 20px rgba(0,0,0,0.4);
-    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
-    font-weight: 800;
-    position: relative;
-    overflow: hidden;
-}
-.btn-premium::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-    transform: rotate(45deg);
-    transition: 0.5s;
-}
-.btn-premium:hover:not(:disabled)::after { left: 100%; }
-.btn-premium:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 30px var(--gold-glow); }
-
-.btn-outline-gold {
-    background: rgba(212, 168, 83, 0.05);
-    border: 2px solid var(--gold-dark);
-    color: var(--gold-light);
-    transition: all 0.3s;
-}
-.btn-outline-gold:hover {
-    background: rgba(212, 168, 83, 0.15);
-    border-color: var(--gold-primary);
-    box-shadow: inset 0 0 10px var(--gold-glow);
+    color: var(--bg-deep); border: 1px solid var(--cream); box-shadow: 0 4px 15px var(--gold-glow);
+    font-weight: 800; position: relative; overflow: hidden;
 }
 
-/* Quotes bar */
-.stats-bar {
-    display: flex; justify-content: center; align-items: center;
-    margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(212, 168, 83, 0.2);
-    min-height: 80px;
-}
-.movie-quote {
-    font-family: var(--font-typewriter);
-    font-size: 0.95rem;
-    color: var(--cream-muted);
-    text-align: center;
-    font-style: italic;
-    letter-spacing: 0.02em;
-    opacity: 0.8;
-}
+.stats-bar { display: flex; justify-content: center; align-items: center; margin-top: 40px; border-top: 1px solid rgba(212, 168, 83, 0.2); min-height: 80px; }
+.movie-quote { font-family: var(--font-typewriter); font-size: 0.95rem; color: var(--cream-muted); text-align: center; font-style: italic; }
 
-/* ============================================
-   CATEGORY SCREEN
-   ============================================ */
-
+/* CATEGORY SCREEN */
 #categoryScreen { background: var(--bg-deep); padding: 20px; overflow-y: auto; }
-.category-header { text-align: center; margin-bottom: 30px; padding-top: 20px; }
-.category-header h2 { font-family: var(--font-display); font-size: 2rem; color: var(--cream); margin-bottom: 8px; }
-.category-header p { font-size: 0.9rem; color: var(--text-muted); }
-
 .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 500px; margin: 0 auto 100px; }
-.category-card {
-    background: var(--bg-card); border: 2px solid var(--bg-elevated);
-    border-radius: 12px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.2s ease;
-}
-.category-card:hover { border-color: var(--gold-dark); transform: translateY(-2px); }
+.category-card { background: var(--bg-card); border: 2px solid var(--bg-elevated); border-radius: 12px; padding: 25px 15px; text-align: center; cursor: pointer; }
 .category-card.selected { border-color: var(--gold-primary); box-shadow: 0 0 20px var(--gold-glow); }
-.category-emoji { font-size: 2.5rem; margin-bottom: 10px; }
-.category-name { font-family: var(--font-title); font-size: 1.2rem; color: var(--cream); letter-spacing: 0.1em; margin-bottom: 5px; }
-.category-count { font-size: 0.75rem; color: var(--text-muted); }
 
-.category-actions {
-    position: fixed; bottom: 0; left: 0; right: 0; padding: 20px;
-    background: linear-gradient(to top, var(--bg-deep) 80%, transparent);
-    display: flex; gap: 12px; max-width: 500px; margin: 0 auto;
-}
-.category-actions .btn { flex: 1; padding: 16px 24px; border-radius: 6px; font-size: 0.95rem; }
-.btn-back { background: var(--bg-elevated); color: var(--cream-muted); }
-.btn-start { background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: var(--bg-deep); box-shadow: 0 4px 15px var(--gold-glow); }
-.btn-start:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-/* ============================================
-   GAME SCREEN
-   ============================================ */
-
-#gameScreen { background: var(--bg-deep); }
-.game-header {
-    display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;
-    background: var(--bg-dark); border-bottom: 1px solid rgba(212, 168, 83, 0.2);
-}
+/* GAME SCREEN */
+.game-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-dark); border-bottom: 1px solid rgba(212, 168, 83, 0.2); }
 .game-logo { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold-primary); }
-.game-mode-tag { font-family: var(--font-title); font-size: 0.7rem; color: var(--red-light); letter-spacing: 0.2em; vertical-align: middle; margin-left: 8px; border: 1px solid var(--red-primary); padding: 2px 6px; border-radius: 2px; display: none; }
-.game-stats { display: flex; gap: 25px; }
-.game-stat { text-align: center; }
-.game-stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.game-stat-value { font-family: var(--font-title); font-size: 1.3rem; color: var(--cream); }
-.game-stat-value.points { color: var(--gold-light); }
-
+.game-mode-tag { font-family: var(--font-title); font-size: 0.7rem; color: var(--red-light); border: 1px solid var(--red-primary); padding: 2px 6px; border-radius: 2px; display: none; }
 .strikes-display { display: flex; gap: 4px; }
-.strike-pip { width: 10px; height: 10px; border-radius: 50%; background: var(--red-primary); box-shadow: 0 0 8px var(--red-glow); transition: all 0.3s ease; }
+.strike-pip { width: 10px; height: 10px; border-radius: 50%; background: var(--red-primary); box-shadow: 0 0 8px var(--red-glow); }
 .strike-pip.used { background: var(--bg-elevated); box-shadow: none; }
 
-.game-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 20px; gap: 20px; overflow-y: auto; }
-.progress-track { display: flex; gap: 8px; }
-.progress-pip { width: 12px; height: 4px; border-radius: 2px; background: var(--bg-elevated); transition: all 0.3s ease; }
-.progress-pip.complete { background: var(--gold-primary); }
-.progress-pip.current { background: var(--gold-light); box-shadow: 0 0 10px var(--gold-glow); width: 24px; }
+.clue-card { width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.3); border-radius: 8px; padding: 30px 25px; position: relative; }
+.clue-text { font-family: var(--font-typewriter); font-size: 1.3rem; line-height: 1.7; text-align: center; }
 
-.clue-card {
-    width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.3);
-    border-radius: 8px; padding: 30px 25px; position: relative; box-shadow: var(--shadow-deep);
-}
-.clue-card::before {
-    content: '★ NOW SHOWING ★'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    font-family: var(--font-title); font-size: 0.75rem; color: var(--gold-primary); background: var(--bg-deep); padding: 4px 16px; letter-spacing: 0.2em;
-}
-.clue-text { font-family: var(--font-typewriter); font-size: 1.3rem; line-height: 1.7; text-align: center; color: var(--cream); }
-.clue-category {
-    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; padding-top: 15px;
-    border-top: 1px solid rgba(212, 168, 83, 0.15); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em;
-}
-
-.points-pot { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 25px; background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.3); border-radius: 50px; }
-.pot-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.pot-value { font-family: var(--font-display); font-size: 1.6rem; color: var(--gold-light); text-shadow: 0 0 15px var(--gold-glow); min-width: 60px; text-align: center; }
-.pot-value.dropping { animation: potDrop 0.3s ease; }
-@keyframes potDrop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); color: var(--red-light); } }
-
-.title-reveal { width: 100%; max-width: 500px; min-height: 70px; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--bg-dark); border: 2px solid var(--bg-elevated); border-radius: 8px; }
-.title-letters { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; font-family: var(--font-title); font-size: clamp(1.4rem, 5vw, 2rem); letter-spacing: 0.05em; }
-.letter-slot { display: inline-flex; align-items: center; justify-content: center; min-width: 0.7em; color: var(--gold-light); transition: all 0.3s ease; }
-.letter-slot.hidden { color: var(--text-muted); }
-.letter-slot.revealed { animation: letterReveal 0.4s ease; }
-.letter-slot.space { width: 0.5em; }
-@keyframes letterReveal { 0% { transform: scale(1.5) rotateX(90deg); opacity: 0; } 100% { transform: scale(1) rotateX(0); opacity: 1; } }
-
-.action-buttons { display: flex; gap: 12px; width: 100%; max-width: 500px; }
-.btn-reveal, .btn-giveup { flex: 1; padding: 16px 20px; font-size: 0.9rem; background: var(--bg-elevated); color: var(--cream); border-radius: 6px; border: 1px solid var(--text-muted); }
-.btn-reveal:hover:not(:disabled), .btn-giveup:hover:not(:disabled) { background: var(--bg-card); border-color: var(--cream-muted); }
-.btn-solve { flex: 1.5; padding: 16px 24px; font-size: 0.95rem; background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: var(--bg-deep); border-radius: 6px; box-shadow: 0 4px 15px var(--gold-glow); }
-.btn-solve:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px var(--gold-glow); }
-
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.modal-overlay.active { display: flex; }
-.solve-modal { background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.3); border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; text-align: center; }
-.solve-modal h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-light); margin-bottom: 20px; }
-.solve-input { width: 100%; padding: 16px; font-family: var(--font-body); font-size: 1.1rem; background: var(--bg-dark); border: 2px solid var(--bg-elevated); border-radius: 8px; color: var(--cream); text-align: center; margin-bottom: 20px; }
-.solve-input:focus { outline: none; border-color: var(--gold-primary); }
-.solve-actions { display: flex; gap: 12px; }
-.solve-actions .btn { flex: 1; padding: 14px 20px; border-radius: 6px; }
-.btn-cancel { background: var(--bg-elevated); color: var(--cream-muted); }
-.btn-submit { background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: var(--bg-deep); }
-
-.result-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.result-overlay.active { display: flex; }
-.result-card { text-align: center; max-width: 400px; position: relative; }
-.result-icon { font-size: 4rem; margin-bottom: 20px; animation: resultPop 0.5s ease; }
-@keyframes resultPop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-.result-title { font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 10px; line-height: 1.2; }
-.result-title.correct { color: var(--gold-light); text-shadow: 0 0 30px var(--gold-glow); }
-.result-title.incorrect { color: var(--red-light); }
-.result-movie { font-family: var(--font-title); font-size: 1.8rem; color: var(--cream); letter-spacing: 0.1em; margin-bottom: 10px; }
-.result-points { font-size: 1.1rem; color: var(--gold-primary); margin-bottom: 30px; }
-
-/* Celebration effect */
-.result-card.celebrate::before, .result-card.celebrate::after { content: '✨'; position: absolute; font-size: 2rem; animation: sparkle 0.6s ease-out forwards; opacity: 0; }
-.result-card.celebrate::before { top: 20%; left: 20%; }
-.result-card.celebrate::after { top: 20%; right: 20%; animation-delay: 0.1s; }
-@keyframes sparkle { 0% { opacity: 0; transform: scale(0) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(180deg); } 100% { opacity: 0; transform: scale(0.5) rotate(360deg) translateY(-30px); } }
-
-/* ============================================
-   GAME OVER SCREEN & CUSTOM SCROLL
-   ============================================ */
-
-#gameOverScreen { background: radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%), var(--bg-deep); align-items: center; justify-content: center; padding: 20px; }
-.game-over-card { text-align: center; max-width: 400px; width: 100%; }
-
-.roll-credits {
-    font-family: var(--font-title);
-    font-size: clamp(2.2rem, 8vw, 3rem);
-    color: var(--gold-light);
-    letter-spacing: 0.15em;
-    font-weight: 900;
-    margin-bottom: 2px;
-    text-transform: uppercase;
-}
-
-.final-score-label { 
-    font-family: var(--font-title); 
-    font-size: 1rem; 
-    color: var(--text-muted); 
-    letter-spacing: 0.3em; 
-    margin-top: 6px; 
-    margin-bottom: 5px; 
-}
-
-.final-score { font-family: var(--font-display); font-size: 5rem; color: var(--gold-light); text-shadow: 0 0 40px var(--gold-glow); line-height: 1; margin-bottom: 5px; }
-.final-score-subtitle { font-size: 1rem; color: var(--cream-muted); margin-bottom: 40px; }
-
-.final-breakdown { 
-    background: var(--bg-card); 
-    border-radius: 8px; 
-    padding: 20px; 
-    margin-bottom: 30px; 
-    border: 1px solid rgba(212, 168, 83, 0.2); 
-    max-height: 220px; 
-    overflow-y: auto; 
-}
-
-/* Custom Scrollbar Styling */
+/* RESULTS BREAKDOWN */
+.final-breakdown { background: var(--bg-card); border-radius: 8px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(212, 168, 83, 0.2); max-height: 220px; overflow-y: auto; }
 .final-breakdown::-webkit-scrollbar { width: 6px; }
-.final-breakdown::-webkit-scrollbar-track { background: var(--bg-deep); border-radius: 10px; }
-.final-breakdown::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--gold-dark), var(--gold-primary)); border-radius: 10px; border: 1px solid var(--bg-card); }
-.final-breakdown::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
+.final-breakdown::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 10px; }
 
-.breakdown-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg-elevated); font-size: 0.9rem; }
-.breakdown-points.earned { color: var(--gold-primary); }
-.breakdown-points.missed { color: var(--text-muted); }
+.marquee-screen { background: var(--bg-deep); padding: 20px; overflow-y: auto; }
+.cinema-section { background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
 
-/* ============================================
-   HOW TO PLAY & SETTINGS (CINEMATIC STYLE)
-   ============================================ */
+/* DAILY LOCK SCREEN */
+#dailyCompleteScreen { background: var(--bg-deep); justify-content: center; align-items: center; padding: 20px; text-align: center; position: fixed; inset: 0; z-index: 100; }
+.daily-lock-box { max-width: 400px; padding: 40px; background: var(--bg-dark); border: 1px solid var(--gold-dark); border-radius: 8px; }
 
-.marquee-screen {
-    background: var(--bg-deep);
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.marquee-screen-content {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-bottom: 50px;
-}
-
-.screen-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-    padding-top: 10px;
-}
-
-.screen-header h2 {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: var(--cream);
-}
-
-.btn-back-cinema {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--bg-elevated);
-    color: var(--gold-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    border: 1px solid var(--gold-dark);
-    cursor: pointer;
-    box-shadow: 0 0 10px var(--gold-glow);
-    transition: all 0.3s;
-}
-.btn-back-cinema:hover { transform: translateX(-4px); background: var(--bg-card); border-color: var(--gold-primary); }
-
-.cinema-section {
-    background: var(--bg-card);
-    border: 1px solid rgba(212, 168, 83, 0.2);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.cinema-section h3 {
-    font-family: var(--font-title);
-    font-size: 1.1rem;
-    color: var(--gold-primary);
-    letter-spacing: 0.1em;
-    margin-bottom: 12px;
-}
-
-.cinema-section p {
-    font-family: var(--font-typewriter);
-    color: var(--cream-muted);
-    line-height: 1.6;
-    font-size: 0.9rem;
-}
-
-.setting-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid var(--bg-elevated);
-}
-.setting-row:last-child { border-bottom: none; }
-
-.setting-info .label {
-    font-family: var(--font-body);
-    font-weight: 600;
-    color: var(--cream);
-}
-
-.toggle {
-    width: 50px; height: 28px; background: var(--bg-elevated); border-radius: 14px; position: relative; cursor: pointer; transition: background 0.2s ease;
-}
+.toggle { width: 50px; height: 28px; background: var(--bg-elevated); border-radius: 14px; position: relative; cursor: pointer; }
 .toggle.active { background: var(--gold-primary); }
-.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: var(--cream); border-radius: 50%; transition: transform 0.2s ease; }
+.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: var(--cream); border-radius: 50%; transition: 0.2s; }
 .toggle.active::after { transform: translateX(22px); }
-
-/* Daily Completion Overlay */
-#dailyCompleteScreen {
-    background: radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-deep) 100%);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-}
-#dailyCompleteScreen.active { display: flex; }
-
-.daily-lock-box {
-    max-width: 400px;
-    padding: 40px;
-    background: var(--bg-dark);
-    border: 1px solid var(--gold-dark);
-    border-radius: 8px;
-    box-shadow: var(--shadow-deep);
-}
-
-.daily-lock-box h2 {
-    font-family: var(--font-display);
-    color: var(--gold-light);
-    margin-bottom: 20px;
-}
 
 .shake { animation: shake 0.4s ease; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
@@ -546,518 +136,297 @@ html, body {
 <body>
     <div class="film-grain"></div>
 
-    <!-- START SCREEN -->
     <div id="startScreen" class="screen active">
         <div class="marquee-frame">
-            <div class="main-title">
-                <div class="title-plot">PLOT</div>
-                <div class="title-twisted">TWISTED</div>
-            </div>
+            <div class="main-title"><div class="title-plot">PLOT</div><div class="title-twisted">TWISTED</div></div>
             <p class="tagline">Guess the movie from the twisted summary</p>
-            <div class="divider">
-                <span class="divider-line"></span><span class="divider-star">★</span><span class="divider-line"></span>
-            </div>
-            
-            <button class="btn btn-play-daily" id="dailyBtn" disabled>
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                Daily Challenge
-            </button>
-            
+            <div class="divider"><span class="divider-line"></span><span class="divider-star">★</span><span class="divider-line"></span></div>
+            <button class="btn btn-play-daily" id="dailyBtn" disabled>Daily Challenge</button>
             <div class="btn-row">
                 <button class="btn btn-arcade" id="arcadeBtn" disabled>Arcade Mode</button>
                 <button class="btn btn-pass" id="passBtn" disabled>Pass and Play</button>
             </div>
-            
             <div class="btn-row">
                 <button class="btn btn-secondary-flat" id="howToPlayBtn">How to Play</button>
                 <button class="btn btn-secondary-flat" id="settingsBtn">Settings</button>
             </div>
-
-            <div class="stats-bar">
-                <p class="movie-quote">"Snakes, I hate snakes"</p>
-            </div>
+            <div class="stats-bar"><p class="movie-quote">"Snakes, I hate snakes"</p></div>
         </div>
     </div>
 
-    <!-- DAILY COMPLETE SCREEN -->
     <div id="dailyCompleteScreen" class="screen">
         <div class="daily-lock-box">
-            <div class="result-icon">🎟️</div>
-            <h2>Theater Closed</h2>
-            <p class="tagline" style="font-family: var(--font-typewriter); color: var(--cream-muted); margin-bottom: 30px;">
-                The curtain has closed for today's premiere. The next showing begins at midnight. Keep your streak alive!
-            </p>
-            <button class="btn btn-premium" id="dailyShareBtn" style="padding: 16px 24px; width: 100%; border-radius: 6px; margin-bottom: 12px;">Share My Score</button>
-            <button class="btn btn-outline-gold" id="dailyMenuBtn" style="padding: 12px 24px; width: 100%; border-radius: 6px;">Main Menu</button>
+            <h2 style="font-family: var(--font-display); color: var(--gold-light); margin-bottom: 20px;">Theater Closed</h2>
+            <p class="tagline" style="font-family: var(--font-typewriter); color: var(--cream-muted); margin-bottom: 30px;">The curtain has closed for today's premiere. The next showing begins at midnight. Keep your streak alive!</p>
+            <button class="btn btn-premium" id="dailyShareBtn" style="padding: 16px 24px; width: 100%;">Share My Score</button>
+            <button class="btn btn-outline-gold" id="dailyMenuBtn" style="padding: 12px 24px; width: 100%; margin-top:12px;">Main Menu</button>
         </div>
     </div>
 
-    <!-- CATEGORY SCREEN -->
     <div id="categoryScreen" class="screen">
-        <div class="category-header"><h2>Choose Your Genre</h2><p>Pick a category to start playing</p></div>
-        <div class="category-grid" id="categoryGrid"></div>
-        <div class="category-actions">
-            <button class="btn btn-back" id="categoryBackBtn">Back</button>
-            <button class="btn btn-start" id="startGameBtn" disabled>Start</button>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto; text-align:center;">
+            <h2 style="font-family: var(--font-display); margin: 30px 0 10px;">Choose Your Genre</h2>
+            <div class="category-grid" id="categoryGrid"></div>
+            <div class="category-actions"><button class="btn btn-back" id="categoryBackBtn">Back</button><button class="btn btn-start" id="startGameBtn" disabled>Start</button></div>
         </div>
     </div>
 
-    <!-- HOW TO PLAY SCREEN -->
     <div id="howToPlayScreen" class="screen marquee-screen">
-        <div class="marquee-screen-content">
-            <div class="screen-header">
-                <button class="btn-back-cinema" id="howToBackBtn">←</button>
-                <h2>Production Notes</h2>
-            </div>
-            <div class="cinema-section">
-                <h3>🎬 THE SCRIPT</h3>
-                <p>Read the twisted (but technically accurate) summary of a famous movie or show. Your job is to identify the title before the pot runs dry.</p>
-            </div>
-            <div class="cinema-section">
-                <h3>💰 BOX OFFICE</h3>
-                <p>Each round starts with 500 points. Every letter you reveal deducts 50 points. True cinephiles solve without hints for the maximum score.</p>
-            </div>
-            <div class="cinema-section">
-                <h3>❌ THREE STRIKES</h3>
-                <p>A wrong guess is a strike. Like any bad trilogy, a third strike means the end of your run. "Roll the Credits" happens if you run out of lives.</p>
-            </div>
-            <div class="cinema-section">
-                <h3>🏳️ EXIT STAGE LEFT</h3>
-                <p>Stuck on a riddle? Use 'Give Up' to reveal the answer and move to the next scene. You'll earn zero points, but keep your pride (sort of).</p>
-            </div>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto;">
+            <h2 style="font-family: var(--font-display); margin-bottom:20px;">Production Notes</h2>
+            <div class="cinema-section"><h3>🎬 THE SCRIPT</h3><p>Read the twisted summary. Identify the title before the pot runs dry.</p></div>
+            <div class="cinema-section"><h3>💰 BOX OFFICE</h3><p>Start with 500 points. Hints cost 50 points each.</p></div>
+            <button class="btn btn-outline-gold" id="howToBackBtn" style="width:100%; padding: 15px;">Back</button>
         </div>
     </div>
 
-    <!-- SETTINGS SCREEN -->
     <div id="settingsScreen" class="screen marquee-screen">
-        <div class="marquee-screen-content">
-            <div class="screen-header">
-                <button class="btn-back-cinema" id="settingsBackBtn">←</button>
-                <h2>Director's Cut</h2>
-            </div>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto;">
+            <h2 style="font-family: var(--font-display); margin-bottom:20px;">Director's Cut</h2>
             <div class="cinema-section">
-                <h3>AUDIO PRESETS</h3>
-                <div class="setting-row">
-                    <div class="setting-info"><span class="label">FX SOUNDS</span></div>
-                    <div class="toggle" id="soundToggle"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>FX SOUNDS</span><div class="toggle" id="soundToggle"></div>
                 </div>
             </div>
-            <div class="cinema-section">
-                <h3>DATA ARCHIVE</h3>
-                <div class="setting-row">
-                    <div class="setting-info"><span class="label">RESET ALL PROGRESS</span></div>
-                    <button class="btn" style="background: var(--red-primary); color: white; padding: 10px 20px; border-radius: 4px; font-size: 0.8rem;" id="resetBtn">PURGE</button>
-                </div>
-                <p style="margin-top: 10px; font-size: 0.75rem; opacity: 0.6;">This will clear your lifetime solved count and discovered clues.</p>
-            </div>
+            <button class="btn btn-outline-gold" id="settingsBackBtn" style="width:100%; padding: 15px;">Back</button>
         </div>
     </div>
 
-    <!-- GAME SCREEN -->
     <div id="gameScreen" class="screen">
         <div class="game-header">
             <div class="game-logo">Plot Twisted <span class="game-mode-tag" id="modeTag">DAILY</span></div>
             <div class="game-stats">
-                <div class="game-stat"><div class="game-stat-label">Score</div><div class="game-stat-value points" id="totalScore">0</div></div>
-                <div class="game-stat">
-                    <div class="game-stat-label">Strikes</div>
-                    <div class="strikes-display" id="strikesDisplay"><div class="strike-pip"></div><div class="strike-pip"></div><div class="strike-pip"></div></div>
-                </div>
+                <div class="game-stat"><div class="game-stat-value points" id="totalScore">0</div></div>
+                <div class="strikes-display" id="strikesDisplay"><div class="strike-pip"></div><div class="strike-pip"></div><div class="strike-pip"></div></div>
             </div>
             <button class="btn btn-quit" id="quitBtn">✕</button>
         </div>
         <div class="game-content">
             <div class="progress-track" id="progressTrack"></div>
-            <div class="clue-card fade-in" id="clueCard"><div class="clue-text" id="clueText"></div><div class="clue-category" id="clueCategory"></div></div>
-            <div class="points-pot"><span class="pot-label">Worth</span><span class="pot-value" id="potValue">500</span></div>
-            <div class="title-reveal" id="titleReveal"><div class="title-letters" id="titleLetters"></div></div>
-            <div class="action-buttons">
-                <button class="btn btn-reveal" id="revealBtn">Reveal Letter</button>
-                <button class="btn btn-giveup" id="giveUpBtn">Give Up</button>
-                <button class="btn btn-solve" id="solveBtn">I Know It!</button>
+            <div class="clue-card" id="clueCard"><div class="clue-text" id="clueText"></div></div>
+            <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-light);" id="potValue">500</div>
+            <div class="title-reveal" id="titleLetters" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; font-family: var(--font-title); font-size: 2rem;"></div>
+            <div class="action-buttons" style="display:flex; gap:10px; width:100%; max-width:500px;">
+                <button class="btn btn-arcade" id="revealBtn" style="flex:1; padding:15px;">Hint</button>
+                <button class="btn btn-premium" id="solveBtn" style="flex:2; padding:15px;">Solve</button>
             </div>
         </div>
     </div>
 
-    <!-- GAME OVER SCREEN -->
     <div id="gameOverScreen" class="screen">
-        <div class="game-over-card">
+        <div class="game-over-card" style="text-align:center; padding: 20px;">
             <div class="roll-credits">Roll the Credits!</div>
-            <div class="final-score-label">Final Score</div>
-            <div class="final-score" id="finalScore">0</div>
-            <div class="final-score-subtitle" id="finalSubtitle">5 of 5 movies solved</div>
+            <div class="final-score" id="finalScore" style="font-size: 4rem; color: var(--gold-light);">0</div>
             <div class="final-breakdown" id="finalBreakdown"></div>
-            <div class="game-over-actions">
-                <button class="btn btn-premium" id="shareScoreBtn" style="padding: 18px 24px; margin-bottom: 12px; width: 100%; border-radius: 6px;">Share Score</button>
-                <button class="btn btn-play-again btn-premium" id="playAgainBtn" style="padding: 18px 24px; margin-bottom: 12px; width: 100%; border-radius: 6px;">Play Again</button>
-                <button class="btn btn-menu btn-outline-gold" id="menuBtn" style="padding: 16px 24px; width: 100%; border-radius: 6px;">Main Menu</button>
-            </div>
+            <button class="btn btn-premium" id="shareScoreBtn" style="width:100%; padding:18px; margin-bottom:10px;">Share Score</button>
+            <button class="btn btn-arcade" id="playAgainBtn" style="width:100%; padding:15px; margin-bottom:10px;">Play Again</button>
+            <button class="btn btn-secondary-flat" id="menuBtn" style="width:100%; padding:15px;">Main Menu</button>
         </div>
     </div>
 
-    <!-- MODALS -->
-    <div class="modal-overlay" id="solveModal">
-        <div class="solve-modal">
-            <h3>What's the movie?</h3>
-            <input type="text" class="solve-input" id="solveInput" placeholder="Type your answer...">
-            <div class="solve-actions"><button class="btn btn-cancel" id="cancelSolveBtn">Cancel</button><button class="btn btn-submit" id="submitSolveBtn">Submit</button></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="quitModal">
-        <div class="solve-modal"><h3>Quit Game?</h3><p style="color: var(--cream-muted); margin-bottom: 20px;">Progress will be lost.</p><div class="solve-actions"><button class="btn btn-cancel" id="cancelQuitBtn">Cancel</button><button class="btn btn-submit" id="confirmQuitBtn">Quit</button></div></div>
-    </div>
-
-    <div class="result-overlay" id="resultOverlay">
-        <div class="result-card">
-            <div class="result-icon" id="resultIcon">🎬</div>
-            <div class="result-title" id="resultTitle">Correct!</div>
-            <div class="result-movie" id="resultMovie"></div>
-            <div class="result-points" id="resultPoints"></div>
-            <button class="btn btn-continue btn-premium" id="continueBtn" style="padding: 16px 60px; border-radius: 6px;">Continue</button>
+    <div class="modal-overlay" id="solveModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:200; justify-content:center; align-items:center;">
+        <div style="background:var(--bg-card); padding:30px; border-radius:8px; width:90%; max-width:400px; text-align:center;">
+            <h3 style="margin-bottom:20px;">Answer?</h3>
+            <input type="text" id="solveInput" style="width:100%; padding:15px; background:#000; color:#fff; border:1px solid var(--gold-dark); margin-bottom:20px;">
+            <div style="display:flex; gap:10px;"><button class="btn btn-arcade" id="cancelSolveBtn" style="flex:1; padding:10px;">Cancel</button><button class="btn btn-premium" id="submitSolveBtn" style="flex:1; padding:10px;">Submit</button></div>
         </div>
     </div>
 
 <script>
 class PlotTwisted {
     constructor() {
-        this.state = { currentScreen: 'start', selectedCategory: null, questions: [], currentIndex: 0, totalScore: 0, strikes: 3, currentPot: 500, revealedIndices: [], results: [], seenClues: {}, mode: 'arcade' };
-        this.config = { maxPot: 500, revealCost: 50, minPot: 50, questionsPerRound: 5, fuzzyThreshold: 0.18 };
+        this.state = { currentScreen: 'start', questions: [], currentIndex: 0, totalScore: 0, strikes: 3, currentPot: 500, revealedIndices: [], results: [], seenClues: {}, mode: 'arcade' };
         this.clueBank = null;
-        this.stats = this.loadStats();
     }
 
     async init() {
         this.cacheDOM();
         this.bindEvents();
-        this.loadSeenClues();
         this.loadSettings();
         await this.loadClueDatabase();
     }
 
     async loadClueDatabase() {
         try {
-            // Attempt to fetch the clues.json file
-            const response = await fetch('clues.json');
-            if (!response.ok) throw new Error('Network response was not ok');
+            const response = await fetch('./clues.json');
             this.clueBank = await response.json();
-            // Data loaded, enable the theater!
             document.querySelectorAll('button').forEach(b => b.disabled = false);
         } catch (err) {
-            console.error("The reel is jammed! Clues failed to load.", err);
-            // Fallback for preview mode or local file access
-            // [Note: In the final GitHub version, this will pull from the actual JSON file]
+            console.error("Clues failed to load. Check if clues.json exists in the same folder.", err);
         }
     }
 
-    loadSettings() {
-        const saved = localStorage.getItem('plotTwistedSettings');
-        this.settings = saved ? JSON.parse(saved) : { sound: false };
-        if (this.dom.soundToggle) this.dom.soundToggle.classList.toggle('active', this.settings.sound);
-    }
-
     cacheDOM() {
-        this.screens = { 
-            start: document.getElementById('startScreen'), 
-            category: document.getElementById('categoryScreen'), 
-            howToPlay: document.getElementById('howToPlayScreen'), 
-            settings: document.getElementById('settingsScreen'), 
-            game: document.getElementById('gameScreen'), 
-            gameOver: document.getElementById('gameOverScreen'),
-            dailyComplete: document.getElementById('dailyCompleteScreen')
-        };
+        this.screens = { start: document.getElementById('startScreen'), category: document.getElementById('categoryScreen'), howToPlay: document.getElementById('howToPlayScreen'), settings: document.getElementById('settingsScreen'), game: document.getElementById('gameScreen'), gameOver: document.getElementById('gameOverScreen'), dailyComplete: document.getElementById('dailyCompleteScreen') };
         this.dom = { 
-            categoryGrid: document.getElementById('categoryGrid'), startGameBtn: document.getElementById('startGameBtn'),
-            clueText: document.getElementById('clueText'), clueCategory: document.getElementById('clueCategory'), clueCard: document.getElementById('clueCard'),
-            titleLetters: document.getElementById('titleLetters'), potValue: document.getElementById('potValue'), totalScore: document.getElementById('totalScore'),
-            strikesDisplay: document.getElementById('strikesDisplay'), progressTrack: document.getElementById('progressTrack'),
-            revealBtn: document.getElementById('revealBtn'), giveUpBtn: document.getElementById('giveUpBtn'), solveBtn: document.getElementById('solveBtn'),
-            solveModal: document.getElementById('solveModal'), solveInput: document.getElementById('solveInput'), quitModal: document.getElementById('quitModal'),
-            resultOverlay: document.getElementById('resultOverlay'), resultIcon: document.getElementById('resultIcon'), resultTitle: document.getElementById('resultTitle'),
-            resultMovie: document.getElementById('resultMovie'), resultPoints: document.getElementById('resultPoints'), continueBtn: document.getElementById('continueBtn'),
-            finalScore: document.getElementById('finalScore'), finalSubtitle: document.getElementById('finalSubtitle'), finalBreakdown: document.getElementById('finalBreakdown'),
-            soundToggle: document.getElementById('soundToggle'), modeTag: document.getElementById('modeTag')
+            grid: document.getElementById('categoryGrid'), startBtn: document.getElementById('startGameBtn'),
+            clue: document.getElementById('clueText'), pot: document.getElementById('potValue'), score: document.getElementById('totalScore'),
+            letters: document.getElementById('titleLetters'), input: document.getElementById('solveInput'), 
+            breakdown: document.getElementById('finalBreakdown'), modal: document.getElementById('solveModal')
         };
     }
 
     bindEvents() {
         document.getElementById('dailyBtn').onclick = () => this.handleDailyChallengeNav();
-        document.getElementById('arcadeBtn').onclick = () => this.showCategoryScreen();
-        document.getElementById('passBtn').onclick = () => {}; 
+        document.getElementById('arcadeBtn').onclick = () => this.showScreen('category');
         document.getElementById('howToPlayBtn').onclick = () => this.showScreen('howToPlay');
-        document.getElementById('howToBackBtn').onclick = () => this.showScreen('start');
         document.getElementById('settingsBtn').onclick = () => this.showScreen('settings');
+        document.getElementById('howToBackBtn').onclick = () => this.showScreen('start');
         document.getElementById('settingsBackBtn').onclick = () => this.showScreen('start');
         document.getElementById('dailyMenuBtn').onclick = () => this.showScreen('start');
         document.getElementById('dailyShareBtn').onclick = () => this.shareScore();
         document.getElementById('shareScoreBtn').onclick = () => this.shareScore();
-        if (this.dom.soundToggle) this.dom.soundToggle.onclick = () => this.toggleSound();
-        document.getElementById('resetBtn').onclick = () => { if(confirm('Are you sure?')) { localStorage.clear(); location.reload(); } };
+        document.getElementById('quitBtn').onclick = () => this.showScreen('start');
         document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
-        this.dom.startGameBtn.onclick = () => this.startGame();
-        this.dom.revealBtn.onclick = () => this.revealLetter();
-        this.dom.giveUpBtn.onclick = () => this.giveUp();
-        this.dom.solveBtn.onclick = () => { this.dom.solveModal.classList.add('active'); this.dom.solveInput.value=''; setTimeout(()=>this.dom.solveInput.focus(),100); };
-        document.getElementById('quitBtn').onclick = () => this.dom.quitModal.classList.add('active');
-        document.getElementById('cancelQuitBtn').onclick = () => this.dom.quitModal.classList.remove('active');
-        document.getElementById('confirmQuitBtn').onclick = () => { this.dom.quitModal.classList.remove('active'); this.showScreen('start'); };
-        document.getElementById('cancelSolveBtn').onclick = () => this.dom.solveModal.classList.remove('active');
+        this.dom.startBtn.onclick = () => this.startGame();
+        document.getElementById('revealBtn').onclick = () => this.revealLetter();
+        document.getElementById('solveBtn').onclick = () => { this.dom.modal.style.display='flex'; this.dom.input.value=''; this.dom.input.focus(); };
+        document.getElementById('cancelSolveBtn').onclick = () => this.dom.modal.style.display='none';
         document.getElementById('submitSolveBtn').onclick = () => this.submitSolve();
-        this.dom.solveInput.onkeypress = (e) => { if(e.key==='Enter') this.submitSolve(); };
         document.getElementById('playAgainBtn').onclick = () => this.playAgain();
         document.getElementById('menuBtn').onclick = () => this.showScreen('start');
-    }
-
-    toggleSound() {
-        this.settings.sound = !this.settings.sound;
-        if (this.dom.soundToggle) this.dom.soundToggle.classList.toggle('active', this.settings.sound);
-        localStorage.setItem('plotTwistedSettings', JSON.stringify(this.settings));
+        document.getElementById('soundToggle').onclick = (e) => e.target.classList.toggle('active');
     }
 
     showScreen(name) {
-        Object.values(this.screens).forEach(s => { if(s) s.classList.remove('active'); });
-        if(this.screens[name]) this.screens[name].classList.add('active');
-        this.state.currentScreen = name;
-    }
-
-    showCategoryScreen() {
-        if (!this.clueBank) return;
-        this.state.mode = 'arcade';
-        this.renderCategories();
-        this.state.selectedCategory = null;
-        this.dom.startGameBtn.disabled = true;
-        this.showScreen('category');
+        Object.values(this.screens).forEach(s => s.classList.remove('active'));
+        this.screens[name].classList.add('active');
+        if (name === 'category') this.renderCategories();
     }
 
     renderCategories() {
-        this.dom.categoryGrid.innerHTML = '';
-        Object.entries(this.clueBank).forEach(([name, data]) => {
+        this.dom.grid.innerHTML = '';
+        Object.keys(this.clueBank).forEach(cat => {
             const card = document.createElement('div');
             card.className = 'category-card';
-            card.setAttribute('data-category', name);
-            const unseen = this.getUnseenCount(name);
-            const emojiMap = {"Family":"🎈","Sci-Fi":"🧠","Fantasy":"💫","Superhero":"🦸","Emotional Damage":"💔","Streaming Hits":"📺"};
-            card.innerHTML = `<div class="category-emoji">${emojiMap[name] || '🎬'}</div><div class="category-name">${name}</div><div class="category-count">${unseen} in Vault</div>`;
-            card.onclick = () => this.selectCategory(name);
-            this.dom.categoryGrid.appendChild(card);
+            card.innerHTML = `<div style="font-size:2rem;">🎬</div><div>${cat}</div>`;
+            card.onclick = () => {
+                document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                this.state.selectedCategory = cat;
+                this.dom.startBtn.disabled = false;
+            };
+            this.dom.grid.appendChild(card);
         });
-    }
-
-    selectCategory(name) {
-        document.querySelectorAll('.category-card').forEach(c => c.classList.toggle('selected', c.getAttribute('data-category') === name));
-        this.state.selectedCategory = name;
-        this.dom.startGameBtn.disabled = false;
     }
 
     handleDailyChallengeNav() {
         const today = new Date().toISOString().split('T')[0];
-        const completedDate = localStorage.getItem('plotTwistedDailyCompleted');
-        if (completedDate === today) {
-            this.showScreen('dailyComplete');
-        } else {
-            this.startDailyChallenge();
-        }
+        if (localStorage.getItem('plotTwistedDailyDone') === today) this.showScreen('dailyComplete');
+        else this.startDaily();
     }
 
-    startDailyChallenge() {
-        if (!this.clueBank) return;
+    startDaily() {
         this.state.mode = 'daily';
-        this.dom.modeTag.style.display = 'inline-block';
-        const today = new Date().toISOString().split('T')[0];
-        const seed = this.hashCode(today);
-        const allClues = [];
-        Object.keys(this.clueBank).forEach(cat => {
-            this.clueBank[cat].forEach(clue => { allClues.push({ ...clue, category: cat }); });
-        });
-        const shuffled = this.seededShuffle(allClues, seed);
-        this.state.questions = shuffled.slice(0, 5);
-        
-        this.state.currentIndex = 0; this.state.totalScore = 0; this.state.strikes = 3; this.state.results = [];
-        this.updateTotalScore(); this.updateStrikes(); this.renderProgress(); this.showScreen('game'); this.loadQuestion();
+        document.getElementById('modeTag').style.display = 'inline-block';
+        const all = [];
+        Object.keys(this.clueBank).forEach(c => this.clueBank[c].forEach(q => all.push({...q, cat: c})));
+        const seed = new Date().toISOString().split('T')[0].replace(/-/g,'');
+        this.state.questions = this.seededShuffle(all, seed).slice(0,5);
+        this.resetGame();
     }
 
     startGame() {
-        if(!this.state.selectedCategory || !this.clueBank) return;
         this.state.mode = 'arcade';
-        this.dom.modeTag.style.display = 'none';
-        this.state.questions = this.getQuestions(this.state.selectedCategory);
-        this.state.currentIndex = 0; this.state.totalScore = 0; this.state.strikes = 3; this.state.results = [];
-        this.updateTotalScore(); this.updateStrikes(); this.renderProgress(); this.showScreen('game'); this.loadQuestion();
+        document.getElementById('modeTag').style.display = 'none';
+        this.state.questions = this.clueBank[this.state.selectedCategory].sort(()=>0.5-Math.random()).slice(0,5);
+        this.resetGame();
     }
 
-    getQuestions(cat) {
-        const pool = this.clueBank[cat];
-        const seen = this.state.seenClues[cat] || [];
-        const unseen = pool.filter((_, i) => !seen.includes(i));
-        let selected = this.shuffle(unseen).slice(0, 5);
-        if(selected.length < 5) selected = [...selected, ...this.shuffle(pool.filter((_, i) => seen.includes(i)))].slice(0, 5);
-        selected.forEach(q => {
-            const idx = pool.findIndex(item => item.title === q.title && item.clue === q.clue);
-            if(idx !== -1 && !seen.includes(idx)) seen.push(idx);
-        });
-        this.state.seenClues[cat] = seen;
-        this.saveSeenClues();
-        return selected;
+    resetGame() {
+        this.state.currentIndex = 0; this.state.totalScore = 0; this.state.strikes = 3; this.state.results = [];
+        this.loadQuestion(); this.showScreen('game');
     }
 
     loadQuestion() {
         const q = this.state.questions[this.state.currentIndex];
         this.state.currentPot = 500; this.state.revealedIndices = [];
-        this.dom.clueText.textContent = q.clue;
-        const categoryName = q.category || this.state.selectedCategory;
-        const emojiMap = {"Family":"🎈","Sci-Fi":"🧠","Fantasy":"💫","Superhero":"🦸","Emotional Damage":"💔","Streaming Hits":"📺"};
-        this.dom.clueCategory.innerHTML = `<span>${emojiMap[categoryName] || '🎬'}</span> ${categoryName}`;
-        this.updatePot(); this.renderTitle(); this.updateProgress();
-        this.dom.clueCard.classList.remove('fade-in'); void this.dom.clueCard.offsetWidth; this.dom.clueCard.classList.add('fade-in');
+        this.dom.clue.textContent = q.clue;
+        this.dom.pot.textContent = 500;
+        this.renderTitle();
     }
 
     renderTitle() {
-        const title = this.state.questions[this.state.currentIndex].title.toUpperCase();
-        this.dom.titleLetters.innerHTML = '';
+        const title = this.state.questions[this.currentIndex].title.toUpperCase();
+        this.dom.letters.innerHTML = '';
         title.split('').forEach((char, i) => {
             const span = document.createElement('span');
-            span.className = 'letter-slot';
-            if (char === ' ') { span.classList.add('space'); }
-            else if (!/[A-Z0-9]/.test(char)) { span.textContent = char; }
-            else if (this.state.revealedIndices.includes(i)) { span.textContent = char; span.classList.add('revealed'); }
-            else { span.textContent = '_'; span.classList.add('hidden'); }
-            this.dom.titleLetters.appendChild(span);
+            if (char === ' ') span.style.width = '20px';
+            else span.textContent = this.state.revealedIndices.includes(i) || !/[A-Z0-9]/.test(char) ? char : '_';
+            this.dom.letters.appendChild(span);
         });
     }
 
     revealLetter() {
-        const title = this.state.questions[this.state.currentIndex].title.toUpperCase();
+        const title = this.state.questions[this.currentIndex].title.toUpperCase();
         const hidden = [];
-        title.split('').forEach((char, i) => { if(/[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)) hidden.push(i); });
-        if(hidden.length === 0) return;
-        this.state.revealedIndices.push(hidden[Math.floor(Math.random() * hidden.length)]);
-        this.state.currentPot = Math.max(50, this.state.currentPot - 50);
-        this.updatePot(true); this.renderTitle();
-        if(hidden.length <= 1) this.autoSolve();
-    }
-
-    autoSolve() {
-        const q = this.state.questions[this.state.currentIndex];
-        this.state.results.push({ title: q.title, points: this.state.currentPot, correct: true });
-        this.state.totalScore += this.state.currentPot;
-        this.updateTotalScore();
-        this.showResult(true, q.title, this.state.currentPot);
+        title.split('').forEach((c, i) => { if(/[A-Z0-9]/.test(c) && !this.state.revealedIndices.includes(i)) hidden.push(i); });
+        if (hidden.length > 0) {
+            this.state.revealedIndices.push(hidden[Math.floor(Math.random()*hidden.length)]);
+            this.state.currentPot = Math.max(50, this.state.currentPot - 50);
+            this.dom.pot.textContent = this.state.currentPot;
+            this.renderTitle();
+        }
     }
 
     submitSolve() {
-        const guess = this.dom.solveInput.value.trim();
-        const actual = this.state.questions[this.state.currentIndex].title;
-        this.dom.solveModal.classList.remove('active');
-        if(this.isFuzzyMatch(guess, actual)) this.handleCorrect();
-        else this.handleIncorrect();
-    }
-
-    handleCorrect() {
-        const q = this.state.questions[this.state.currentIndex];
-        const points = this.state.currentPot;
-        this.state.results.push({ title: q.title, points: points, correct: true });
-        this.state.totalScore += points;
-        this.updateTotalScore();
-        this.showResult(true, q.title, points);
-        if(typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#d4a853', '#f0d078'] });
-    }
-
-    handleIncorrect() {
-        this.state.strikes--; this.updateStrikes();
-        this.dom.clueCard.classList.add('shake'); setTimeout(() => this.dom.clueCard.classList.remove('shake'), 400);
-        if (this.state.strikes <= 0) {
-            this.state.results.push({ title: this.state.questions[this.state.currentIndex].title, points: 0, correct: false });
-            this.showResult(false, this.state.questions[this.state.currentIndex].title, 0, true);
+        const guess = this.dom.input.value.trim().toLowerCase();
+        const actual = this.state.questions[this.state.currentIndex].title.toLowerCase();
+        this.dom.modal.style.display = 'none';
+        if (guess === actual || actual.replace(/^the\s/,'') === guess) {
+            this.state.totalScore += this.state.currentPot;
+            this.state.results.push({title: this.state.questions[this.currentIndex].title, correct: true, points: this.state.currentPot});
+            confetti({particleCount:100, spread:70, origin:{y:0.6}});
+            this.next();
         } else {
-            this.showResult(false, this.state.questions[this.state.currentIndex].title, 0, false);
+            this.state.strikes--;
+            this.updateStrikes();
+            if (this.state.strikes <= 0) this.endGame();
         }
     }
 
-    giveUp() {
-        this.state.results.push({ title: this.state.questions[this.state.currentIndex].title, points: 0, correct: false, gaveUp: true });
-        this.showResult(false, this.state.questions[this.state.currentIndex].title, 0, false, true);
+    updateStrikes() {
+        const pips = document.querySelectorAll('.strike-pip');
+        pips.forEach((p, i) => p.classList.toggle('used', i >= this.state.strikes));
     }
 
-    showResult(isCorrect, title, points, isGameOver = false, gaveUp = false) {
-        const PRAISE_MESSAGES = ["I'm the king of the world!", "Show me the points!", "To infinity and beyond!", "They call me Mister Correct!", "The stuff that dreams are made of."];
-        const INSULT_MESSAGES = ["I've seen better acting in a silent film.", "You're out of your element, Donny!", "You're a sad, strange little man.", "Need a bigger brain.", "FAIL!"];
-        const commentary = isCorrect ? PRAISE_MESSAGES[Math.floor(Math.random()*PRAISE_MESSAGES.length)] : INSULT_MESSAGES[Math.floor(Math.random()*INSULT_MESSAGES.length)];
-        this.dom.resultIcon.textContent = isCorrect ? '🎬' : (gaveUp ? '🏳️' : '❌');
-        this.dom.resultTitle.textContent = commentary;
-        this.dom.resultTitle.className = `result-title ${isCorrect ? 'correct' : 'incorrect'}`;
-        this.dom.resultMovie.textContent = title.toUpperCase();
-        this.dom.resultPoints.textContent = isCorrect ? `+${points} points` : (isGameOver ? "Game Over!" : (gaveUp ? "Gave up." : "Strike!"));
-        this.dom.continueBtn.onclick = () => { 
-            this.dom.resultOverlay.classList.remove('active'); 
-            if(isGameOver || this.state.currentIndex >= 4) this.endGame(); 
-            else { this.state.currentIndex++; this.loadQuestion(); } 
-        };
-        this.dom.resultOverlay.classList.add('active');
-        if (isCorrect) document.querySelector('.result-card').classList.add('celebrate');
-        else document.querySelector('.result-card').classList.remove('celebrate');
+    next() {
+        this.state.currentIndex++;
+        if (this.state.currentIndex >= 5) this.endGame();
+        else this.loadQuestion();
     }
 
     endGame() {
-        const solved = this.state.results.filter(r => r.correct).length;
-        this.stats.totalSolved += solved; this.stats.totalPlayed += 5;
-        if (this.state.mode === 'daily') {
-            const today = new Date().toISOString().split('T')[0];
-            localStorage.setItem('plotTwistedDailyCompleted', today);
-            localStorage.setItem('plotTwistedLastDailyScore', this.state.totalScore);
-            localStorage.setItem('plotTwistedLastDailyGrid', JSON.stringify(this.state.results.map(r => r.correct)));
-        }
-        this.saveStats();
-        this.dom.finalScore.textContent = this.state.totalScore;
-        this.dom.finalSubtitle.textContent = `Solved ${solved} of 5 movies`;
-        this.dom.finalBreakdown.innerHTML = '';
+        if (this.state.mode === 'daily') localStorage.setItem('plotTwistedDailyDone', new Date().toISOString().split('T')[0]);
+        document.getElementById('finalScore').textContent = this.state.totalScore;
+        this.dom.breakdown.innerHTML = '';
         this.state.results.forEach(r => {
-            const row = document.createElement('div'); row.className = 'breakdown-row';
-            row.innerHTML = `<span class="breakdown-title">${r.title}</span><span class="breakdown-points ${r.correct?'earned':'missed'}">${r.correct?'+'+r.points:'—'}</span>`;
-            this.dom.finalBreakdown.appendChild(row);
+            const div = document.createElement('div');
+            div.style.display='flex'; div.style.justifyContent='space-between'; div.style.padding='10px 0';
+            div.innerHTML = `<span>${r.title}</span><span style="color:var(--gold-primary)">+${r.points}</span>`;
+            this.dom.breakdown.appendChild(div);
         });
         this.showScreen('gameOver');
     }
 
     shareScore() {
-        const modeLabel = this.state.mode === 'daily' ? "Daily Challenge" : "Arcade Mode";
-        const today = new Date().toLocaleDateString();
-        const gridData = JSON.parse(localStorage.getItem('plotTwistedLastDailyGrid') || '[]');
-        const grid = gridData.length > 0 ? gridData.map(c => c ? '🟩' : '⬛').join('') : '🎬🎬🎬🎬🎬';
-        const score = this.state.totalScore || localStorage.getItem('plotTwistedLastDailyScore');
-        const text = `🎬 Plot Twisted: ${modeLabel}\n📅 ${today}\n${grid}\n🏆 Score: ${score}\n\nPlay at: [Your URL Here]`;
-        if (navigator.share) { navigator.share({ title: 'Plot Twisted', text: text }); }
-        else {
-            const tempInput = document.createElement('textarea'); tempInput.value = text; document.body.appendChild(tempInput); tempInput.select(); document.execCommand('copy'); document.body.removeChild(tempInput);
-            const msg = document.createElement('div');
-            msg.style.position = 'fixed'; msg.style.bottom = '100px'; msg.style.left = '50%'; msg.style.transform = 'translateX(-50%)';
-            msg.style.background = 'var(--gold-primary)'; msg.style.color = 'black'; msg.style.padding = '10px 20px'; msg.style.borderRadius = '5px';
-            msg.style.zIndex = '1000'; msg.textContent = 'Score copied to clipboard!';
-            document.body.appendChild(msg); setTimeout(() => msg.remove(), 2000);
-        }
+        const text = `🎬 Plot Twisted Daily\n🏆 Score: ${this.state.totalScore}\n🟩🟩🟩🟩🟩`;
+        navigator.clipboard.writeText(text);
+        alert("Score copied to clipboard!");
     }
 
     playAgain() {
         if (this.state.mode === 'daily') this.handleDailyChallengeNav();
-        else if (this.state.selectedCategory) this.startGame();
-        else this.showCategoryScreen();
+        else this.showScreen('category');
     }
 
-    updatePot(anim=false) { if(anim) { this.dom.potValue.classList.add('dropping'); setTimeout(()=>this.dom.potValue.classList.remove('dropping'),300); } this.dom.potValue.textContent = this.state.currentPot; }
-    updateTotalScore() { this.dom.totalScore.textContent = this.state.totalScore; }
-    updateStrikes() { const pips = document.querySelectorAll('.strike-pip'); pips.forEach((p,i) => p.classList.toggle('used', i >= this.state.strikes)); }
-    renderProgress() { this.dom.progressTrack.innerHTML = ''; for(let i=0;i<5;i++) { const p=document.createElement('div'); p.className='progress-pip'; this.dom.progressTrack.appendChild(p); } }
-    updateProgress() { const pips=document.querySelectorAll('.progress-pip'); pips.forEach((p,i)=>{ p.classList.remove('current','complete'); if(i<this.state.currentIndex) p.classList.add('complete'); else if(i===this.state.currentIndex) p.classList.add('current'); }); }
-    updateStatsDisplay() {}
-    loadStats() { const s = localStorage.getItem('plotTwistedStats'); return s?JSON.parse(s):{totalSolved:0,totalPlayed:0,bestStreak:0}; }
-    saveStats() { localStorage.setItem('plotTwistedStats', JSON.stringify(this.stats)); }
-    loadSeenClues() { const s = localStorage.getItem('plotTwistedSeen'); this.state.seenClues = s?JSON.parse(s):{}; }
-    saveSeenClues() { localStorage.setItem('plotTwistedSeen', JSON.stringify(this.state.seenClues)); }
-    getUnseenCount(cat) { if(!this.clueBank) return 0; return this.clueBank[cat].length - (this.state.seenClues[cat] || []).length; }
-    shuffle(arr) { let a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-    hashCode(str) { let hash = 0; for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); } return hash; }
-    seededShuffle(array, seed) { let m = array.length, t, i; while (m) { i = Math.floor(Math.abs(Math.sin(seed++)) * m--); t = array[m]; array[m] = array[i]; array[i] = t; } return array; }
-    isFuzzyMatch(g,a) { if (!g) return false; const norm = s => s.toLowerCase().replace(/^the\s+/g,'').replace(/[^a-z0-9]/g,''); const ng=norm(g), na=norm(a); if(!ng)return false; if(ng===na)return true; return this.levenshtein(ng,na) <= Math.max(1, Math.floor(na.length*0.18)); }
-    levenshtein(a,b) { const m=[]; for(let i=0;i<=b.length;i++)m[i]=[i]; for(let j=0;j<=a.length;j++)m[0][j]=j; for(let i=1;i<=b.length;i++){ for(let j=1;j<=a.length;j++){ if(b.charAt(i-1)===a.charAt(j-1))m[i][j]=m[i-1][j-1]; else m[i][j]:=Math.min(m[i-1][j-1]+1,m[i][j-1]+1,m[i-1][j]+1); } } return m[b.length][a.length]; }
+    seededShuffle(arr, seed) {
+        let m = arr.length, t, i;
+        while (m) { i = Math.floor(Math.abs(Math.sin(seed++)) * m--); t = arr[m]; arr[m] = arr[i]; arr[i] = t; }
+        return arr;
+    }
+
+    loadSettings() {}
 }
 document.addEventListener('DOMContentLoaded', () => { new PlotTwisted().init(); });
 </script>
