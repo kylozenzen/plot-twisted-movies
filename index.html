@@ -28,6 +28,7 @@
     --cream: #f5f0e6;
     --cream-muted: #c9c4b8;
     --text-muted: #6b6b7b;
+    --green-success: #4ade80;
     --font-display: 'Playfair Display', serif;
     --font-title: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -72,6 +73,7 @@ html, body {
 
 .btn { font-family: var(--font-body); font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 4px; }
 .btn:disabled { opacity: 0.5; cursor: wait; }
+.btn:active { transform: scale(0.97); }
 
 .btn-play-daily {
     display: flex; align-items: center; justify-content: center; gap: 12px;
@@ -92,214 +94,719 @@ html, body {
     font-weight: 800; position: relative; overflow: hidden;
 }
 
+.btn-outline-gold {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dark);
+}
+
+.btn-quit {
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    border: none;
+}
+
 .stats-bar { display: flex; justify-content: center; align-items: center; margin-top: 40px; border-top: 1px solid rgba(212, 168, 83, 0.2); min-height: 80px; }
 .movie-quote { font-family: var(--font-typewriter); font-size: 0.95rem; color: var(--cream-muted); text-align: center; font-style: italic; }
 
 /* CATEGORY SCREEN */
 #categoryScreen { background: var(--bg-deep); padding: 20px; overflow-y: auto; }
-.category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 500px; margin: 0 auto 100px; }
-.category-card { background: var(--bg-card); border: 2px solid var(--bg-elevated); border-radius: 12px; padding: 25px 15px; text-align: center; cursor: pointer; }
-.category-card.selected { border-color: var(--gold-primary); box-shadow: 0 0 20px var(--gold-glow); }
+.category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 500px; margin: 0 auto 30px; }
+.category-card { 
+    background: var(--bg-card); 
+    border: 2px solid var(--bg-elevated); 
+    border-radius: 12px; 
+    padding: 25px 15px; 
+    text-align: center; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.category-card:hover { border-color: var(--gold-dark); }
+.category-card.selected { border-color: var(--gold-primary); box-shadow: 0 0 20px var(--gold-glow); background: var(--bg-elevated); }
+.category-card .cat-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.category-card .cat-name { font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 0.1em; color: var(--cream); }
+.category-card .cat-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
+
+.category-actions { 
+    display: flex; 
+    gap: 15px; 
+    max-width: 500px; 
+    margin: 0 auto; 
+    padding-bottom: 40px;
+}
+.category-actions .btn { flex: 1; padding: 15px; }
+.btn-back { background: var(--bg-elevated); color: var(--cream); border: 1px solid var(--text-muted); }
+.btn-start { background: linear-gradient(135deg, var(--gold-light), var(--gold-primary), var(--gold-dark)); color: var(--bg-deep); font-weight: 800; }
 
 /* GAME SCREEN */
-.game-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-dark); border-bottom: 1px solid rgba(212, 168, 83, 0.2); }
-.game-logo { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold-primary); }
-.game-mode-tag { font-family: var(--font-title); font-size: 0.7rem; color: var(--red-light); border: 1px solid var(--red-primary); padding: 2px 6px; border-radius: 2px; display: none; }
-.strikes-display { display: flex; gap: 4px; }
-.strike-pip { width: 10px; height: 10px; border-radius: 50%; background: var(--red-primary); box-shadow: 0 0 8px var(--red-glow); }
-.strike-pip.used { background: var(--bg-elevated); box-shadow: none; }
+#gameScreen {
+    background: var(--bg-deep);
+}
 
-.clue-card { width: 100%; max-width: 500px; background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.3); border-radius: 8px; padding: 30px 25px; position: relative; }
-.clue-text { font-family: var(--font-typewriter); font-size: 1.3rem; line-height: 1.7; text-align: center; }
+.game-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 20px; 
+    background: var(--bg-dark); 
+    border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+    flex-shrink: 0;
+}
+.game-logo { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold-primary); }
+.game-mode-tag { font-family: var(--font-title); font-size: 0.7rem; color: var(--red-light); border: 1px solid var(--red-primary); padding: 2px 6px; border-radius: 2px; margin-left: 8px; vertical-align: middle; }
+.game-stats { display: flex; align-items: center; gap: 15px; }
+.game-stat-value { font-family: var(--font-title); font-size: 1.3rem; color: var(--gold-light); }
+.game-stat-value.points::before { content: '🎟️ '; font-size: 0.9rem; }
+
+.strikes-display { display: flex; gap: 6px; }
+.strike-pip { width: 12px; height: 12px; border-radius: 50%; background: var(--red-primary); box-shadow: 0 0 8px var(--red-glow); transition: all 0.3s ease; }
+.strike-pip.used { background: var(--bg-elevated); box-shadow: none; opacity: 0.3; }
+
+/* GAME CONTENT - THE MISSING STYLES! */
+.game-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.progress-track {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.progress-pip {
+    width: 40px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-elevated);
+    transition: all 0.3s ease;
+}
+
+.progress-pip.current {
+    background: var(--gold-primary);
+    box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.progress-pip.complete {
+    background: var(--green-success);
+}
+
+.progress-pip.failed {
+    background: var(--red-primary);
+}
+
+.clue-card { 
+    width: 100%; 
+    max-width: 500px; 
+    background: var(--bg-card); 
+    border: 1px solid rgba(212, 168, 83, 0.3); 
+    border-radius: 8px; 
+    padding: 30px 25px; 
+    position: relative; 
+}
+
+.clue-label {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--bg-deep);
+    padding: 0 10px;
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    color: var(--gold-dark);
+    letter-spacing: 0.15em;
+}
+
+.clue-text { 
+    font-family: var(--font-typewriter); 
+    font-size: 1.3rem; 
+    line-height: 1.7; 
+    text-align: center;
+    color: var(--cream);
+}
+
+.pot-display {
+    text-align: center;
+}
+
+.pot-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+}
+
+.pot-value {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px var(--gold-glow);
+}
+
+.title-reveal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-title);
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    min-height: 50px;
+}
+
+.title-reveal .letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 25px;
+    color: var(--cream);
+}
+
+.title-reveal .letter.hidden {
+    color: var(--gold-primary);
+    border-bottom: 2px solid var(--gold-dark);
+}
+
+.title-reveal .letter.space {
+    width: 15px;
+    border: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.action-buttons .btn {
+    padding: 18px 20px;
+    font-size: 1rem;
+}
+
+.btn-hint {
+    flex: 1;
+    background: var(--bg-elevated);
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dark);
+}
+
+.btn-hint:disabled {
+    opacity: 0.4;
+}
+
+.btn-solve {
+    flex: 2;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-primary), var(--gold-dark));
+    color: var(--bg-deep);
+    font-weight: 800;
+}
 
 /* RESULTS BREAKDOWN */
-.final-breakdown { background: var(--bg-card); border-radius: 8px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(212, 168, 83, 0.2); max-height: 220px; overflow-y: auto; }
+.final-breakdown { 
+    background: var(--bg-card); 
+    border-radius: 8px; 
+    padding: 20px; 
+    margin-bottom: 30px; 
+    border: 1px solid rgba(212, 168, 83, 0.2); 
+    max-height: 250px; 
+    overflow-y: auto;
+    text-align: left;
+}
 .final-breakdown::-webkit-scrollbar { width: 6px; }
 .final-breakdown::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 10px; }
 
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-title {
+    font-family: var(--font-typewriter);
+    font-size: 0.95rem;
+}
+
+.result-score {
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+}
+
+.result-score.correct {
+    color: var(--green-success);
+}
+
+.result-score.wrong {
+    color: var(--red-primary);
+}
+
 .marquee-screen { background: var(--bg-deep); padding: 20px; overflow-y: auto; }
 .cinema-section { background: var(--bg-card); border: 1px solid rgba(212, 168, 83, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.cinema-section h3 { font-family: var(--font-title); font-size: 1.1rem; color: var(--gold-light); margin-bottom: 10px; letter-spacing: 0.1em; }
+.cinema-section p { font-family: var(--font-typewriter); color: var(--cream-muted); line-height: 1.6; }
 
 /* DAILY LOCK SCREEN */
 #dailyCompleteScreen { background: var(--bg-deep); justify-content: center; align-items: center; padding: 20px; text-align: center; position: fixed; inset: 0; z-index: 100; }
 .daily-lock-box { max-width: 400px; padding: 40px; background: var(--bg-dark); border: 1px solid var(--gold-dark); border-radius: 8px; }
 
-.toggle { width: 50px; height: 28px; background: var(--bg-elevated); border-radius: 14px; position: relative; cursor: pointer; }
-.toggle.active { background: var(--gold-primary); }
-.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: var(--cream); border-radius: 50%; transition: 0.2s; }
+/* GAME OVER SCREEN */
+#gameOverScreen {
+    background: radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%), var(--bg-deep);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-over-card {
+    max-width: 450px;
+    width: 100%;
+}
+
+.roll-credits {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 10px;
+}
+
+.final-score {
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 30px var(--gold-glow);
+    margin-bottom: 5px;
+}
+
+.final-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 25px;
+}
+
+.toggle { width: 50px; height: 28px; background: var(--bg-elevated); border-radius: 14px; position: relative; cursor: pointer; border: 1px solid var(--text-muted); }
+.toggle.active { background: var(--gold-primary); border-color: var(--gold-light); }
+.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: var(--cream); border-radius: 50%; transition: 0.2s; }
 .toggle.active::after { transform: translateX(22px); }
+
+/* MODAL */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid var(--gold-dark);
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+}
+
+.solve-input {
+    width: 100%;
+    padding: 15px 20px;
+    background: var(--bg-deep);
+    color: var(--cream);
+    border: 2px solid var(--gold-dark);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.solve-input:focus {
+    outline: none;
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 15px var(--gold-glow);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.modal-buttons .btn {
+    flex: 1;
+    padding: 14px;
+}
 
 .shake { animation: shake 0.4s ease; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pulse {
+    animation: pulse 0.3s ease;
+}
     </style>
 </head>
 <body>
     <div class="film-grain"></div>
 
+    <!-- START SCREEN -->
     <div id="startScreen" class="screen active">
         <div class="marquee-frame">
-            <div class="main-title"><div class="title-plot">PLOT</div><div class="title-twisted">TWISTED</div></div>
+            <div class="main-title">
+                <div class="title-plot">PLOT</div>
+                <div class="title-twisted">TWISTED</div>
+            </div>
             <p class="tagline">Guess the movie from the twisted summary</p>
-            <div class="divider"><span class="divider-line"></span><span class="divider-star">★</span><span class="divider-line"></span></div>
-            <button class="btn btn-play-daily" id="dailyBtn" disabled>Daily Challenge</button>
+            <button class="btn btn-play-daily" id="dailyBtn" disabled>🎬 Daily Challenge</button>
             <div class="btn-row">
-                <button class="btn btn-arcade" id="arcadeBtn" disabled>Arcade Mode</button>
-                <button class="btn btn-pass" id="passBtn" disabled>Pass and Play</button>
+                <button class="btn btn-arcade" id="arcadeBtn" disabled>🕹️ Arcade</button>
+                <button class="btn btn-pass" id="passBtn" disabled>👥 Pass & Play</button>
             </div>
             <div class="btn-row">
                 <button class="btn btn-secondary-flat" id="howToPlayBtn">How to Play</button>
                 <button class="btn btn-secondary-flat" id="settingsBtn">Settings</button>
             </div>
-            <div class="stats-bar"><p class="movie-quote">"Snakes, I hate snakes"</p></div>
+            <div class="stats-bar">
+                <p class="movie-quote" id="randomQuote">"Here's looking at you, kid."</p>
+            </div>
         </div>
     </div>
 
+    <!-- DAILY COMPLETE SCREEN -->
     <div id="dailyCompleteScreen" class="screen">
         <div class="daily-lock-box">
-            <h2 style="font-family: var(--font-display); color: var(--gold-light); margin-bottom: 20px;">Theater Closed</h2>
-            <p class="tagline" style="font-family: var(--font-typewriter); color: var(--cream-muted); margin-bottom: 30px;">The curtain has closed for today's premiere. The next showing begins at midnight. Keep your streak alive!</p>
-            <button class="btn btn-premium" id="dailyShareBtn" style="padding: 16px 24px; width: 100%;">Share My Score</button>
-            <button class="btn btn-outline-gold" id="dailyMenuBtn" style="padding: 12px 24px; width: 100%; margin-top:12px;">Main Menu</button>
+            <h2 style="font-family: var(--font-display); color: var(--gold-light); margin-bottom: 10px;">🎬 Theater Closed</h2>
+            <p style="font-family: var(--font-typewriter); color: var(--cream-muted); margin-bottom: 10px; line-height: 1.6;">You've completed today's challenge!</p>
+            <p style="font-family: var(--font-title); color: var(--gold-primary); font-size: 1.2rem; margin-bottom: 30px;" id="dailyScoreDisplay">Score: 0</p>
+            <button class="btn btn-premium" id="dailyShareBtn" style="padding: 16px 24px; width: 100%; margin-bottom: 12px;">📋 Share My Score</button>
+            <button class="btn btn-outline-gold" id="dailyMenuBtn" style="padding: 14px 24px; width: 100%;">Main Menu</button>
         </div>
     </div>
 
+    <!-- CATEGORY SCREEN -->
     <div id="categoryScreen" class="screen">
-        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto; text-align:center;">
-            <h2 style="font-family: var(--font-display); margin: 30px 0 10px;">Choose Your Genre</h2>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto; text-align:center; padding-top: 40px;">
+            <h2 style="font-family: var(--font-display); margin-bottom: 30px; color: var(--cream);">Choose Your Genre</h2>
             <div class="category-grid" id="categoryGrid"></div>
-            <div class="category-actions"><button class="btn btn-back" id="categoryBackBtn">Back</button><button class="btn btn-start" id="startGameBtn" disabled>Start</button></div>
+            <div class="category-actions">
+                <button class="btn btn-back" id="categoryBackBtn">← Back</button>
+                <button class="btn btn-start" id="startGameBtn" disabled>Start Game →</button>
+            </div>
         </div>
     </div>
 
+    <!-- HOW TO PLAY SCREEN -->
     <div id="howToPlayScreen" class="screen marquee-screen">
-        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto;">
-            <h2 style="font-family: var(--font-display); margin-bottom:20px;">Production Notes</h2>
-            <div class="cinema-section"><h3>🎬 THE SCRIPT</h3><p>Read the twisted summary. Identify the title before the pot runs dry.</p></div>
-            <div class="cinema-section"><h3>💰 BOX OFFICE</h3><p>Start with 500 points. Hints cost 50 points each.</p></div>
-            <button class="btn btn-outline-gold" id="howToBackBtn" style="width:100%; padding: 15px;">Back</button>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto; padding-top: 40px;">
+            <h2 style="font-family: var(--font-display); margin-bottom:30px; text-align: center;">Production Notes</h2>
+            <div class="cinema-section">
+                <h3>🎬 THE SCRIPT</h3>
+                <p>Read the twisted plot summary and guess which movie it describes. The more creative the description, the trickier the puzzle!</p>
+            </div>
+            <div class="cinema-section">
+                <h3>💰 THE POT</h3>
+                <p>Each round starts with 500 points. Use hints to reveal letters, but each hint costs 50 points from your pot.</p>
+            </div>
+            <div class="cinema-section">
+                <h3>❌ STRIKES</h3>
+                <p>You have 3 strikes. Wrong answers cost a strike. Lose all 3 and the game ends!</p>
+            </div>
+            <div class="cinema-section">
+                <h3>🏆 SCORING</h3>
+                <p>Solve quickly with fewer hints to maximize your score. Can you get a perfect 2500?</p>
+            </div>
+            <button class="btn btn-outline-gold" id="howToBackBtn" style="width:100%; padding: 15px; margin-top: 10px;">← Back to Menu</button>
         </div>
     </div>
 
+    <!-- SETTINGS SCREEN -->
     <div id="settingsScreen" class="screen marquee-screen">
-        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto;">
-            <h2 style="font-family: var(--font-display); margin-bottom:20px;">Director's Cut</h2>
+        <div class="marquee-screen-content" style="max-width:500px; margin: 0 auto; padding-top: 40px;">
+            <h2 style="font-family: var(--font-display); margin-bottom:30px; text-align: center;">Director's Cut</h2>
             <div class="cinema-section">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>FX SOUNDS</span><div class="toggle" id="soundToggle"></div>
+                    <span style="font-family: var(--font-title); letter-spacing: 0.1em;">🔊 SOUND FX</span>
+                    <div class="toggle active" id="soundToggle"></div>
                 </div>
             </div>
-            <button class="btn btn-outline-gold" id="settingsBackBtn" style="width:100%; padding: 15px;">Back</button>
+            <div class="cinema-section">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family: var(--font-title); letter-spacing: 0.1em;">🎞️ FILM GRAIN</span>
+                    <div class="toggle active" id="grainToggle"></div>
+                </div>
+            </div>
+            <button class="btn btn-outline-gold" id="settingsBackBtn" style="width:100%; padding: 15px; margin-top: 10px;">← Back to Menu</button>
         </div>
     </div>
 
+    <!-- GAME SCREEN -->
     <div id="gameScreen" class="screen">
         <div class="game-header">
-            <div class="game-logo">Plot Twisted <span class="game-mode-tag" id="modeTag">DAILY</span></div>
+            <div class="game-logo">Plot Twisted<span class="game-mode-tag" id="modeTag" style="display:none;">DAILY</span></div>
             <div class="game-stats">
-                <div class="game-stat"><div class="game-stat-value points" id="totalScore">0</div></div>
-                <div class="strikes-display" id="strikesDisplay"><div class="strike-pip"></div><div class="strike-pip"></div><div class="strike-pip"></div></div>
+                <div class="game-stat">
+                    <div class="game-stat-value points" id="totalScore">0</div>
+                </div>
+                <div class="strikes-display" id="strikesDisplay">
+                    <div class="strike-pip"></div>
+                    <div class="strike-pip"></div>
+                    <div class="strike-pip"></div>
+                </div>
             </div>
             <button class="btn btn-quit" id="quitBtn">✕</button>
         </div>
         <div class="game-content">
             <div class="progress-track" id="progressTrack"></div>
-            <div class="clue-card" id="clueCard"><div class="clue-text" id="clueText"></div></div>
-            <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-light);" id="potValue">500</div>
-            <div class="title-reveal" id="titleLetters" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; font-family: var(--font-title); font-size: 2rem;"></div>
-            <div class="action-buttons" style="display:flex; gap:10px; width:100%; max-width:500px;">
-                <button class="btn btn-arcade" id="revealBtn" style="flex:1; padding:15px;">Hint</button>
-                <button class="btn btn-premium" id="solveBtn" style="flex:2; padding:15px;">Solve</button>
+            <div class="clue-card" id="clueCard">
+                <span class="clue-label">THE PLOT</span>
+                <div class="clue-text" id="clueText">Loading...</div>
+            </div>
+            <div class="pot-display">
+                <div class="pot-label">Current Pot</div>
+                <div class="pot-value" id="potValue">500</div>
+            </div>
+            <div class="title-reveal" id="titleLetters"></div>
+            <div class="action-buttons">
+                <button class="btn btn-hint" id="revealBtn">💡 Hint (-50)</button>
+                <button class="btn btn-solve" id="solveBtn">🎬 Solve It!</button>
             </div>
         </div>
     </div>
 
+    <!-- GAME OVER SCREEN -->
     <div id="gameOverScreen" class="screen">
-        <div class="game-over-card" style="text-align:center; padding: 20px;">
-            <div class="roll-credits">Roll the Credits!</div>
-            <div class="final-score" id="finalScore" style="font-size: 4rem; color: var(--gold-light);">0</div>
+        <div class="game-over-card">
+            <div class="roll-credits">🎬 Roll Credits!</div>
+            <div class="final-score" id="finalScore">0</div>
+            <div class="final-label">Total Points</div>
             <div class="final-breakdown" id="finalBreakdown"></div>
-            <button class="btn btn-premium" id="shareScoreBtn" style="width:100%; padding:18px; margin-bottom:10px;">Share Score</button>
-            <button class="btn btn-arcade" id="playAgainBtn" style="width:100%; padding:15px; margin-bottom:10px;">Play Again</button>
-            <button class="btn btn-secondary-flat" id="menuBtn" style="width:100%; padding:15px;">Main Menu</button>
+            <button class="btn btn-premium" id="shareScoreBtn" style="width:100%; padding:18px; margin-bottom:12px;">📋 Share Score</button>
+            <button class="btn btn-arcade" id="playAgainBtn" style="width:100%; padding:15px; margin-bottom:12px;">🔄 Play Again</button>
+            <button class="btn btn-secondary-flat" id="menuBtn" style="width:100%; padding:15px;">← Main Menu</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="solveModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:200; justify-content:center; align-items:center;">
-        <div style="background:var(--bg-card); padding:30px; border-radius:8px; width:90%; max-width:400px; text-align:center;">
-            <h3 style="margin-bottom:20px;">Answer?</h3>
-            <input type="text" id="solveInput" style="width:100%; padding:15px; background:#000; color:#fff; border:1px solid var(--gold-dark); margin-bottom:20px;">
-            <div style="display:flex; gap:10px;"><button class="btn btn-arcade" id="cancelSolveBtn" style="flex:1; padding:10px;">Cancel</button><button class="btn btn-premium" id="submitSolveBtn" style="flex:1; padding:10px;">Submit</button></div>
+    <!-- SOLVE MODAL -->
+    <div class="modal-overlay" id="solveModal">
+        <div class="modal-content">
+            <h3 class="modal-title">🎬 What's the Movie?</h3>
+            <input type="text" class="solve-input" id="solveInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off">
+            <div class="modal-buttons">
+                <button class="btn btn-arcade" id="cancelSolveBtn">Cancel</button>
+                <button class="btn btn-premium" id="submitSolveBtn">Submit</button>
+            </div>
         </div>
     </div>
 
 <script>
+// ============================================
+// PLOT TWISTED - FIXED & ENHANCED
+// ============================================
+
 class PlotTwisted {
     constructor() {
-        this.state = { currentScreen: 'start', questions: [], currentIndex: 0, totalScore: 0, strikes: 3, currentPot: 500, revealedIndices: [], results: [], seenClues: {}, mode: 'arcade' };
+        this.state = {
+            currentScreen: 'start',
+            questions: [],
+            currentIndex: 0,
+            totalScore: 0,
+            strikes: 3,
+            currentPot: 500,
+            revealedIndices: [],
+            results: [],
+            seenClues: {},
+            mode: 'arcade',
+            selectedCategory: null,
+            soundEnabled: true,
+            grainEnabled: true
+        };
         this.clueBank = null;
+        this.quotes = [
+            '"Here\'s looking at you, kid."',
+            '"I\'ll be back."',
+            '"May the Force be with you."',
+            '"You can\'t handle the truth!"',
+            '"Life is like a box of chocolates."',
+            '"Why so serious?"',
+            '"I see dead people."',
+            '"To infinity and beyond!"',
+            '"I\'m the king of the world!"',
+            '"You talking to me?"'
+        ];
     }
 
     async init() {
         this.cacheDOM();
         this.bindEvents();
         this.loadSettings();
+        this.setRandomQuote();
         await this.loadClueDatabase();
     }
 
     async loadClueDatabase() {
         try {
             const response = await fetch('./clues.json');
+            if (!response.ok) throw new Error('Failed to load clues');
             this.clueBank = await response.json();
-            document.querySelectorAll('button').forEach(b => b.disabled = false);
+            // Enable all buttons once loaded
+            document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+            document.getElementById('startGameBtn').disabled = true; // Keep this disabled until category selected
+            console.log('✅ Clue database loaded:', Object.keys(this.clueBank));
         } catch (err) {
-            console.error("Clues failed to load. Check if clues.json exists in the same folder.", err);
+            console.error("❌ Clues failed to load:", err);
+            alert("Failed to load game data. Please refresh the page.");
         }
     }
 
     cacheDOM() {
-        this.screens = { start: document.getElementById('startScreen'), category: document.getElementById('categoryScreen'), howToPlay: document.getElementById('howToPlayScreen'), settings: document.getElementById('settingsScreen'), game: document.getElementById('gameScreen'), gameOver: document.getElementById('gameOverScreen'), dailyComplete: document.getElementById('dailyCompleteScreen') };
-        this.dom = { 
-            grid: document.getElementById('categoryGrid'), startBtn: document.getElementById('startGameBtn'),
-            clue: document.getElementById('clueText'), pot: document.getElementById('potValue'), score: document.getElementById('totalScore'),
-            letters: document.getElementById('titleLetters'), input: document.getElementById('solveInput'), 
-            breakdown: document.getElementById('finalBreakdown'), modal: document.getElementById('solveModal')
+        this.screens = {
+            start: document.getElementById('startScreen'),
+            category: document.getElementById('categoryScreen'),
+            howToPlay: document.getElementById('howToPlayScreen'),
+            settings: document.getElementById('settingsScreen'),
+            game: document.getElementById('gameScreen'),
+            gameOver: document.getElementById('gameOverScreen'),
+            dailyComplete: document.getElementById('dailyCompleteScreen')
+        };
+        
+        this.dom = {
+            grid: document.getElementById('categoryGrid'),
+            startBtn: document.getElementById('startGameBtn'),
+            clue: document.getElementById('clueText'),
+            pot: document.getElementById('potValue'),
+            score: document.getElementById('totalScore'),
+            letters: document.getElementById('titleLetters'),
+            input: document.getElementById('solveInput'),
+            breakdown: document.getElementById('finalBreakdown'),
+            modal: document.getElementById('solveModal'),
+            progress: document.getElementById('progressTrack'),
+            strikes: document.getElementById('strikesDisplay'),
+            modeTag: document.getElementById('modeTag'),
+            finalScore: document.getElementById('finalScore'),
+            grain: document.querySelector('.film-grain'),
+            quote: document.getElementById('randomQuote')
         };
     }
 
     bindEvents() {
+        // Start screen buttons
         document.getElementById('dailyBtn').onclick = () => this.handleDailyChallengeNav();
         document.getElementById('arcadeBtn').onclick = () => this.showScreen('category');
+        document.getElementById('passBtn').onclick = () => this.showScreen('category'); // Same as arcade for now
         document.getElementById('howToPlayBtn').onclick = () => this.showScreen('howToPlay');
         document.getElementById('settingsBtn').onclick = () => this.showScreen('settings');
+        
+        // Navigation buttons
         document.getElementById('howToBackBtn').onclick = () => this.showScreen('start');
         document.getElementById('settingsBackBtn').onclick = () => this.showScreen('start');
         document.getElementById('dailyMenuBtn').onclick = () => this.showScreen('start');
-        document.getElementById('dailyShareBtn').onclick = () => this.shareScore();
-        document.getElementById('shareScoreBtn').onclick = () => this.shareScore();
-        document.getElementById('quitBtn').onclick = () => this.showScreen('start');
         document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
+        document.getElementById('quitBtn').onclick = () => this.confirmQuit();
+        
+        // Category screen
         this.dom.startBtn.onclick = () => this.startGame();
+        
+        // Game actions
         document.getElementById('revealBtn').onclick = () => this.revealLetter();
-        document.getElementById('solveBtn').onclick = () => { this.dom.modal.style.display='flex'; this.dom.input.value=''; this.dom.input.focus(); };
-        document.getElementById('cancelSolveBtn').onclick = () => this.dom.modal.style.display='none';
+        document.getElementById('solveBtn').onclick = () => this.openSolveModal();
+        
+        // Modal
+        document.getElementById('cancelSolveBtn').onclick = () => this.closeSolveModal();
         document.getElementById('submitSolveBtn').onclick = () => this.submitSolve();
+        this.dom.input.onkeydown = (e) => { if (e.key === 'Enter') this.submitSolve(); };
+        
+        // Game over
+        document.getElementById('shareScoreBtn').onclick = () => this.shareScore();
+        document.getElementById('dailyShareBtn').onclick = () => this.shareScore();
         document.getElementById('playAgainBtn').onclick = () => this.playAgain();
         document.getElementById('menuBtn').onclick = () => this.showScreen('start');
-        document.getElementById('soundToggle').onclick = (e) => e.target.classList.toggle('active');
+        
+        // Settings toggles
+        document.getElementById('soundToggle').onclick = (e) => {
+            e.target.classList.toggle('active');
+            this.state.soundEnabled = e.target.classList.contains('active');
+            this.saveSettings();
+        };
+        
+        document.getElementById('grainToggle').onclick = (e) => {
+            e.target.classList.toggle('active');
+            this.state.grainEnabled = e.target.classList.contains('active');
+            this.dom.grain.style.display = this.state.grainEnabled ? 'block' : 'none';
+            this.saveSettings();
+        };
+        
+        // Close modal on overlay click
+        this.dom.modal.onclick = (e) => {
+            if (e.target === this.dom.modal) this.closeSolveModal();
+        };
+    }
+
+    setRandomQuote() {
+        const quote = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+        this.dom.quote.textContent = quote;
     }
 
     showScreen(name) {
         Object.values(this.screens).forEach(s => s.classList.remove('active'));
-        this.screens[name].classList.add('active');
+        if (this.screens[name]) {
+            this.screens[name].classList.add('active');
+        }
+        
         if (name === 'category') this.renderCategories();
+        if (name === 'start') this.setRandomQuote();
     }
 
     renderCategories() {
+        if (!this.clueBank) return;
+        
         this.dom.grid.innerHTML = '';
+        const icons = {
+            'Family': '👨‍👩‍👧‍👦',
+            'Sci-Fi': '🚀',
+            'Superhero': '🦸',
+            'Emotional Damage': '😢',
+            'Streaming Hits': '📺',
+            'Fantasy': '🧙‍♂️'
+        };
+        
         Object.keys(this.clueBank).forEach(cat => {
             const card = document.createElement('div');
             card.className = 'category-card';
-            card.innerHTML = `<div style="font-size:2rem;">🎬</div><div>${cat}</div>`;
+            card.innerHTML = `
+                <div class="cat-icon">${icons[cat] || '🎬'}</div>
+                <div class="cat-name">${cat}</div>
+                <div class="cat-count">${this.clueBank[cat].length} movies</div>
+            `;
             card.onclick = () => {
                 document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
@@ -312,123 +819,425 @@ class PlotTwisted {
 
     handleDailyChallengeNav() {
         const today = new Date().toISOString().split('T')[0];
-        if (localStorage.getItem('plotTwistedDailyDone') === today) this.showScreen('dailyComplete');
-        else this.startDaily();
+        const savedDaily = localStorage.getItem('plotTwistedDaily');
+        
+        if (savedDaily) {
+            const data = JSON.parse(savedDaily);
+            if (data.date === today && data.complete) {
+                document.getElementById('dailyScoreDisplay').textContent = `Score: ${data.score}`;
+                this.state.totalScore = data.score;
+                this.showScreen('dailyComplete');
+                return;
+            }
+        }
+        
+        this.startDaily();
     }
 
     startDaily() {
         this.state.mode = 'daily';
-        document.getElementById('modeTag').style.display = 'inline-block';
+        this.dom.modeTag.style.display = 'inline';
+        
+        // Get all clues from all categories
         const all = [];
-        Object.keys(this.clueBank).forEach(c => this.clueBank[c].forEach(q => all.push({...q, cat: c})));
-        const seed = new Date().toISOString().split('T')[0].replace(/-/g,'');
-        this.state.questions = this.seededShuffle(all, seed).slice(0,5);
+        Object.keys(this.clueBank).forEach(cat => {
+            this.clueBank[cat].forEach(q => all.push({...q, category: cat}));
+        });
+        
+        // Seeded shuffle based on today's date
+        const seed = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        this.state.questions = this.seededShuffle([...all], parseInt(seed)).slice(0, 5);
+        
         this.resetGame();
     }
 
     startGame() {
+        if (!this.state.selectedCategory) return;
+        
         this.state.mode = 'arcade';
-        document.getElementById('modeTag').style.display = 'none';
-        this.state.questions = this.clueBank[this.state.selectedCategory].sort(()=>0.5-Math.random()).slice(0,5);
+        this.dom.modeTag.style.display = 'none';
+        
+        // Shuffle and pick 5 questions from selected category
+        const categoryClues = [...this.clueBank[this.state.selectedCategory]];
+        this.state.questions = this.shuffle(categoryClues).slice(0, 5);
+        
         this.resetGame();
     }
 
     resetGame() {
-        this.state.currentIndex = 0; this.state.totalScore = 0; this.state.strikes = 3; this.state.results = [];
-        this.loadQuestion(); this.showScreen('game');
+        this.state.currentIndex = 0;
+        this.state.totalScore = 0;
+        this.state.strikes = 3;
+        this.state.results = [];
+        
+        this.updateScoreDisplay();
+        this.updateStrikesDisplay();
+        this.renderProgress();
+        this.loadQuestion();
+        this.showScreen('game');
     }
 
     loadQuestion() {
         const q = this.state.questions[this.state.currentIndex];
-        this.state.currentPot = 500; this.state.revealedIndices = [];
+        if (!q) {
+            console.error('No question at index', this.state.currentIndex);
+            return;
+        }
+        
+        this.state.currentPot = 500;
+        this.state.revealedIndices = [];
+        
         this.dom.clue.textContent = q.clue;
-        this.dom.pot.textContent = 500;
+        this.dom.pot.textContent = '500';
+        this.dom.pot.classList.add('pulse');
+        setTimeout(() => this.dom.pot.classList.remove('pulse'), 300);
+        
         this.renderTitle();
+        this.renderProgress();
+        this.updateHintButton();
     }
 
     renderTitle() {
-        const title = this.state.questions[this.currentIndex].title.toUpperCase();
+        // FIX: Use this.state.currentIndex, not this.currentIndex
+        const title = this.state.questions[this.state.currentIndex].title.toUpperCase();
         this.dom.letters.innerHTML = '';
+        
         title.split('').forEach((char, i) => {
             const span = document.createElement('span');
-            if (char === ' ') span.style.width = '20px';
-            else span.textContent = this.state.revealedIndices.includes(i) || !/[A-Z0-9]/.test(char) ? char : '_';
+            span.className = 'letter';
+            
+            if (char === ' ') {
+                span.className += ' space';
+                span.innerHTML = '&nbsp;';
+            } else if (!/[A-Z0-9]/.test(char)) {
+                // Punctuation - always show
+                span.textContent = char;
+            } else if (this.state.revealedIndices.includes(i)) {
+                // Revealed letter
+                span.textContent = char;
+            } else {
+                // Hidden letter
+                span.className += ' hidden';
+                span.textContent = '_';
+            }
+            
             this.dom.letters.appendChild(span);
         });
     }
 
-    revealLetter() {
-        const title = this.state.questions[this.currentIndex].title.toUpperCase();
-        const hidden = [];
-        title.split('').forEach((c, i) => { if(/[A-Z0-9]/.test(c) && !this.state.revealedIndices.includes(i)) hidden.push(i); });
-        if (hidden.length > 0) {
-            this.state.revealedIndices.push(hidden[Math.floor(Math.random()*hidden.length)]);
-            this.state.currentPot = Math.max(50, this.state.currentPot - 50);
-            this.dom.pot.textContent = this.state.currentPot;
-            this.renderTitle();
+    renderProgress() {
+        this.dom.progress.innerHTML = '';
+        
+        for (let i = 0; i < 5; i++) {
+            const pip = document.createElement('div');
+            pip.className = 'progress-pip';
+            
+            if (i < this.state.currentIndex) {
+                // Past question - check if it was correct
+                const result = this.state.results[i];
+                pip.className += result && result.correct ? ' complete' : ' failed';
+            } else if (i === this.state.currentIndex) {
+                pip.className += ' current';
+            }
+            
+            this.dom.progress.appendChild(pip);
         }
+    }
+
+    revealLetter() {
+        // FIX: Use this.state.currentIndex
+        const title = this.state.questions[this.state.currentIndex].title.toUpperCase();
+        const hiddenIndices = [];
+        
+        title.split('').forEach((char, i) => {
+            if (/[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)) {
+                hiddenIndices.push(i);
+            }
+        });
+        
+        if (hiddenIndices.length === 0) return;
+        
+        // Reveal a random hidden letter
+        const randomIndex = hiddenIndices[Math.floor(Math.random() * hiddenIndices.length)];
+        this.state.revealedIndices.push(randomIndex);
+        
+        // Reduce pot
+        this.state.currentPot = Math.max(50, this.state.currentPot - 50);
+        this.dom.pot.textContent = this.state.currentPot;
+        
+        this.renderTitle();
+        this.updateHintButton();
+    }
+
+    updateHintButton() {
+        const title = this.state.questions[this.state.currentIndex].title.toUpperCase();
+        const hiddenCount = title.split('').filter((char, i) => 
+            /[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)
+        ).length;
+        
+        const hintBtn = document.getElementById('revealBtn');
+        hintBtn.disabled = hiddenCount === 0 || this.state.currentPot <= 50;
+    }
+
+    openSolveModal() {
+        this.dom.modal.style.display = 'flex';
+        this.dom.input.value = '';
+        setTimeout(() => this.dom.input.focus(), 100);
+    }
+
+    closeSolveModal() {
+        this.dom.modal.style.display = 'none';
     }
 
     submitSolve() {
         const guess = this.dom.input.value.trim().toLowerCase();
+        if (!guess) return;
+        
+        // FIX: Use this.state.currentIndex
         const actual = this.state.questions[this.state.currentIndex].title.toLowerCase();
-        this.dom.modal.style.display = 'none';
-        if (guess === actual || actual.replace(/^the\s/,'') === guess) {
-            this.state.totalScore += this.state.currentPot;
-            this.state.results.push({title: this.state.questions[this.currentIndex].title, correct: true, points: this.state.currentPot});
-            confetti({particleCount:100, spread:70, origin:{y:0.6}});
-            this.next();
+        
+        this.closeSolveModal();
+        
+        // Normalize both for comparison (remove "the", punctuation, etc.)
+        const normalize = (str) => str.replace(/^the\s+/i, '').replace(/[^\w\s]/g, '').trim();
+        const isCorrect = normalize(guess) === normalize(actual) || guess === actual;
+        
+        if (isCorrect) {
+            this.handleCorrectAnswer();
         } else {
-            this.state.strikes--;
-            this.updateStrikes();
-            if (this.state.strikes <= 0) this.endGame();
+            this.handleWrongAnswer();
         }
     }
 
-    updateStrikes() {
-        const pips = document.querySelectorAll('.strike-pip');
-        pips.forEach((p, i) => p.classList.toggle('used', i >= this.state.strikes));
+    handleCorrectAnswer() {
+        const question = this.state.questions[this.state.currentIndex];
+        
+        // Add to total score
+        this.state.totalScore += this.state.currentPot;
+        
+        // Record result
+        this.state.results.push({
+            title: question.title,
+            correct: true,
+            points: this.state.currentPot
+        });
+        
+        this.updateScoreDisplay();
+        
+        // Confetti!
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+        
+        // Next question
+        setTimeout(() => this.nextQuestion(), 800);
     }
 
-    next() {
+    handleWrongAnswer() {
+        this.state.strikes--;
+        this.updateStrikesDisplay();
+        
+        // Shake the clue card
+        const card = document.getElementById('clueCard');
+        card.classList.add('shake');
+        setTimeout(() => card.classList.remove('shake'), 400);
+        
+        if (this.state.strikes <= 0) {
+            // Record as failed
+            const question = this.state.questions[this.state.currentIndex];
+            this.state.results.push({
+                title: question.title,
+                correct: false,
+                points: 0
+            });
+            
+            setTimeout(() => this.endGame(), 500);
+        }
+    }
+
+    nextQuestion() {
         this.state.currentIndex++;
-        if (this.state.currentIndex >= 5) this.endGame();
-        else this.loadQuestion();
+        
+        if (this.state.currentIndex >= 5) {
+            this.endGame();
+        } else {
+            this.loadQuestion();
+        }
+    }
+
+    updateScoreDisplay() {
+        this.dom.score.textContent = this.state.totalScore;
+    }
+
+    updateStrikesDisplay() {
+        const pips = this.dom.strikes.querySelectorAll('.strike-pip');
+        pips.forEach((pip, i) => {
+            pip.classList.toggle('used', i >= this.state.strikes);
+        });
     }
 
     endGame() {
-        if (this.state.mode === 'daily') localStorage.setItem('plotTwistedDailyDone', new Date().toISOString().split('T')[0]);
-        document.getElementById('finalScore').textContent = this.state.totalScore;
+        // Save daily progress
+        if (this.state.mode === 'daily') {
+            const today = new Date().toISOString().split('T')[0];
+            localStorage.setItem('plotTwistedDaily', JSON.stringify({
+                date: today,
+                complete: true,
+                score: this.state.totalScore,
+                results: this.state.results
+            }));
+        }
+        
+        // Update final score display
+        this.dom.finalScore.textContent = this.state.totalScore;
+        
+        // Render breakdown
         this.dom.breakdown.innerHTML = '';
-        this.state.results.forEach(r => {
-            const div = document.createElement('div');
-            div.style.display='flex'; div.style.justifyContent='space-between'; div.style.padding='10px 0';
-            div.innerHTML = `<span>${r.title}</span><span style="color:var(--gold-primary)">+${r.points}</span>`;
-            this.dom.breakdown.appendChild(div);
+        this.state.results.forEach(result => {
+            const row = document.createElement('div');
+            row.className = 'result-row';
+            row.innerHTML = `
+                <span class="result-title">${result.correct ? '✅' : '❌'} ${result.title}</span>
+                <span class="result-score ${result.correct ? 'correct' : 'wrong'}">
+                    ${result.correct ? '+' + result.points : 'MISS'}
+                </span>
+            `;
+            this.dom.breakdown.appendChild(row);
         });
+        
+        // Add any unanswered questions
+        for (let i = this.state.results.length; i < 5; i++) {
+            const q = this.state.questions[i];
+            if (q) {
+                const row = document.createElement('div');
+                row.className = 'result-row';
+                row.innerHTML = `
+                    <span class="result-title" style="opacity: 0.5">⏭️ ${q.title}</span>
+                    <span class="result-score" style="opacity: 0.5">SKIPPED</span>
+                `;
+                this.dom.breakdown.appendChild(row);
+            }
+        }
+        
         this.showScreen('gameOver');
     }
 
     shareScore() {
-        const text = `🎬 Plot Twisted Daily\n🏆 Score: ${this.state.totalScore}\n🟩🟩🟩🟩🟩`;
-        navigator.clipboard.writeText(text);
-        alert("Score copied to clipboard!");
+        const modeLabel = this.state.mode === 'daily' ? 'Daily' : 'Arcade';
+        const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        const correctCount = this.state.results.filter(r => r.correct).length;
+        const emoji = this.state.results.map(r => r.correct ? '🟩' : '🟥').join('');
+        const remaining = '⬜'.repeat(5 - this.state.results.length);
+        
+        const text = `🎬 Plot Twisted ${modeLabel} - ${date}
+🏆 Score: ${this.state.totalScore}
+${emoji}${remaining}
+${correctCount}/5 correct
+
+Play at: plottwisted.game`;
+        
+        if (navigator.share) {
+            navigator.share({ text }).catch(() => {
+                this.copyToClipboard(text);
+            });
+        } else {
+            this.copyToClipboard(text);
+        }
+    }
+
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Score copied to clipboard! 📋');
+        }).catch(() => {
+            alert('Could not copy to clipboard');
+        });
     }
 
     playAgain() {
-        if (this.state.mode === 'daily') this.handleDailyChallengeNav();
-        else this.showScreen('category');
+        if (this.state.mode === 'daily') {
+            this.handleDailyChallengeNav();
+        } else {
+            this.showScreen('category');
+        }
     }
 
-    seededShuffle(arr, seed) {
-        let m = arr.length, t, i;
-        while (m) { i = Math.floor(Math.abs(Math.sin(seed++)) * m--); t = arr[m]; arr[m] = arr[i]; arr[i] = t; }
-        return arr;
+    confirmQuit() {
+        if (this.state.currentIndex > 0 || this.state.results.length > 0) {
+            if (confirm('Quit game? Your progress will be lost.')) {
+                this.showScreen('start');
+            }
+        } else {
+            this.showScreen('start');
+        }
     }
 
-    loadSettings() {}
+    // Utility: Seeded shuffle (for consistent daily puzzles)
+    seededShuffle(array, seed) {
+        const result = [...array];
+        let m = result.length;
+        
+        while (m) {
+            const i = Math.floor(this.seededRandom(seed++) * m--);
+            [result[m], result[i]] = [result[i], result[m]];
+        }
+        
+        return result;
+    }
+
+    seededRandom(seed) {
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Utility: Regular shuffle
+    shuffle(array) {
+        const result = [...array];
+        for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+    }
+
+    loadSettings() {
+        try {
+            const saved = localStorage.getItem('plotTwistedSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                this.state.soundEnabled = settings.sound ?? true;
+                this.state.grainEnabled = settings.grain ?? true;
+                
+                document.getElementById('soundToggle').classList.toggle('active', this.state.soundEnabled);
+                document.getElementById('grainToggle').classList.toggle('active', this.state.grainEnabled);
+                this.dom.grain.style.display = this.state.grainEnabled ? 'block' : 'none';
+            }
+        } catch (e) {
+            console.log('Could not load settings');
+        }
+    }
+
+    saveSettings() {
+        try {
+            localStorage.setItem('plotTwistedSettings', JSON.stringify({
+                sound: this.state.soundEnabled,
+                grain: this.state.grainEnabled
+            }));
+        } catch (e) {
+            console.log('Could not save settings');
+        }
+    }
 }
-document.addEventListener('DOMContentLoaded', () => { new PlotTwisted().init(); });
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.game = new PlotTwisted();
+    window.game.init();
+});
 </script>
 </body>
 </html>
