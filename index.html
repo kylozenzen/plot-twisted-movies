@@ -1681,11 +1681,11 @@ class PlotTwisted {
 
     renderTitle() {
         const q = this.state.questions[this.state.currentIndex];
-        const title = q.title.toUpperCase();
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
         
         this.dom.titleLetters.innerHTML = '';
         
-        title.split('').forEach((char, i) => {
+        displayTitle.split('').forEach((char, i) => {
             const slot = document.createElement('span');
             slot.className = 'letter-slot';
             
@@ -1729,13 +1729,23 @@ class PlotTwisted {
         return matrix[b.length][a.length];
     }
 
-    isFuzzyMatch(guess, actual) {
-        const normalize = s => s.toLowerCase()
+    normalizeTitle(str) {
+        return str
+            .toLowerCase()
+            .replace(/\([^)]*\)/g, '')
             .replace(/^the\s+/g, '')
-            .replace(/[^a-z0-9]/g, '');
+            .replace(/[^a-z0-9]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
 
-        const g = normalize(guess);
-        const a = normalize(actual);
+    getDisplayTitle(title) {
+        return title.replace(/\([^)]*\)/g, '').trim();
+    }
+
+    isFuzzyMatch(guess, actual) {
+        const g = this.normalizeTitle(guess);
+        const a = this.normalizeTitle(actual);
 
         if (!g) return false;
         if (g === a) return true;
@@ -1748,10 +1758,10 @@ class PlotTwisted {
     
     revealLetter() {
         const q = this.state.questions[this.state.currentIndex];
-        const title = q.title.toUpperCase();
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
         
         const hiddenIndices = [];
-        title.split('').forEach((char, i) => {
+        displayTitle.split('').forEach((char, i) => {
             if (/[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)) {
                 hiddenIndices.push(i);
             }
@@ -1775,8 +1785,8 @@ class PlotTwisted {
         const q = this.state.questions[this.state.currentIndex];
         const points = this.state.currentPot;
         
-        const title = q.title.toUpperCase();
-        title.split('').forEach((char, i) => {
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
             if (/[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)) {
                 this.state.revealedIndices.push(i);
             }
@@ -1794,8 +1804,8 @@ class PlotTwisted {
         
         this.state.results.push({ title: q.title, points: 0, correct: false, gaveUp: true });
         
-        const title = q.title.toUpperCase();
-        title.split('').forEach((char, i) => {
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
             if (/[A-Z0-9]/.test(char)) {
                 this.state.revealedIndices.push(i);
             }
@@ -1837,8 +1847,8 @@ class PlotTwisted {
         this.state.totalScore += points;
         this.updateTotalScore();
         
-        const title = q.title.toUpperCase();
-        title.split('').forEach((char, i) => {
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
             if (/[A-Z0-9]/.test(char)) {
                 this.state.revealedIndices.push(i);
             }
