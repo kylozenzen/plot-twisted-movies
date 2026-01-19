@@ -1266,6 +1266,17 @@ html, body {
                     </div>
                     <div class="toggle" id="soundToggle"></div>
                 </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <label class="setting-label" for="roastModeSelect">Roast Intensity</label>
+                        <div class="setting-desc">Choose how spicy the feedback gets</div>
+                    </div>
+                    <select id="roastModeSelect">
+                        <option value="clean">Clean</option>
+                        <option value="spicy">Spicy</option>
+                        <option value="nsfw">NSFW</option>
+                    </select>
+                </div>
             </div>
             <div class="settings-section">
                 <h3>Data</h3>
@@ -1393,31 +1404,43 @@ const CATEGORY_META = {
 // COMMENTARY BANK
 // ============================================
 
-const PRAISE_MESSAGES = [
-    "I'm the king of the world!",
-    "Keep your friends close, but your answers closer!",
-    "Fasten your seatbelts, we have a winner!",
-    "I'm gonna make him an offer he can't refuse... a high score!",
-    "You're the top of the bill, kid!",
-    "Frankly, my dear, you're a genius.",
-    "Show me the points!",
-    "To infinity and beyond!",
-    "They call me Mister Correct!",
-    "The stuff that dreams are made of."
-];
+const PRAISE_MESSAGES = {
+    clean: [
+        "I'm the king of the world!",
+        "Keep your friends close, but your answers closer!",
+        "Fasten your seatbelts, we have a winner!",
+        "I'm gonna make him an offer he can't refuse... a high score!",
+        "You're the top of the bill, kid!",
+        "Frankly, my dear, you're a genius.",
+        "Show me the points!",
+        "To infinity and beyond!",
+        "They call me Mister Correct!",
+        "The stuff that dreams are made of."
+    ],
+    spicy: [
+        "Hot take: you're on fire."
+    ],
+    nsfw: []
+};
 
-const INSULT_MESSAGES = [
-    "I've seen better acting in a silent film.",
-    "I'm sorry Dave, I'm afraid I can't let you do that.",
-    "What we've got here is failure to communicate... the right answer.",
-    "You're out of your element, Donny!",
-    "You're a sad, strange little man, and you have my pity.",
-    "I've seen better logic in a Sharknado sequel.",
-    "You're gonna need a bigger brain.",
-    "Are you not entertained? Because I'm certainly not.",
-    "Surely you can't be serious? I am serious... and don't call me Shirley.",
-    "Infamy! Infamy! They've all got it in for me!"
-];
+const INSULT_MESSAGES = {
+    clean: [
+        "I've seen better acting in a silent film.",
+        "I'm sorry Dave, I'm afraid I can't let you do that.",
+        "What we've got here is failure to communicate... the right answer.",
+        "You're out of your element, Donny!",
+        "You're a sad, strange little man, and you have my pity.",
+        "I've seen better logic in a Sharknado sequel.",
+        "You're gonna need a bigger brain.",
+        "Are you not entertained? Because I'm certainly not.",
+        "Surely you can't be serious? I am serious... and don't call me Shirley.",
+        "Infamy! Infamy! They've all got it in for me!"
+    ],
+    spicy: [
+        "Oof. That was a plot twist in the wrong direction."
+    ],
+    nsfw: []
+};
 
 // ============================================
 // GAME ENGINE
@@ -1480,8 +1503,22 @@ class PlotTwisted {
     
     loadSettings() {
         const saved = localStorage.getItem('plotTwistedSettings');
-        this.settings = saved ? JSON.parse(saved) : { sound: false };
+        this.settings = saved ? JSON.parse(saved) : { sound: false, roastMode: 'clean' };
+        if (!Object.prototype.hasOwnProperty.call(this.settings, 'sound')) {
+            this.settings.sound = false;
+        }
+        if (!Object.prototype.hasOwnProperty.call(this.settings, 'roastMode')) {
+            this.settings.roastMode = 'clean';
+        }
         this.dom.soundToggle.classList.toggle('active', this.settings.sound);
+        if (this.dom.roastModeSelect) {
+            this.dom.roastModeSelect.value = this.settings.roastMode;
+        }
+        this.saveSettings();
+    }
+
+    saveSettings() {
+        localStorage.setItem('plotTwistedSettings', JSON.stringify(this.settings));
     }
 
     cacheDOM() {
@@ -1521,6 +1558,7 @@ class PlotTwisted {
             resultPoints: document.getElementById('resultPoints'),
             continueBtn: document.getElementById('continueBtn'),
             soundToggle: document.getElementById('soundToggle'),
+            roastModeSelect: document.getElementById('roastModeSelect'),
             finalScore: document.getElementById('finalScore'),
             finalSubtitle: document.getElementById('finalSubtitle'),
             finalBreakdown: document.getElementById('finalBreakdown')
@@ -1535,6 +1573,11 @@ class PlotTwisted {
         document.getElementById('settingsBackBtn').onclick = () => this.showScreen('start');
         
         this.dom.soundToggle.onclick = () => this.toggleSound();
+        if (this.dom.roastModeSelect) {
+            this.dom.roastModeSelect.addEventListener('change', (event) => {
+                this.handleRoastModeChange(event.target.value);
+            });
+        }
         document.getElementById('resetBtn').onclick = () => this.resetProgress();
         
         document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
@@ -1563,7 +1606,24 @@ class PlotTwisted {
         this.settings = this.settings || { sound: false };
         this.settings.sound = !this.settings.sound;
         this.dom.soundToggle.classList.toggle('active', this.settings.sound);
-        localStorage.setItem('plotTwistedSettings', JSON.stringify(this.settings));
+        this.saveSettings();
+    }
+
+    handleRoastModeChange(mode) {
+        if (mode === 'nsfw') {
+            const ok = window.confirm(
+                'NSFW mode includes explicit language and stronger roasts. Are you sure you want to enable it?'
+            );
+            if (!ok) {
+                if (this.dom.roastModeSelect) {
+                    this.dom.roastModeSelect.value = this.settings.roastMode || 'clean';
+                }
+                return;
+            }
+        }
+
+        this.settings.roastMode = mode;
+        this.saveSettings();
     }
     
     resetProgress() {
@@ -1890,10 +1950,8 @@ class PlotTwisted {
     showResult(isCorrect, title, points, isGameOver = false, gaveUp = false) {
         const resultCard = document.querySelector('.result-card');
         resultCard.classList.remove('celebrate');
-        
-        const commentary = isCorrect 
-            ? PRAISE_MESSAGES[Math.floor(Math.random() * PRAISE_MESSAGES.length)]
-            : INSULT_MESSAGES[Math.floor(Math.random() * INSULT_MESSAGES.length)];
+
+        const commentary = this.getRoastMessage(isCorrect);
 
         this.dom.resultIcon.textContent = isCorrect ? '🎬' : (gaveUp ? '🏳️' : '❌');
         this.dom.resultTitle.textContent = commentary;
@@ -1939,6 +1997,24 @@ class PlotTwisted {
         }
         
         this.dom.resultOverlay.classList.add('active');
+    }
+
+    getRoastMessage(isCorrect) {
+        const mode = this.settings?.roastMode || 'clean';
+        const praiseList = PRAISE_MESSAGES[mode] && PRAISE_MESSAGES[mode].length
+            ? PRAISE_MESSAGES[mode]
+            : PRAISE_MESSAGES.clean;
+        const insultList = INSULT_MESSAGES[mode] && INSULT_MESSAGES[mode].length
+            ? INSULT_MESSAGES[mode]
+            : INSULT_MESSAGES.clean;
+        const list = isCorrect ? praiseList : insultList;
+
+        if (!list.length) {
+            return isCorrect ? 'Nice work!' : 'Good try!';
+        }
+
+        const index = Math.floor(Math.random() * list.length);
+        return list[index];
     }
 
     nextQuestion() {
