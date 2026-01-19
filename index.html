@@ -1673,9 +1673,14 @@ class PlotTwisted {
         
         document.getElementById('cancelSolveBtn').onclick = () => this.closeSolveModal();
         document.getElementById('submitSolveBtn').onclick = () => this.submitSolve();
-        this.dom.solveInput.onkeypress = (e) => {
-            if (e.key === 'Enter') this.submitSolve();
-        };
+        if (this.dom.solveInput) {
+            this.dom.solveInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.submitSolve();
+                }
+            });
+        }
         
         document.getElementById('playAgainBtn').onclick = () => this.playAgain();
         document.getElementById('shareBtn').onclick = () => this.shareScore();
@@ -1899,26 +1904,60 @@ class PlotTwisted {
     revealLetter() {
         const q = this.state.questions[this.state.currentIndex];
         const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
-        
-        const hiddenIndices = [];
+
+        // Collect all revealable letter indices (A–Z, 0–9)
+        const allLetterIndices = [];
         displayTitle.split('').forEach((char, i) => {
-            if (/[A-Z0-9]/.test(char) && !this.state.revealedIndices.includes(i)) {
-                hiddenIndices.push(i);
+            if (/[A-Z0-9]/.test(char)) {
+                allLetterIndices.push(i);
             }
         });
-        
+
+        const totalLetters = allLetterIndices.length;
+
+        // Build list of currently hidden indices
+        const hiddenIndices = allLetterIndices.filter(
+            i => !this.state.revealedIndices.includes(i)
+        );
+
+        // If nothing left to reveal, bail
         if (hiddenIndices.length === 0) return;
-        
+
+        // SPECIAL CASE: very short titles (3 letters or fewer)
+        // For these, allow full reveal like before.
+        if (totalLetters <= 3) {
+            const randomIndex = hiddenIndices[Math.floor(Math.random() * hiddenIndices.length)];
+            this.state.revealedIndices.push(randomIndex);
+
+            this.state.currentPot = Math.max(this.config.minPot, this.state.currentPot - this.config.revealCost);
+            this.updatePot(true);
+            this.renderTitle();
+
+            // If that was the last hidden letter, you can still auto-solve if desired
+            if (hiddenIndices.length <= 1) {
+                this.autoSolve();
+            }
+
+            return;
+        }
+
+        // NORMAL CASE: longer titles
+        // Always leave at least 2 letters unrevealed.
+        // If revealing another letter would drop hidden letters below 2, stop.
+        if (hiddenIndices.length <= 2) {
+            // Already at 2 or fewer hidden letters; do not reveal more via hints.
+            return;
+        }
+
+        // Safe to reveal one random hidden letter
         const randomIndex = hiddenIndices[Math.floor(Math.random() * hiddenIndices.length)];
         this.state.revealedIndices.push(randomIndex);
-        
+
         this.state.currentPot = Math.max(this.config.minPot, this.state.currentPot - this.config.revealCost);
         this.updatePot(true);
         this.renderTitle();
-        
-        if (hiddenIndices.length <= 1) {
-            this.autoSolve();
-        }
+
+        // Do NOT call autoSolve here in the normal case.
     }
 
     autoSolve() {
@@ -1966,7 +2005,14 @@ class PlotTwisted {
     }
 
     submitSolve() {
+        if (!this.dom.solveInput) return;
+
         const guess = this.dom.solveInput.value.trim();
+        if (!guess) {
+            // Ignore empty submissions; keep the modal open and do nothing.
+            return;
+        }
+
         const q = this.state.questions[this.state.currentIndex];
         const answer = q.title;
         
