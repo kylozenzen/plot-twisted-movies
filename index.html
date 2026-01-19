@@ -286,6 +286,21 @@ html, body {
     letter-spacing: 0.1em;
 }
 
+.home-quote-rotator {
+    width: 100%;
+}
+
+#homeQuoteText,
+#homeQuoteSource {
+    text-align: center;
+}
+
+#homeQuoteSource {
+    opacity: 0.8;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
 /* ============================================
    CATEGORY SCREEN
    ============================================ */
@@ -1207,6 +1222,10 @@ html, body {
                     <div class="stat-value" id="statStreak">0</div>
                     <div class="stat-label">Best Streak</div>
                 </div>
+                <div id="homeQuoteRotator" class="home-quote-rotator">
+                    <div id="homeQuoteText"></div>
+                    <div id="homeQuoteSource"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1400,6 +1419,34 @@ const CATEGORY_META = {
     "Streaming Hits": { emoji: "📺" }
 };
 
+const HOME_QUOTES = [
+    { quote: "May the Force be with you.", source: "Star Wars" },
+    { quote: "I’m gonna make him an offer he can’t refuse.", source: "The Godfather" },
+    { quote: "Here’s looking at you, kid.", source: "Casablanca" },
+    { quote: "Why so serious?", source: "The Dark Knight" },
+    { quote: "You can’t handle the truth!", source: "A Few Good Men" },
+    { quote: "I’ll be back.", source: "The Terminator" },
+    { quote: "To infinity and beyond!", source: "Toy Story" },
+    { quote: "My precious.", source: "The Lord of the Rings" },
+    { quote: "Life finds a way.", source: "Jurassic Park" },
+    { quote: "I see dead people.", source: "The Sixth Sense" },
+    { quote: "Just keep swimming.", source: "Finding Nemo" },
+    { quote: "You’re gonna need a bigger boat.", source: "Jaws" },
+    { quote: "Roads? Where we’re going we don’t need roads.", source: "Back to the Future" },
+    { quote: "I am your father.", source: "Star Wars: The Empire Strikes Back" },
+    { quote: "I volunteer as tribute!", source: "The Hunger Games" },
+    { quote: "Wakanda forever!", source: "Black Panther" },
+    { quote: "With great power comes great responsibility.", source: "Spider-Man" },
+    { quote: "Hakuna Matata.", source: "The Lion King" },
+    { quote: "I’m the king of the world!", source: "Titanic" },
+    { quote: "Keep your friends close, but your enemies closer.", source: "The Godfather Part II" },
+    { quote: "Houston, we have a problem.", source: "Apollo 13" },
+    { quote: "You had me at hello.", source: "Jerry Maguire" },
+    { quote: "There’s no place like home.", source: "The Wizard of Oz" },
+    { quote: "I drink your milkshake!", source: "There Will Be Blood" },
+    { quote: "Show me the money!", source: "Jerry Maguire" }
+];
+
 // ============================================
 // COMMENTARY BANK
 // ============================================
@@ -1551,11 +1598,14 @@ class PlotTwisted {
         
         this.clueBank = null;
         this.stats = this.loadStats();
+        this.quoteInterval = null;
+        this.quoteIndex = 0;
     }
 
     async init() {
         this.cacheDOM();
         this.bindEvents();
+        this.hideTrackingUI();
         this.loadSeenClues();
         this.loadSettings();
         this.updateStatsDisplay();
@@ -1641,7 +1691,11 @@ class PlotTwisted {
             roastModeSelect: document.getElementById('roastModeSelect'),
             finalScore: document.getElementById('finalScore'),
             finalSubtitle: document.getElementById('finalSubtitle'),
-            finalBreakdown: document.getElementById('finalBreakdown')
+            finalBreakdown: document.getElementById('finalBreakdown'),
+            homeQuoteRotator: document.getElementById('homeQuoteRotator'),
+            homeQuoteText: document.getElementById('homeQuoteText'),
+            homeQuoteSource: document.getElementById('homeQuoteSource'),
+            resetBtn: document.getElementById('resetBtn')
         };
     }
 
@@ -1658,7 +1712,9 @@ class PlotTwisted {
                 this.handleRoastModeChange(event.target.value);
             });
         }
-        document.getElementById('resetBtn').onclick = () => this.resetProgress();
+        if (this.dom.resetBtn) {
+            this.dom.resetBtn.onclick = () => this.resetProgress();
+        }
         
         document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
         this.dom.startGameBtn.onclick = () => this.startGame();
@@ -1731,6 +1787,12 @@ class PlotTwisted {
         Object.values(this.screens).forEach(s => s.classList.remove('active'));
         this.screens[name]?.classList.add('active');
         this.state.currentScreen = name;
+
+        if (name === 'start') {
+            this.startHomeQuoteRotator();
+        } else {
+            this.stopHomeQuoteRotator();
+        }
     }
 
     showCategoryScreen() {
@@ -1757,7 +1819,7 @@ class PlotTwisted {
             card.innerHTML = `
                 <div class="category-emoji">${emoji}</div>
                 <div class="category-name">${name}</div>
-                <div class="category-count">${unseenCount} unseen / ${clues.length} total</div>
+                <div class="category-count" style="display: none;">${unseenCount} unseen / ${clues.length} total</div>
             `;
             
             card.onclick = () => this.selectCategory(name);
@@ -2268,12 +2330,64 @@ Can you beat my score?`;
     }
 
     updateStatsDisplay() {
+        const statContainer = this.dom.statSolved?.closest('.stat-item');
+        if (statContainer && statContainer.style.display === 'none') {
+            return;
+        }
         this.dom.statSolved.textContent = this.stats.totalSolved;
         const accuracy = this.stats.totalPlayed > 0 
             ? Math.round((this.stats.totalSolved / this.stats.totalPlayed) * 100) 
             : 0;
         this.dom.statAccuracy.textContent = accuracy + '%';
         this.dom.statStreak.textContent = this.stats.bestStreak;
+    }
+
+    hideTrackingUI() {
+        [this.dom.statSolved, this.dom.statAccuracy, this.dom.statStreak].forEach((stat) => {
+            const item = stat?.closest('.stat-item');
+            if (item) {
+                item.style.display = 'none';
+            }
+        });
+
+        const resetRow = this.dom.resetBtn?.closest('.setting-row');
+        if (resetRow) {
+            resetRow.style.display = 'none';
+        } else if (this.dom.resetBtn) {
+            this.dom.resetBtn.style.display = 'none';
+        }
+    }
+
+    startHomeQuoteRotator() {
+        if (!this.dom.homeQuoteRotator || !this.dom.homeQuoteText) return;
+
+        this.dom.homeQuoteRotator.style.display = '';
+        this.stopHomeQuoteRotator();
+
+        this.quoteIndex = Math.floor(Math.random() * HOME_QUOTES.length);
+        this.renderHomeQuote();
+
+        this.quoteInterval = setInterval(() => {
+            this.quoteIndex = (this.quoteIndex + 1) % HOME_QUOTES.length;
+            this.renderHomeQuote();
+        }, 6000);
+    }
+
+    stopHomeQuoteRotator() {
+        if (this.quoteInterval) {
+            clearInterval(this.quoteInterval);
+            this.quoteInterval = null;
+        }
+    }
+
+    renderHomeQuote() {
+        const item = HOME_QUOTES[this.quoteIndex];
+        if (!item) return;
+
+        this.dom.homeQuoteText.textContent = `“${item.quote}”`;
+        if (this.dom.homeQuoteSource) {
+            this.dom.homeQuoteSource.textContent = `— ${item.source}`;
+        }
     }
 
     loadStats() {
