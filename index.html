@@ -636,8 +636,9 @@ html, body {
     justify-content: center;
     padding: 15px;
     background: var(--bg-dark);
-    border: 2px solid var(--bg-elevated);
+    border: 1px solid var(--gold-dark);
     border-radius: 8px;
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
 }
 
 .title-letters {
@@ -679,9 +680,11 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 10px;
+    padding: 12px;
     background: var(--bg-card);
+    border: 1px solid var(--gold-dark);
     border-radius: 8px;
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
 }
 
 .keyboard-row {
@@ -697,9 +700,9 @@ html, body {
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 600;
-    background: var(--bg-elevated);
-    color: var(--cream);
-    border: none;
+    background: var(--bg-dark);
+    color: var(--gold-light);
+    border: 1px solid var(--gold-dark);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -709,7 +712,8 @@ html, body {
 }
 
 .key:hover:not(:disabled) {
-    background: var(--bg-dark);
+    border-color: var(--gold-primary);
+    background: var(--bg-elevated);
     transform: translateY(-2px);
 }
 
@@ -723,37 +727,17 @@ html, body {
 }
 
 .key.correct {
-    background: var(--green-correct);
-    color: var(--cream);
-    box-shadow: 0 0 10px var(--green-glow);
+    background: var(--gold-primary);
+    border-color: var(--gold-primary);
+    color: var(--bg-deep);
+    box-shadow: 0 0 10px var(--gold-glow);
 }
 
 .key.incorrect {
-    background: var(--red-primary);
-    opacity: 0.5;
-    color: var(--cream-muted);
-}
-
-.key.vowel {
-    background: var(--bg-dark);
-    border: 1px solid var(--gold-dark);
-    color: var(--gold-light);
-}
-
-.key.vowel:hover:not(:disabled) {
-    border-color: var(--gold-primary);
     background: var(--bg-elevated);
-}
-
-.key.vowel.correct {
-    background: var(--green-correct);
-    border-color: var(--green-correct);
-}
-
-.key.vowel.incorrect {
-    background: var(--bg-elevated);
-    opacity: 0.4;
     border-color: var(--text-muted);
+    opacity: 0.4;
+    color: var(--cream-muted);
 }
 
 /* Action Buttons */
@@ -1590,7 +1574,7 @@ html, body {
             </div>
             <div class="how-to-section">
                 <h3>💰 Scoring</h3>
-                <p>Each movie starts at 500 points. Wrong letter guesses cost 30 points. Solve early with more letters hidden for bonus multipliers (1.5x or 1.25x)!</p>
+                <p>Each movie starts at 500 points. Wrong consonant guesses cost 30 points (vowels are free!). Solve early with more letters hidden for bonus multipliers (1.5x or 1.25x)!</p>
             </div>
             <div class="how-to-section">
                 <h3>❌ Strikes</h3>
@@ -2271,7 +2255,6 @@ class PlotTwisted {
 
     renderKeyboard() {
         const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
-        const vowels = ['A', 'E', 'I', 'O', 'U'];
         
         this.dom.keyboard.innerHTML = '';
         
@@ -2284,11 +2267,6 @@ class PlotTwisted {
                 key.className = 'key';
                 key.textContent = letter;
                 key.dataset.letter = letter;
-                
-                // Mark vowels
-                if (vowels.includes(letter)) {
-                    key.classList.add('vowel');
-                }
                 
                 if (this.state.guessedLetters.includes(letter)) {
                     key.disabled = true;
