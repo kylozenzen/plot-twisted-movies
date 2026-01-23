@@ -2254,6 +2254,14 @@ class PlotTwisted {
         this.state.revealedIndices = [];
         this.state.guessedLetters = [];
         
+        // Auto-reveal numbers since keyboard has no number keys
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
+            if (/[0-9]/.test(char)) {
+                this.state.revealedIndices.push(i);
+            }
+        });
+        
         this.dom.clueText.textContent = q.clue;
         this.dom.clueCategory.textContent = this.state.selectedCategory;
         this.updatePot();
