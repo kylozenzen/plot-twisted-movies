@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,222 +15,228 @@
    ============================================ */
 
 :root {
-    --bg-deep: #0a0a0f;
-    --bg-dark: #12121a;
-    --bg-card: #1a1a24;
-    --bg-elevated: #242430;
-    
-    --gold-primary: #d4a853;
-    --gold-light: #f0d078;
-    --gold-dark: #a67c32;
-    --gold-glow: rgba(212, 168, 83, 0.4);
-    
-    --red-primary: #c41e3a;
-    --red-light: #e63950;
-    --red-glow: rgba(196, 30, 58, 0.5);
-    
-    --green-correct: #4a9d5b;
-    --green-glow: rgba(74, 157, 91, 0.5);
-    
-    --cream: #f5f0e6;
-    --cream-muted: #c9c4b8;
-    --text-muted: #6b6b7b;
-    
-    --font-display: 'Playfair Display', serif;
-    --font-title: 'Bebas Neue', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-typewriter: 'Special Elite', monospace;
-    
-    --shadow-glow: 0 0 30px var(--gold-glow);
-    --shadow-deep: 0 10px 40px rgba(0,0,0,0.5);
+–bg-deep: #0a0a0f;
+–bg-dark: #12121a;
+–bg-card: #1a1a24;
+–bg-elevated: #242430;
+
+```
+--gold-primary: #d4a853;
+--gold-light: #f0d078;
+--gold-dark: #a67c32;
+--gold-glow: rgba(212, 168, 83, 0.4);
+
+--red-primary: #c41e3a;
+--red-light: #e63950;
+--red-glow: rgba(196, 30, 58, 0.5);
+
+--green-correct: #4a9d5b;
+--green-glow: rgba(74, 157, 91, 0.5);
+
+--cream: #f5f0e6;
+--cream-muted: #c9c4b8;
+--text-muted: #6b6b7b;
+
+--font-display: 'Playfair Display', serif;
+--font-title: 'Bebas Neue', sans-serif;
+--font-body: 'Inter', sans-serif;
+--font-typewriter: 'Special Elite', monospace;
+
+--shadow-glow: 0 0 30px var(--gold-glow);
+--shadow-deep: 0 10px 40px rgba(0,0,0,0.5);
+```
+
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-    height: 100%;
-    font-family: var(--font-body);
-    background: var(--bg-deep);
-    color: var(--cream);
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
+height: 100%;
+font-family: var(–font-body);
+background: var(–bg-deep);
+color: var(–cream);
+overflow: hidden;
+-webkit-tap-highlight-color: transparent;
 }
 
 /* Film Grain */
 .film-grain {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 9999;
+opacity: 0.04;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.8’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’/%3E%3C/svg%3E”);
 }
 
 /* Screens */
 .screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    flex-direction: column;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+display: none;
+position: fixed;
+inset: 0;
+flex-direction: column;
+opacity: 0;
+transition: opacity 0.4s ease;
 }
 
 .screen.active {
-    display: flex;
-    opacity: 1;
+display: flex;
+opacity: 1;
 }
 
 /* ============================================
-   START SCREEN
-   ============================================ */
+START SCREEN
+============================================ */
 
 #startScreen {
-    background: var(--bg-deep);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
+background: var(–bg-deep);
+justify-content: center;
+align-items: center;
+padding: 20px;
+position: relative;
+overflow: hidden;
 }
 
 /* Spotlight Effect */
 .spotlight {
-    position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140%;
-    height: 70%;
-    background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.05) 30%, transparent 60%);
-    pointer-events: none;
+position: absolute;
+top: -20%;
+left: 50%;
+transform: translateX(-50%);
+width: 140%;
+height: 70%;
+background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.05) 30%, transparent 60%);
+pointer-events: none;
 }
 
 .spotlight-secondary {
-    position: absolute;
-    bottom: -30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 50%;
-    background: radial-gradient(ellipse at 50% 100%, rgba(196, 30, 58, 0.08) 0%, transparent 50%);
-    pointer-events: none;
+position: absolute;
+bottom: -30%;
+left: 50%;
+transform: translateX(-50%);
+width: 100%;
+height: 50%;
+background: radial-gradient(ellipse at 50% 100%, rgba(196, 30, 58, 0.08) 0%, transparent 50%);
+pointer-events: none;
 }
 
 /* Title Spotlight - soft glow behind PLOT */
 .title-spotlight {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-    width: 280px;
-    height: 160px;
-    background: radial-gradient(ellipse at 50% 50%, rgba(212, 168, 83, 0.3) 0%, rgba(212, 168, 83, 0.1) 40%, transparent 70%);
-    pointer-events: none;
-    filter: blur(25px);
-    z-index: -1;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -40%);
+width: 280px;
+height: 160px;
+background: radial-gradient(ellipse at 50% 50%, rgba(212, 168, 83, 0.3) 0%, rgba(212, 168, 83, 0.1) 40%, transparent 70%);
+pointer-events: none;
+filter: blur(25px);
+z-index: -1;
 }
 
 .home-content {
-    position: relative;
-    z-index: 1;
-    max-width: 400px;
-    width: 100%;
-    padding: 20px;
+position: relative;
+z-index: 1;
+max-width: 400px;
+width: 100%;
+padding: 20px;
 }
 
 .main-title {
-    text-align: center;
-    margin-bottom: 15px;
-    position: relative;
+text-align: center;
+margin-bottom: 15px;
+position: relative;
 }
 
 .title-plot {
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 12vw, 5rem);
-    font-weight: 900;
-    color: var(--cream);
-    letter-spacing: 0.02em;
-    line-height: 0.9;
-    text-shadow: 
-        0 2px 0 var(--gold-dark),
-        0 4px 0 rgba(0,0,0,0.3),
-        0 0 60px var(--gold-glow);
+font-family: var(–font-display);
+font-size: clamp(3.5rem, 12vw, 5rem);
+font-weight: 900;
+color: var(–cream);
+letter-spacing: 0.02em;
+line-height: 0.9;
+text-shadow:
+0 2px 0 var(–gold-dark),
+0 4px 0 rgba(0,0,0,0.3),
+0 0 60px var(–gold-glow);
 }
 
 .title-twisted {
-    font-family: var(--font-title);
-    font-size: clamp(2rem, 8vw, 3rem);
-    color: var(--red-primary);
-    letter-spacing: 0.3em;
-    margin-top: -5px;
-    text-shadow: 
-        0 0 20px var(--red-glow),
-        0 2px 0 rgba(0,0,0,0.5);
+font-family: var(–font-title);
+font-size: clamp(2rem, 8vw, 3rem);
+color: var(–red-primary);
+letter-spacing: 0.3em;
+margin-top: -5px;
+text-shadow:
+0 0 20px var(–red-glow),
+0 2px 0 rgba(0,0,0,0.5);
 }
 
 .tagline {
-    font-family: var(--font-typewriter);
-    font-size: 1rem;
-    color: var(--cream-muted);
-    text-align: center;
-    margin-bottom: 40px;
-    letter-spacing: 0.05em;
+font-family: var(–font-typewriter);
+font-size: 1rem;
+color: var(–cream-muted);
+text-align: center;
+margin-bottom: 40px;
+letter-spacing: 0.05em;
 }
 
 .divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 35px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 15px;
+margin-bottom: 35px;
 }
 
 .divider-line {
-    width: 50px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+width: 50px;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–gold-primary), transparent);
 }
 
 .divider-star {
-    color: var(--gold-primary);
-    font-size: 0.8rem;
+color: var(–gold-primary);
+font-size: 0.8rem;
 }
 
 /* Buttons */
 .btn {
-    font-family: var(--font-body);
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+font-family: var(–font-body);
+font-weight: 600;
+border: none;
+cursor: pointer;
+transition: all 0.2s ease;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+-webkit-tap-highlight-color: transparent;
 }
 
 .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+opacity: 0.5;
+cursor: not-allowed;
 }
 
 .btn-primary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    padding: 18px 30px;
-    font-size: 1.1rem;
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
-    border-radius: 4px;
-    box-shadow: 0 4px 15px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
-    margin-bottom: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+width: 100%;
+padding: 18px 30px;
+font-size: 1.1rem;
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
+border-radius: 4px;
+box-shadow: 0 4px 15px var(–gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+margin-bottom: 12px;
 }
 
+@media (hover: hover) {
 .btn-primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+transform: translateY(-2px);
+box-shadow: 0 6px 25px var(–gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+}
 }
 
 .btn-primary:active { transform: translateY(0); }
@@ -237,1529 +244,1559 @@ html, body {
 .btn-primary svg { width: 22px; height: 22px; }
 
 .btn-daily {
-    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
-    border: 2px solid var(--gold-dark);
-    color: var(--gold-light);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+background: linear-gradient(135deg, var(–bg-card), var(–bg-elevated));
+border: 2px solid var(–gold-dark);
+color: var(–gold-light);
+box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
+@media (hover: hover) {
 .btn-daily:hover:not(:disabled) {
-    border-color: var(--gold-primary);
-    box-shadow: 0 6px 20px var(--gold-glow);
+border-color: var(–gold-primary);
+box-shadow: 0 6px 20px var(–gold-glow);
+}
 }
 
 .btn-secondary {
-    width: 100%;
-    padding: 14px 24px;
-    font-size: 0.9rem;
-    background: transparent;
-    color: var(--cream-muted);
-    border: 1px solid var(--text-muted);
-    border-radius: 4px;
+width: 100%;
+padding: 14px 24px;
+font-size: 0.9rem;
+background: transparent;
+color: var(–cream-muted);
+border: 1px solid var(–text-muted);
+border-radius: 4px;
 }
 
+@media (hover: hover) {
 .btn-secondary:hover {
-    border-color: var(--cream-muted);
-    color: var(--cream);
+border-color: var(–cream-muted);
+color: var(–cream);
+}
 }
 
 .menu-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
+display: flex;
+gap: 12px;
+margin-top: 12px;
 }
 
 .btn-half {
-    flex: 1;
+flex: 1;
 }
 
 .btn-quit {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    background: var(--bg-elevated);
-    color: var(--cream-muted);
-    border-radius: 50%;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+width: 36px;
+height: 36px;
+padding: 0;
+background: var(–bg-elevated);
+color: var(–cream-muted);
+border-radius: 50%;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 .btn-quit:hover {
-    background: var(--red-primary);
-    color: var(--cream);
+background: var(–red-primary);
+color: var(–cream);
 }
 
 /* Daily Quote - Premium Styling */
 .daily-quote-container {
-    margin-top: 50px;
-    padding-top: 30px;
-    border-top: 1px solid rgba(212, 168, 83, 0.2);
-    text-align: center;
+margin-top: 50px;
+padding-top: 30px;
+border-top: 1px solid rgba(212, 168, 83, 0.2);
+text-align: center;
 }
 
 .daily-quote {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 500;
-    font-size: 1.15rem;
-    color: rgba(212, 168, 83, 0.9);
-    line-height: 1.7;
-    letter-spacing: 0.03em;
-    margin-bottom: 12px;
+font-family: var(–font-display);
+font-style: italic;
+font-weight: 500;
+font-size: 1.15rem;
+color: rgba(212, 168, 83, 0.9);
+line-height: 1.7;
+letter-spacing: 0.03em;
+margin-bottom: 12px;
 }
 
 .daily-quote-source {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--cream-muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 500;
+font-family: var(–font-body);
+font-size: 0.85rem;
+color: var(–cream-muted);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+font-weight: 500;
 }
 
 /* ============================================
-   CATEGORY SCREEN
-   ============================================ */
+CATEGORY SCREEN
+============================================ */
 
 #categoryScreen {
-    background: var(--bg-deep);
-    padding: 20px;
-    overflow-y: auto;
+background: var(–bg-deep);
+padding: 20px;
+overflow-y: auto;
 }
 
 .category-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding-top: 20px;
+text-align: center;
+margin-bottom: 30px;
+padding-top: 20px;
 }
 
 .category-header h2 {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    color: var(--cream);
-    margin-bottom: 8px;
+font-family: var(–font-display);
+font-size: 2rem;
+color: var(–cream);
+margin-bottom: 8px;
 }
 
 .category-header p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
+font-size: 0.9rem;
+color: var(–text-muted);
 }
 
 .category-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    max-width: 500px;
-    margin: 0 auto 100px;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 15px;
+max-width: 500px;
+margin: 0 auto 100px;
 }
 
 .category-card {
-    background: var(--bg-card);
-    border: 2px solid var(--bg-elevated);
-    border-radius: 12px;
-    padding: 25px 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+background: var(–bg-card);
+border: 2px solid var(–bg-elevated);
+border-radius: 12px;
+padding: 25px 15px;
+text-align: center;
+cursor: pointer;
+transition: all 0.2s ease;
+-webkit-tap-highlight-color: transparent;
 }
 
+@media (hover: hover) {
 .category-card:hover {
-    border-color: var(--gold-dark);
-    transform: translateY(-2px);
+border-color: var(–gold-dark);
+transform: translateY(-2px);
+}
+}
+
+.category-card:active {
+transform: scale(0.98);
 }
 
 .category-card.selected {
-    border-color: var(--gold-primary);
-    box-shadow: 0 0 20px var(--gold-glow);
+border-color: var(–gold-primary);
+box-shadow: 0 0 20px var(–gold-glow);
 }
 
 .category-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 12px;
-    color: var(--gold-primary);
+width: 48px;
+height: 48px;
+margin: 0 auto 12px;
+color: var(–gold-primary);
 }
 
 .category-icon svg {
-    width: 100%;
-    height: 100%;
-    fill: currentColor;
+width: 100%;
+height: 100%;
+fill: currentColor;
 }
 
 .category-name {
-    font-family: var(--font-title);
-    font-size: 1.2rem;
-    color: var(--cream);
-    letter-spacing: 0.1em;
-    margin-bottom: 5px;
+font-family: var(–font-title);
+font-size: 1.2rem;
+color: var(–cream);
+letter-spacing: 0.1em;
+margin-bottom: 5px;
 }
 
 .category-count {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    display: none;
+font-size: 0.75rem;
+color: var(–text-muted);
+display: none;
 }
 
 .category-actions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    background: linear-gradient(to top, var(--bg-deep) 80%, transparent);
-    display: flex;
-    gap: 12px;
-    max-width: 500px;
-    margin: 0 auto;
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+padding: 20px;
+background: linear-gradient(to top, var(–bg-deep) 80%, transparent);
+display: flex;
+gap: 12px;
+max-width: 500px;
+margin: 0 auto;
 }
 
 .category-actions .btn {
-    flex: 1;
-    padding: 16px 24px;
-    border-radius: 6px;
-    font-size: 0.95rem;
+flex: 1;
+padding: 16px 24px;
+border-radius: 6px;
+font-size: 0.95rem;
 }
 
 .btn-back {
-    background: var(--bg-elevated);
-    color: var(--cream-muted);
+background: var(–bg-elevated);
+color: var(–cream-muted);
 }
 
 .btn-start {
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
-    box-shadow: 0 4px 15px var(--gold-glow);
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
+box-shadow: 0 4px 15px var(–gold-glow);
 }
 
 .btn-start:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
+opacity: 0.4;
+cursor: not-allowed;
+transform: none;
 }
 
 /* ============================================
-   GAME SCREEN
-   ============================================ */
+GAME SCREEN
+============================================ */
 
 #gameScreen {
-    background: var(--bg-deep);
+background: var(–bg-deep);
 }
 
 .game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: var(--bg-dark);
-    border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 20px;
+background: var(–bg-dark);
+border-bottom: 1px solid rgba(212, 168, 83, 0.2);
 }
 
 .game-logo {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    color: var(--gold-primary);
+font-family: var(–font-display);
+font-size: 1.2rem;
+color: var(–gold-primary);
 }
 
 .game-stats {
-    display: flex;
-    gap: 25px;
+display: flex;
+gap: 25px;
 }
 
 .game-stat { text-align: center; }
 
 .game-stat-label {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+font-size: 0.6rem;
+color: var(–text-muted);
+text-transform: uppercase;
+letter-spacing: 0.1em;
 }
 
 .game-stat-value {
-    font-family: var(--font-title);
-    font-size: 1.3rem;
-    color: var(--cream);
+font-family: var(–font-title);
+font-size: 1.3rem;
+color: var(–cream);
 }
 
-.game-stat-value.points { color: var(--gold-light); }
+.game-stat-value.points { color: var(–gold-light); }
 
 .strikes-display {
-    display: flex;
-    gap: 4px;
+display: flex;
+gap: 4px;
 }
 
 .strike-pip {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--red-primary);
-    box-shadow: 0 0 8px var(--red-glow);
-    transition: all 0.3s ease;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: var(–red-primary);
+box-shadow: 0 0 8px var(–red-glow);
+transition: all 0.3s ease;
 }
 
 .strike-pip.used {
-    background: var(--bg-elevated);
-    box-shadow: none;
+background: var(–bg-elevated);
+box-shadow: none;
 }
 
 .game-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 15px;
-    gap: 15px;
-    overflow-y: auto;
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px 15px;
+gap: 15px;
+overflow-y: auto;
 }
 
 /* Progress */
 .progress-track {
-    display: flex;
-    gap: 8px;
+display: flex;
+gap: 8px;
 }
 
 .progress-pip {
-    width: 12px;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--bg-elevated);
-    transition: all 0.3s ease;
+width: 12px;
+height: 4px;
+border-radius: 2px;
+background: var(–bg-elevated);
+transition: all 0.3s ease;
 }
 
-.progress-pip.complete { background: var(--gold-primary); }
+.progress-pip.complete { background: var(–gold-primary); }
 
 .progress-pip.current {
-    background: var(--gold-light);
-    box-shadow: 0 0 10px var(--gold-glow);
-    width: 24px;
+background: var(–gold-light);
+box-shadow: 0 0 10px var(–gold-glow);
+width: 24px;
 }
 
 /* Clue Card */
 .clue-card {
-    width: 100%;
-    max-width: 500px;
-    background: var(--bg-card);
-    border: 1px solid rgba(212, 168, 83, 0.3);
-    border-radius: 8px;
-    padding: 25px 20px;
-    position: relative;
-    box-shadow: var(--shadow-deep);
+width: 100%;
+max-width: 500px;
+background: var(–bg-card);
+border: 1px solid rgba(212, 168, 83, 0.3);
+border-radius: 8px;
+padding: 25px 20px;
+position: relative;
+box-shadow: var(–shadow-deep);
 }
 
 .clue-card::before {
-    content: '★ NOW SHOWING ★';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--font-title);
-    font-size: 0.75rem;
-    color: var(--gold-primary);
-    background: var(--bg-deep);
-    padding: 4px 16px;
-    letter-spacing: 0.2em;
+content: ‘★ NOW SHOWING ★’;
+position: absolute;
+top: -12px;
+left: 50%;
+transform: translateX(-50%);
+font-family: var(–font-title);
+font-size: 0.75rem;
+color: var(–gold-primary);
+background: var(–bg-deep);
+padding: 4px 16px;
+letter-spacing: 0.2em;
 }
 
 .clue-text {
-    font-family: var(--font-typewriter);
-    font-size: 1.15rem;
-    line-height: 1.6;
-    text-align: center;
-    color: var(--cream);
+font-family: var(–font-typewriter);
+font-size: 1.15rem;
+line-height: 1.6;
+text-align: center;
+color: var(–cream);
 }
 
 .clue-category {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 15px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(212, 168, 83, 0.15);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+margin-top: 15px;
+padding-top: 12px;
+border-top: 1px solid rgba(212, 168, 83, 0.15);
+font-size: 0.8rem;
+color: var(–text-muted);
+text-transform: uppercase;
+letter-spacing: 0.15em;
 }
 
 /* Points Pot */
 .points-pot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 20px;
-    background: var(--bg-card);
-    border: 1px solid rgba(212, 168, 83, 0.3);
-    border-radius: 50px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+padding: 10px 20px;
+background: var(–bg-card);
+border: 1px solid rgba(212, 168, 83, 0.3);
+border-radius: 50px;
 }
 
 .pot-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+font-size: 0.75rem;
+color: var(–text-muted);
+text-transform: uppercase;
+letter-spacing: 0.1em;
 }
 
 .pot-value {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    color: var(--gold-light);
-    text-shadow: 0 0 15px var(--gold-glow);
-    min-width: 50px;
-    text-align: center;
+font-family: var(–font-display);
+font-size: 1.4rem;
+color: var(–gold-light);
+text-shadow: 0 0 15px var(–gold-glow);
+min-width: 50px;
+text-align: center;
 }
 
 .pot-multiplier {
-    font-size: 0.75rem;
-    color: var(--green-correct);
-    font-weight: 600;
+font-size: 0.75rem;
+color: var(–green-correct);
+font-weight: 600;
 }
 
 .pot-value.dropping {
-    animation: potDrop 0.3s ease;
+animation: potDrop 0.3s ease;
 }
 
 @keyframes potDrop {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); color: var(--red-light); }
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.15); color: var(–red-light); }
 }
 
 /* Title Reveal */
 .title-reveal {
-    width: 100%;
-    max-width: 500px;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-    background: var(--bg-dark);
-    border: 1px solid var(--gold-dark);
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
+width: 100%;
+max-width: 500px;
+min-height: 60px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 15px;
+background: var(–bg-dark);
+border: 1px solid var(–gold-dark);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
 }
 
 .title-letters {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px;
-    font-family: var(--font-title);
-    font-size: clamp(1.3rem, 5vw, 1.8rem);
-    letter-spacing: 0.05em;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 4px;
+font-family: var(–font-title);
+font-size: clamp(1.3rem, 5vw, 1.8rem);
+letter-spacing: 0.05em;
 }
 
 .letter-slot {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 0.7em;
-    color: var(--gold-light);
-    transition: all 0.3s ease;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 0.7em;
+color: var(–gold-light);
+transition: all 0.3s ease;
 }
 
-.letter-slot.hidden { color: var(--text-muted); }
+.letter-slot.hidden { color: var(–text-muted); }
 
 .letter-slot.revealed {
-    animation: letterReveal 0.4s ease;
+animation: letterReveal 0.4s ease;
 }
 
 .letter-slot.space { width: 0.5em; }
 
 @keyframes letterReveal {
-    0% { transform: scale(1.5) rotateX(90deg); opacity: 0; }
-    100% { transform: scale(1) rotateX(0); opacity: 1; }
+0% { transform: scale(1.5) rotateX(90deg); opacity: 0; }
+100% { transform: scale(1) rotateX(0); opacity: 1; }
 }
 
 /* On-Screen Keyboard */
 .keyboard {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--gold-dark);
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
+width: 100%;
+max-width: 540px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+padding: 12px 8px;
+background: var(–bg-card);
+border: 1px solid var(–gold-dark);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
 }
 
 .keyboard-row {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
+display: flex;
+justify-content: center;
+gap: 5px;
 }
 
 .key {
-    min-width: 28px;
-    height: 42px;
-    padding: 0 8px;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    font-weight: 600;
-    background: var(--bg-dark);
-    color: var(--gold-light);
-    border: 1px solid var(--gold-dark);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+flex: 1;
+max-width: 42px;
+min-width: 32px;
+height: 46px;
+padding: 0;
+font-family: var(–font-body);
+font-size: 1.05rem;
+font-weight: 600;
+background: var(–bg-dark);
+color: var(–gold-light);
+border: 1px solid var(–gold-dark);
+border-radius: 5px;
+cursor: pointer;
+transition: all 0.15s ease;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
+/* Only apply hover on devices that support it */
+@media (hover: hover) {
 .key:hover:not(:disabled) {
-    border-color: var(--gold-primary);
-    background: var(--bg-elevated);
-    transform: translateY(-2px);
+border-color: var(–gold-primary);
+background: var(–bg-elevated);
+transform: translateY(-2px);
+}
 }
 
 .key:active:not(:disabled) {
-    transform: translateY(0);
+transform: translateY(0);
+background: var(–bg-elevated);
 }
 
 .key:disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
+cursor: not-allowed;
+opacity: 0.4;
 }
 
 .key.correct {
-    background: var(--gold-primary);
-    border-color: var(--gold-primary);
-    color: var(--bg-deep);
-    box-shadow: 0 0 10px var(--gold-glow);
+background: var(–gold-primary);
+border-color: var(–gold-primary);
+color: var(–bg-deep);
+box-shadow: 0 0 10px var(–gold-glow);
 }
 
 .key.incorrect {
-    background: var(--bg-elevated);
-    border-color: var(--text-muted);
-    opacity: 0.4;
-    color: var(--cream-muted);
+background: var(–bg-elevated);
+border-color: var(–text-muted);
+opacity: 0.4;
+color: var(–cream-muted);
 }
 
 /* Action Buttons */
 .action-buttons {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    max-width: 500px;
+display: flex;
+gap: 10px;
+width: 100%;
+max-width: 500px;
 }
 
 .btn-giveup {
-    flex: 1;
-    padding: 14px 16px;
-    font-size: 0.85rem;
-    background: var(--bg-elevated);
-    color: var(--cream);
-    border-radius: 6px;
-    border: 1px solid var(--text-muted);
+flex: 1;
+padding: 14px 16px;
+font-size: 0.85rem;
+background: var(–bg-elevated);
+color: var(–cream);
+border-radius: 6px;
+border: 1px solid var(–text-muted);
 }
 
 .btn-giveup:hover:not(:disabled) {
-    background: var(--bg-card);
-    border-color: var(--cream-muted);
+background: var(–bg-card);
+border-color: var(–cream-muted);
 }
 
 .btn-giveup:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+opacity: 0.4;
+cursor: not-allowed;
 }
 
 .btn-solve {
-    flex: 2;
-    padding: 14px 20px;
-    font-size: 0.9rem;
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
-    border-radius: 6px;
-    box-shadow: 0 4px 15px var(--gold-glow);
+flex: 2;
+padding: 14px 20px;
+font-size: 0.9rem;
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
+border-radius: 6px;
+box-shadow: 0 4px 15px var(–gold-glow);
 }
 
 .btn-solve:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--gold-glow);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px var(–gold-glow);
 }
 
 .btn-solve:active { transform: translateY(0); }
 
 .btn-solve:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
+opacity: 0.4;
+cursor: not-allowed;
+transform: none;
 }
 
 /* ============================================
-   DAILY CHALLENGE SCREEN
-   ============================================ */
+DAILY CHALLENGE SCREEN
+============================================ */
 
 #dailyScreen {
-    background: var(--bg-deep);
+background: var(–bg-deep);
 }
 
 .daily-header {
-    text-align: center;
-    padding: 20px;
-    background: var(--bg-dark);
-    border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+text-align: center;
+padding: 20px;
+background: var(–bg-dark);
+border-bottom: 1px solid rgba(212, 168, 83, 0.2);
 }
 
 .daily-header h2 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: var(--gold-light);
-    margin-bottom: 5px;
+font-family: var(–font-display);
+font-size: 1.5rem;
+color: var(–gold-light);
+margin-bottom: 5px;
 }
 
 .daily-date {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+font-size: 0.85rem;
+color: var(–text-muted);
 }
 
 .daily-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 25px 20px;
-    gap: 20px;
-    overflow-y: auto;
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 25px 20px;
+gap: 20px;
+overflow-y: auto;
 }
 
 .daily-clue-card {
-    width: 100%;
-    max-width: 500px;
-    background: var(--bg-card);
-    border: 1px solid rgba(212, 168, 83, 0.3);
-    border-radius: 8px;
-    padding: 30px 25px;
-    position: relative;
-    box-shadow: var(--shadow-deep);
+width: 100%;
+max-width: 500px;
+background: var(–bg-card);
+border: 1px solid rgba(212, 168, 83, 0.3);
+border-radius: 8px;
+padding: 30px 25px;
+position: relative;
+box-shadow: var(–shadow-deep);
 }
 
 .daily-clue-card::before {
-    content: attr(data-question);
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--font-title);
-    font-size: 0.75rem;
-    color: var(--gold-primary);
-    background: var(--bg-deep);
-    padding: 4px 16px;
-    letter-spacing: 0.2em;
+content: attr(data-question);
+position: absolute;
+top: -12px;
+left: 50%;
+transform: translateX(-50%);
+font-family: var(–font-title);
+font-size: 0.75rem;
+color: var(–gold-primary);
+background: var(–bg-deep);
+padding: 4px 16px;
+letter-spacing: 0.2em;
 }
 
 .daily-input-container {
-    width: 100%;
-    max-width: 500px;
+width: 100%;
+max-width: 500px;
 }
 
 .daily-input {
-    width: 100%;
-    padding: 16px;
-    font-family: var(--font-body);
-    font-size: 1.1rem;
-    background: var(--bg-dark);
-    border: 2px solid var(--bg-elevated);
-    border-radius: 8px;
-    color: var(--cream);
-    text-align: center;
+width: 100%;
+padding: 16px;
+font-family: var(–font-body);
+font-size: 1.1rem;
+background: var(–bg-dark);
+border: 1px solid var(–gold-dark);
+border-radius: 8px;
+color: var(–gold-light);
+text-align: center;
+box-shadow: 0 0 15px rgba(212, 168, 83, 0.1);
 }
 
 .daily-input:focus {
-    outline: none;
-    border-color: var(--gold-primary);
+outline: none;
+border-color: var(–gold-primary);
+box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
 }
 
-.daily-input::placeholder { color: var(--text-muted); }
+.daily-input::placeholder { color: var(–text-muted); }
 
 .daily-input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+opacity: 0.5;
+cursor: not-allowed;
 }
 
 .daily-actions {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    max-width: 500px;
+display: flex;
+gap: 12px;
+width: 100%;
+max-width: 500px;
 }
 
 .daily-actions .btn {
-    flex: 1;
-    padding: 16px 24px;
-    border-radius: 6px;
+flex: 1;
+padding: 16px 24px;
+border-radius: 6px;
 }
 
 .btn-skip {
-    background: var(--bg-elevated);
-    color: var(--cream-muted);
+background: var(–bg-elevated);
+color: var(–cream-muted);
 }
 
 .btn-submit-daily {
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
 }
 
 /* Daily Results */
 #dailyResultsScreen {
-    background: 
-        radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
-        var(--bg-deep);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+background:
+radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
+var(–bg-deep);
+align-items: center;
+justify-content: center;
+padding: 20px;
 }
 
 .daily-results-card {
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
+text-align: center;
+max-width: 400px;
+width: 100%;
 }
 
 .daily-results-title {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: var(--gold-light);
-    margin-bottom: 10px;
+font-family: var(–font-display);
+font-size: 1.8rem;
+color: var(–gold-light);
+margin-bottom: 10px;
 }
 
 .daily-results-date {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
+font-size: 0.9rem;
+color: var(–text-muted);
+margin-bottom: 20px;
 }
 
 .daily-score-display {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
+display: flex;
+justify-content: center;
+gap: 10px;
+margin-bottom: 10px;
 }
 
 .daily-star {
-    font-size: 2rem;
-    transition: all 0.3s ease;
+font-size: 2rem;
+transition: all 0.3s ease;
 }
 
 .daily-star.earned {
-    color: var(--gold-light);
-    text-shadow: 0 0 15px var(--gold-glow);
+color: var(–gold-light);
+text-shadow: 0 0 15px var(–gold-glow);
 }
 
 .daily-star.empty {
-    color: var(--text-muted);
-    opacity: 0.3;
+color: var(–text-muted);
+opacity: 0.3;
 }
 
 .daily-score-text {
-    font-family: var(--font-title);
-    font-size: 1.5rem;
-    color: var(--cream);
-    letter-spacing: 0.1em;
-    margin-bottom: 30px;
+font-family: var(–font-title);
+font-size: 1.5rem;
+color: var(–cream);
+letter-spacing: 0.1em;
+margin-bottom: 30px;
 }
 
 .daily-breakdown {
-    background: var(--bg-card);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(212, 168, 83, 0.2);
-    max-height: 180px;
-    overflow-y: auto;
+background: var(–bg-card);
+border-radius: 8px;
+padding: 15px;
+margin-bottom: 25px;
+border: 1px solid rgba(212, 168, 83, 0.2);
+max-height: 180px;
+overflow-y: auto;
 }
 
 .daily-breakdown-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 5px;
-    border-bottom: 1px solid var(--bg-elevated);
-    font-size: 0.85rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 5px;
+border-bottom: 1px solid var(–bg-elevated);
+font-size: 0.85rem;
 }
 
 .daily-breakdown-row:last-child { border-bottom: none; }
 
 .daily-breakdown-result {
-    font-size: 1.2rem;
+font-size: 1.2rem;
 }
 
 .daily-results-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+display: flex;
+flex-direction: column;
+gap: 12px;
 }
 
 .daily-results-actions .btn {
-    width: 100%;
-    padding: 16px 24px;
-    border-radius: 6px;
+width: 100%;
+padding: 16px 24px;
+border-radius: 6px;
 }
 
 .daily-next-puzzle {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 20px;
+font-size: 0.85rem;
+color: var(–text-muted);
+margin-top: 20px;
 }
 
 /* ============================================
-   MODALS
-   ============================================ */
+MODALS
+============================================ */
 
 .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.9);
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.9);
+align-items: center;
+justify-content: center;
+z-index: 100;
+padding: 20px;
 }
 
 .modal-overlay.active { display: flex; }
 
 .solve-modal {
-    background: var(--bg-card);
-    border: 1px solid rgba(212, 168, 83, 0.3);
-    border-radius: 12px;
-    padding: 30px;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
+background: var(–bg-card);
+border: 1px solid var(–gold-dark);
+border-radius: 12px;
+padding: 30px;
+width: 100%;
+max-width: 400px;
+text-align: center;
+box-shadow: 0 0 30px rgba(212, 168, 83, 0.15);
 }
 
 .solve-modal h3 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: var(--gold-light);
-    margin-bottom: 20px;
+font-family: var(–font-display);
+font-size: 1.5rem;
+color: var(–gold-light);
+margin-bottom: 20px;
 }
 
 .solve-input {
-    width: 100%;
-    padding: 16px;
-    font-family: var(--font-body);
-    font-size: 1.1rem;
-    background: var(--bg-dark);
-    border: 2px solid var(--bg-elevated);
-    border-radius: 8px;
-    color: var(--cream);
-    text-align: center;
-    margin-bottom: 20px;
+width: 100%;
+padding: 16px;
+font-family: var(–font-body);
+font-size: 1.1rem;
+background: var(–bg-dark);
+border: 1px solid var(–gold-dark);
+border-radius: 8px;
+color: var(–gold-light);
+text-align: center;
+margin-bottom: 20px;
+box-shadow: 0 0 15px rgba(212, 168, 83, 0.1);
 }
 
 .solve-input:focus {
-    outline: none;
-    border-color: var(--gold-primary);
+outline: none;
+border-color: var(–gold-primary);
+box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
 }
 
-.solve-input::placeholder { color: var(--text-muted); }
+.solve-input::placeholder {
+color: var(–text-muted);
+}
+}
+
+.solve-input::placeholder { color: var(–text-muted); }
 
 .solve-actions {
-    display: flex;
-    gap: 12px;
+display: flex;
+gap: 12px;
 }
 
 .solve-actions .btn {
-    flex: 1;
-    padding: 14px 20px;
-    border-radius: 6px;
+flex: 1;
+padding: 14px 20px;
+border-radius: 6px;
 }
 
 .btn-cancel {
-    background: var(--bg-elevated);
-    color: var(--cream-muted);
+background: var(–bg-elevated);
+color: var(–cream-muted);
 }
 
 .btn-submit {
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
 }
 
 /* Result Overlay */
 .result-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.95);
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.95);
+align-items: center;
+justify-content: center;
+z-index: 100;
+padding: 20px;
 }
 
 .result-overlay.active { display: flex; }
 
 .result-card {
-    text-align: center;
-    max-width: 400px;
-    position: relative;
+text-align: center;
+max-width: 400px;
+position: relative;
 }
 
 .result-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-    animation: resultPop 0.5s ease;
+font-size: 4rem;
+margin-bottom: 20px;
+animation: resultPop 0.5s ease;
 }
 
 @keyframes resultPop {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+0% { transform: scale(0); }
+50% { transform: scale(1.2); }
+100% { transform: scale(1); }
 }
 
 .result-title {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    margin-bottom: 10px;
+font-family: var(–font-display);
+font-size: 2rem;
+margin-bottom: 10px;
 }
 
 .result-title.correct {
-    color: var(--gold-light);
-    text-shadow: 0 0 30px var(--gold-glow);
+color: var(–gold-light);
+text-shadow: 0 0 30px var(–gold-glow);
 }
 
-.result-title.incorrect { color: var(--red-light); }
+.result-title.incorrect { color: var(–red-light); }
 
 .result-movie {
-    font-family: var(--font-title);
-    font-size: 1.6rem;
-    color: var(--cream);
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
+font-family: var(–font-title);
+font-size: 1.6rem;
+color: var(–cream);
+letter-spacing: 0.1em;
+margin-bottom: 10px;
 }
 
 .result-points {
-    font-size: 1rem;
-    color: var(--gold-primary);
-    margin-bottom: 30px;
+font-size: 1rem;
+color: var(–gold-primary);
+margin-bottom: 30px;
 }
 
-.result-points.zero { color: var(--text-muted); }
+.result-points.zero { color: var(–text-muted); }
 
 .btn-continue {
-    padding: 16px 50px;
-    font-size: 1rem;
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
-    border-radius: 6px;
-    box-shadow: 0 4px 15px var(--gold-glow);
+padding: 16px 50px;
+font-size: 1rem;
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
+border-radius: 6px;
+box-shadow: 0 4px 15px var(–gold-glow);
 }
 
 /* Celebration effect */
 .result-card.celebrate::before {
-    content: '✨';
-    position: absolute;
-    font-size: 2rem;
-    animation: sparkle 0.6s ease-out forwards;
-    top: 20%;
-    left: 20%;
+content: ‘✨’;
+position: absolute;
+font-size: 2rem;
+animation: sparkle 0.6s ease-out forwards;
+top: 20%;
+left: 20%;
 }
 
 .result-card.celebrate::after {
-    content: '✨';
-    position: absolute;
-    font-size: 2rem;
-    animation: sparkle 0.6s ease-out 0.1s forwards;
-    top: 20%;
-    right: 20%;
+content: ‘✨’;
+position: absolute;
+font-size: 2rem;
+animation: sparkle 0.6s ease-out 0.1s forwards;
+top: 20%;
+right: 20%;
 }
 
 @keyframes sparkle {
-    0% { opacity: 0; transform: scale(0) rotate(0deg); }
-    50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
-    100% { opacity: 0; transform: scale(0.5) rotate(360deg) translateY(-30px); }
+0% { opacity: 0; transform: scale(0) rotate(0deg); }
+50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+100% { opacity: 0; transform: scale(0.5) rotate(360deg) translateY(-30px); }
 }
 
 /* ============================================
-   GAME OVER SCREEN
-   ============================================ */
+GAME OVER SCREEN
+============================================ */
 
 #gameOverScreen {
-    background: 
-        radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
-        var(--bg-deep);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+background:
+radial-gradient(ellipse at 50% 30%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
+var(–bg-deep);
+align-items: center;
+justify-content: center;
+padding: 20px;
 }
 
 .game-over-card {
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
+text-align: center;
+max-width: 400px;
+width: 100%;
 }
 
 .final-score-label {
-    font-family: var(--font-title);
-    font-size: 1rem;
-    color: var(--text-muted);
-    letter-spacing: 0.3em;
-    margin-bottom: 10px;
+font-family: var(–font-title);
+font-size: 1rem;
+color: var(–text-muted);
+letter-spacing: 0.3em;
+margin-bottom: 10px;
 }
 
 .final-score {
-    font-family: var(--font-display);
-    font-size: 5rem;
-    color: var(--gold-light);
-    text-shadow: 0 0 40px var(--gold-glow);
-    line-height: 1;
-    margin-bottom: 5px;
+font-family: var(–font-display);
+font-size: 5rem;
+color: var(–gold-light);
+text-shadow: 0 0 40px var(–gold-glow);
+line-height: 1;
+margin-bottom: 5px;
 }
 
 .final-score-subtitle {
-    font-size: 1rem;
-    color: var(--cream-muted);
-    margin-bottom: 40px;
+font-size: 1rem;
+color: var(–cream-muted);
+margin-bottom: 40px;
 }
 
 .final-breakdown {
-    background: var(--bg-card);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 1px solid rgba(212, 168, 83, 0.2);
-    max-height: 200px;
-    overflow-y: auto;
+background: var(–bg-card);
+border-radius: 8px;
+padding: 20px;
+margin-bottom: 30px;
+border: 1px solid rgba(212, 168, 83, 0.2);
+max-height: 200px;
+overflow-y: auto;
 }
 
 .breakdown-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--bg-elevated);
-    font-size: 0.9rem;
+display: flex;
+justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid var(–bg-elevated);
+font-size: 0.9rem;
 }
 
 .breakdown-row:last-child { border-bottom: none; }
 
-.breakdown-title { color: var(--cream); }
+.breakdown-title { color: var(–cream); }
 
 .breakdown-points {
-    font-family: var(--font-title);
-    font-size: 1rem;
+font-family: var(–font-title);
+font-size: 1rem;
 }
 
-.breakdown-points.earned { color: var(--gold-primary); }
-.breakdown-points.missed { color: var(--text-muted); }
+.breakdown-points.earned { color: var(–gold-primary); }
+.breakdown-points.missed { color: var(–text-muted); }
 
 .game-over-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+display: flex;
+flex-direction: column;
+gap: 12px;
 }
 
 .game-over-actions .btn {
-    width: 100%;
-    padding: 16px 24px;
-    border-radius: 6px;
+width: 100%;
+padding: 16px 24px;
+border-radius: 6px;
 }
 
 .btn-play-again {
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-    color: var(--bg-deep);
-    font-size: 1rem;
+background: linear-gradient(135deg, var(–gold-primary), var(–gold-dark));
+color: var(–bg-deep);
+font-size: 1rem;
 }
 
 .btn-share {
-    background: var(--bg-elevated);
-    color: var(--cream);
-    border: 1px solid var(--gold-dark);
+background: var(–bg-elevated);
+color: var(–cream);
+border: 1px solid var(–gold-dark);
 }
 
 .btn-menu {
-    background: transparent;
-    color: var(--cream-muted);
-    border: 1px solid var(--text-muted);
+background: transparent;
+color: var(–cream-muted);
+border: 1px solid var(–text-muted);
 }
 
 /* ============================================
-   HOW TO PLAY SCREEN
-   ============================================ */
+HOW TO PLAY SCREEN
+============================================ */
 
 #howToPlayScreen {
-    background: var(--bg-deep);
-    padding: 20px;
-    overflow-y: auto;
+background: var(–bg-deep);
+padding: 20px;
+overflow-y: auto;
 }
 
 .how-to-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-    padding-top: 10px;
+display: flex;
+align-items: center;
+gap: 15px;
+margin-bottom: 30px;
+padding-top: 10px;
 }
 
 .how-to-header h2 {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: var(--cream);
+font-family: var(–font-display);
+font-size: 1.8rem;
+color: var(–cream);
 }
 
 .btn-back-small {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    color: var(--cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    border: none;
-    cursor: pointer;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background: var(–bg-card);
+color: var(–cream);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+border: none;
+cursor: pointer;
 }
 
 .how-to-content {
-    max-width: 500px;
-    margin: 0 auto;
+max-width: 500px;
+margin: 0 auto;
 }
 
 .how-to-section {
-    margin-bottom: 30px;
+margin-bottom: 30px;
 }
 
 .how-to-section h3 {
-    font-family: var(--font-title);
-    font-size: 1.1rem;
-    color: var(--gold-primary);
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
+font-family: var(–font-title);
+font-size: 1.1rem;
+color: var(–gold-primary);
+letter-spacing: 0.1em;
+margin-bottom: 10px;
 }
 
 .how-to-section p {
-    color: var(--cream-muted);
-    line-height: 1.7;
-    font-size: 0.95rem;
+color: var(–cream-muted);
+line-height: 1.7;
+font-size: 0.95rem;
 }
 
 /* Settings Screen */
 .settings-content {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0 20px;
+max-width: 500px;
+margin: 0 auto;
+padding: 0 20px;
 }
 
 .settings-section {
-    margin-bottom: 30px;
+margin-bottom: 30px;
 }
 
 .settings-section h3 {
-    font-family: var(--font-title);
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-    margin-bottom: 15px;
-    text-transform: uppercase;
+font-family: var(–font-title);
+font-size: 0.9rem;
+color: var(–text-muted);
+letter-spacing: 0.15em;
+margin-bottom: 15px;
+text-transform: uppercase;
 }
 
 .setting-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: var(--bg-card);
-    border-radius: 8px;
-    margin-bottom: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px;
+background: var(–bg-card);
+border-radius: 8px;
+margin-bottom: 10px;
 }
 
 .setting-info {
-    flex: 1;
+flex: 1;
 }
 
 .setting-label {
-    font-weight: 500;
-    color: var(--cream);
-    margin-bottom: 3px;
+font-weight: 500;
+color: var(–cream);
+margin-bottom: 3px;
 }
 
 .setting-desc {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+font-size: 0.8rem;
+color: var(–text-muted);
 }
 
 .toggle {
-    width: 50px;
-    height: 28px;
-    background: var(--bg-elevated);
-    border-radius: 14px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s ease;
+width: 50px;
+height: 28px;
+background: var(–bg-elevated);
+border-radius: 14px;
+position: relative;
+cursor: pointer;
+transition: background 0.2s ease;
 }
 
 .toggle.active {
-    background: var(--gold-primary);
+background: var(–gold-primary);
 }
 
 .toggle::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 22px;
-    height: 22px;
-    background: var(--cream);
-    border-radius: 50%;
-    transition: transform 0.2s ease;
+content: ‘’;
+position: absolute;
+top: 3px;
+left: 3px;
+width: 22px;
+height: 22px;
+background: var(–cream);
+border-radius: 50%;
+transition: transform 0.2s ease;
 }
 
 .toggle.active::after {
-    transform: translateX(22px);
+transform: translateX(22px);
 }
 
 #roastModeSelect {
-    padding: 8px 12px;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    background: var(--bg-elevated);
-    color: var(--cream);
-    border: 1px solid var(--text-muted);
-    border-radius: 6px;
-    cursor: pointer;
+padding: 8px 12px;
+font-family: var(–font-body);
+font-size: 0.9rem;
+background: var(–bg-elevated);
+color: var(–cream);
+border: 1px solid var(–text-muted);
+border-radius: 6px;
+cursor: pointer;
 }
 
 .btn-reset {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-    background: var(--red-primary);
-    color: var(--cream);
-    border-radius: 6px;
+padding: 10px 20px;
+font-size: 0.85rem;
+background: var(–red-primary);
+color: var(–cream);
+border-radius: 6px;
 }
 
 .btn-reset:hover {
-    background: var(--red-light);
+background: var(–red-light);
 }
 
 .settings-about {
-    color: var(--cream-muted);
-    font-size: 0.9rem;
+color: var(–cream-muted);
+font-size: 0.9rem;
 }
 
 .settings-about a {
-    color: var(--gold-primary);
-    text-decoration: none;
+color: var(–gold-primary);
+text-decoration: none;
 }
 
 .settings-about a:hover {
-    text-decoration: underline;
+text-decoration: underline;
 }
 
 /* Loading State */
 .loading-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-deep);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    flex-direction: column;
-    gap: 20px;
+position: fixed;
+inset: 0;
+background: var(–bg-deep);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 1000;
+flex-direction: column;
+gap: 20px;
 }
 
 .loading-overlay.hidden {
-    display: none;
+display: none;
 }
 
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 3px solid var(--bg-elevated);
-    border-top-color: var(--gold-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+width: 50px;
+height: 50px;
+border: 3px solid var(–bg-elevated);
+border-top-color: var(–gold-primary);
+border-radius: 50%;
+animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+to { transform: rotate(360deg); }
 }
 
 .loading-text {
-    font-family: var(--font-typewriter);
-    color: var(--cream-muted);
+font-family: var(–font-typewriter);
+color: var(–cream-muted);
 }
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in { animation: fadeIn 0.4s ease forwards; }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-8px); }
-    40%, 80% { transform: translateX(8px); }
+0%, 100% { transform: translateX(0); }
+20%, 60% { transform: translateX(-8px); }
+40%, 80% { transform: translateX(8px); }
 }
 
 .shake { animation: shake 0.4s ease; }
-    </style>
+</style>
+
 </head>
 <body>
     <div class="film-grain"></div>
-    
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading clues...</div>
-    </div>
 
-    <!-- START SCREEN -->
-    <div id="startScreen" class="screen active">
-        <div class="spotlight"></div>
-        <div class="spotlight-secondary"></div>
-        <div class="home-content">
-            <div class="main-title">
-                <div class="title-spotlight"></div>
-                <div class="title-plot">PLOT</div>
-                <div class="title-twisted">TWISTED</div>
-            </div>
-            <p class="tagline">Guess the movie from the twisted summary</p>
-            <div class="divider">
-                <span class="divider-line"></span>
-                <span class="divider-star">★</span>
-                <span class="divider-line"></span>
-            </div>
-            <button class="btn btn-primary" id="quickPlayBtn" disabled>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5v14l11-7z"/></svg>
-                Quick Play
-            </button>
-            <button class="btn btn-primary btn-daily" id="dailyBtn" disabled>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
-                Daily Challenge
-            </button>
-            <div class="menu-row">
-                <button class="btn btn-secondary btn-half" id="howToPlayBtn">How to Play</button>
-                <button class="btn btn-secondary btn-half" id="settingsBtn">Settings</button>
-            </div>
-            <div class="daily-quote-container">
-                <div class="daily-quote" id="dailyQuote"></div>
-                <div class="daily-quote-source" id="dailyQuoteSource"></div>
-            </div>
-        </div>
-    </div>
+```
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading clues...</div>
+</div>
 
-    <!-- CATEGORY SCREEN -->
-    <div id="categoryScreen" class="screen">
-        <div class="category-header">
-            <h2>Choose Your Genre</h2>
-            <p>Pick a category to start playing</p>
+<!-- START SCREEN -->
+<div id="startScreen" class="screen active">
+    <div class="spotlight"></div>
+    <div class="spotlight-secondary"></div>
+    <div class="home-content">
+        <div class="main-title">
+            <div class="title-spotlight"></div>
+            <div class="title-plot">PLOT</div>
+            <div class="title-twisted">TWISTED</div>
         </div>
-        <div class="category-grid" id="categoryGrid"></div>
-        <div class="category-actions">
-            <button class="btn btn-back" id="categoryBackBtn">Back</button>
-            <button class="btn btn-start" id="startGameBtn" disabled>Start</button>
+        <p class="tagline">Guess the movie from the twisted summary</p>
+        <div class="divider">
+            <span class="divider-line"></span>
+            <span class="divider-star">★</span>
+            <span class="divider-line"></span>
+        </div>
+        <button class="btn btn-primary" id="quickPlayBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5v14l11-7z"/></svg>
+            Quick Play
+        </button>
+        <button class="btn btn-primary btn-daily" id="dailyBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+            Daily Challenge
+        </button>
+        <div class="menu-row">
+            <button class="btn btn-secondary btn-half" id="howToPlayBtn">How to Play</button>
+            <button class="btn btn-secondary btn-half" id="settingsBtn">Settings</button>
+        </div>
+        <div class="daily-quote-container">
+            <div class="daily-quote" id="dailyQuote"></div>
+            <div class="daily-quote-source" id="dailyQuoteSource"></div>
         </div>
     </div>
+</div>
 
-    <!-- HOW TO PLAY SCREEN -->
-    <div id="howToPlayScreen" class="screen">
-        <div class="how-to-header">
-            <button class="btn-back-small" id="howToBackBtn">←</button>
-            <h2>How to Play</h2>
+<!-- CATEGORY SCREEN -->
+<div id="categoryScreen" class="screen">
+    <div class="category-header">
+        <h2>Choose Your Genre</h2>
+        <p>Pick a category to start playing</p>
+    </div>
+    <div class="category-grid" id="categoryGrid"></div>
+    <div class="category-actions">
+        <button class="btn btn-back" id="categoryBackBtn">Back</button>
+        <button class="btn btn-start" id="startGameBtn" disabled>Start</button>
+    </div>
+</div>
+
+<!-- HOW TO PLAY SCREEN -->
+<div id="howToPlayScreen" class="screen">
+    <div class="how-to-header">
+        <button class="btn-back-small" id="howToBackBtn">←</button>
+        <h2>How to Play</h2>
+    </div>
+    <div class="how-to-content">
+        <div class="how-to-section">
+            <h3>🎬 The Goal</h3>
+            <p>Read the twisted (but technically accurate) plot summary and guess the movie title. Use the keyboard to guess letters, or go for the full solve!</p>
         </div>
-        <div class="how-to-content">
-            <div class="how-to-section">
-                <h3>🎬 The Goal</h3>
-                <p>Read the twisted (but technically accurate) plot summary and guess the movie title. Use the keyboard to guess letters, or go for the full solve!</p>
-            </div>
-            <div class="how-to-section">
-                <h3>💰 Scoring</h3>
-                <p>Each movie starts at 500 points. Wrong consonant guesses cost 30 points (vowels are free!). Solve early with more letters hidden for bonus multipliers (1.5x or 1.25x)!</p>
-            </div>
-            <div class="how-to-section">
-                <h3>❌ Strikes</h3>
-                <p>You have 3 strikes for the entire game. Wrong full solve attempts cost a strike. Run out and it's game over!</p>
-            </div>
-            <div class="how-to-section">
-                <h3>📅 Daily Challenge</h3>
-                <p>Same 5 movies for everyone, one guess per movie, no hints. Compare your score with friends!</p>
-            </div>
+        <div class="how-to-section">
+            <h3>💰 Scoring</h3>
+            <p>Each movie starts at 500 points. Wrong consonant guesses cost 30 points (vowels are free!). Solve early with more letters hidden for bonus multipliers (1.5x or 1.25x)!</p>
+        </div>
+        <div class="how-to-section">
+            <h3>❌ Strikes</h3>
+            <p>You have 3 strikes for the entire game. Wrong full solve attempts cost a strike. Run out and it's game over!</p>
+        </div>
+        <div class="how-to-section">
+            <h3>📅 Daily Challenge</h3>
+            <p>Same 5 movies for everyone, one guess per movie, no hints. Compare your score with friends!</p>
         </div>
     </div>
+</div>
 
-    <!-- SETTINGS SCREEN -->
-    <div id="settingsScreen" class="screen">
-        <div class="how-to-header">
-            <button class="btn-back-small" id="settingsBackBtn">←</button>
-            <h2>Settings</h2>
-        </div>
-        <div class="settings-content">
-            <div class="settings-section">
-                <h3>Game Options</h3>
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <div class="setting-label">Sound Effects</div>
-                        <div class="setting-desc">Play sounds for correct/incorrect</div>
-                    </div>
-                    <div class="toggle" id="soundToggle"></div>
+<!-- SETTINGS SCREEN -->
+<div id="settingsScreen" class="screen">
+    <div class="how-to-header">
+        <button class="btn-back-small" id="settingsBackBtn">←</button>
+        <h2>Settings</h2>
+    </div>
+    <div class="settings-content">
+        <div class="settings-section">
+            <h3>Game Options</h3>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Sound Effects</div>
+                    <div class="setting-desc">Play sounds for correct/incorrect</div>
                 </div>
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <label class="setting-label" for="roastModeSelect">Roast Intensity</label>
-                        <div class="setting-desc">Choose how spicy the feedback gets</div>
-                    </div>
-                    <select id="roastModeSelect">
-                        <option value="clean">Clean</option>
-                        <option value="spicy">Spicy</option>
-                        <option value="nsfw">NSFW</option>
-                    </select>
+                <div class="toggle" id="soundToggle"></div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label class="setting-label" for="roastModeSelect">Roast Intensity</label>
+                    <div class="setting-desc">Choose how spicy the feedback gets</div>
+                </div>
+                <select id="roastModeSelect">
+                    <option value="clean">Clean</option>
+                    <option value="spicy">Spicy</option>
+                    <option value="nsfw">NSFW</option>
+                </select>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3>Data</h3>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Reset Progress</div>
+                    <div class="setting-desc">Clear all stats and seen clues</div>
+                </div>
+                <button class="btn btn-reset" id="resetBtn">Reset</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3>About</h3>
+            <p class="settings-about">Created by <a href="https://x.com/Ben_Soup" target="_blank">Ben Campbell</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- GAME SCREEN (Quick Play) -->
+<div id="gameScreen" class="screen">
+    <div class="game-header">
+        <div class="game-logo">Plot Twisted</div>
+        <div class="game-stats">
+            <div class="game-stat">
+                <div class="game-stat-label">Score</div>
+                <div class="game-stat-value points" id="totalScore">0</div>
+            </div>
+            <div class="game-stat">
+                <div class="game-stat-label">Strikes</div>
+                <div class="strikes-display" id="strikesDisplay">
+                    <div class="strike-pip"></div>
+                    <div class="strike-pip"></div>
+                    <div class="strike-pip"></div>
                 </div>
             </div>
-            <div class="settings-section">
-                <h3>Data</h3>
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <div class="setting-label">Reset Progress</div>
-                        <div class="setting-desc">Clear all stats and seen clues</div>
-                    </div>
-                    <button class="btn btn-reset" id="resetBtn">Reset</button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <h3>About</h3>
-                <p class="settings-about">Created by <a href="https://x.com/Ben_Soup" target="_blank">Ben Campbell</a></p>
-            </div>
+        </div>
+        <button class="btn btn-quit" id="quitBtn">✕</button>
+    </div>
+    <div class="game-content">
+        <div class="progress-track" id="progressTrack"></div>
+        <div class="clue-card fade-in" id="clueCard">
+            <div class="clue-text" id="clueText"></div>
+            <div class="clue-category" id="clueCategory"></div>
+        </div>
+        <div class="points-pot">
+            <span class="pot-label">Worth</span>
+            <span class="pot-value" id="potValue">500</span>
+            <span class="pot-multiplier" id="potMultiplier"></span>
+        </div>
+        <div class="title-reveal" id="titleReveal">
+            <div class="title-letters" id="titleLetters"></div>
+        </div>
+        <div class="keyboard" id="keyboard"></div>
+        <div class="action-buttons">
+            <button class="btn btn-giveup" id="giveUpBtn">Give Up</button>
+            <button class="btn btn-solve" id="solveBtn">I Know It!</button>
         </div>
     </div>
+</div>
 
-    <!-- GAME SCREEN (Quick Play) -->
-    <div id="gameScreen" class="screen">
-        <div class="game-header">
-            <div class="game-logo">Plot Twisted</div>
-            <div class="game-stats">
-                <div class="game-stat">
-                    <div class="game-stat-label">Score</div>
-                    <div class="game-stat-value points" id="totalScore">0</div>
-                </div>
-                <div class="game-stat">
-                    <div class="game-stat-label">Strikes</div>
-                    <div class="strikes-display" id="strikesDisplay">
-                        <div class="strike-pip"></div>
-                        <div class="strike-pip"></div>
-                        <div class="strike-pip"></div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-quit" id="quitBtn">✕</button>
+<!-- DAILY CHALLENGE SCREEN -->
+<div id="dailyScreen" class="screen">
+    <div class="daily-header">
+        <h2>Daily Challenge</h2>
+        <div class="daily-date" id="dailyDateDisplay"></div>
+    </div>
+    <div class="daily-content">
+        <div class="progress-track" id="dailyProgressTrack"></div>
+        <div class="daily-clue-card" id="dailyClueCard" data-question="MOVIE 1 OF 5">
+            <div class="clue-text" id="dailyClueText"></div>
         </div>
-        <div class="game-content">
-            <div class="progress-track" id="progressTrack"></div>
-            <div class="clue-card fade-in" id="clueCard">
-                <div class="clue-text" id="clueText"></div>
-                <div class="clue-category" id="clueCategory"></div>
-            </div>
-            <div class="points-pot">
-                <span class="pot-label">Worth</span>
-                <span class="pot-value" id="potValue">500</span>
-                <span class="pot-multiplier" id="potMultiplier"></span>
-            </div>
-            <div class="title-reveal" id="titleReveal">
-                <div class="title-letters" id="titleLetters"></div>
-            </div>
-            <div class="keyboard" id="keyboard"></div>
-            <div class="action-buttons">
-                <button class="btn btn-giveup" id="giveUpBtn">Give Up</button>
-                <button class="btn btn-solve" id="solveBtn">I Know It!</button>
-            </div>
+        <div class="daily-input-container">
+            <input type="text" class="daily-input" id="dailyInput" placeholder="Type your guess..." autocomplete="off" autocapitalize="off">
+        </div>
+        <div class="daily-actions">
+            <button class="btn btn-skip" id="dailySkipBtn">Skip</button>
+            <button class="btn btn-submit-daily" id="dailySubmitBtn">Submit</button>
         </div>
     </div>
+</div>
 
-    <!-- DAILY CHALLENGE SCREEN -->
-    <div id="dailyScreen" class="screen">
-        <div class="daily-header">
-            <h2>Daily Challenge</h2>
-            <div class="daily-date" id="dailyDateDisplay"></div>
+<!-- DAILY RESULTS SCREEN -->
+<div id="dailyResultsScreen" class="screen">
+    <div class="daily-results-card">
+        <div class="daily-results-title">Daily Challenge Complete!</div>
+        <div class="daily-results-date" id="dailyResultsDate"></div>
+        <div class="daily-score-display" id="dailyScoreDisplay"></div>
+        <div class="daily-score-text" id="dailyScoreText">3/5 Correct • 300 pts</div>
+        <div class="daily-breakdown" id="dailyBreakdown"></div>
+        <div class="daily-results-actions">
+            <button class="btn btn-share" id="dailyShareBtn">Share Results</button>
+            <button class="btn btn-menu" id="dailyMenuBtn">Main Menu</button>
         </div>
-        <div class="daily-content">
-            <div class="progress-track" id="dailyProgressTrack"></div>
-            <div class="daily-clue-card" id="dailyClueCard" data-question="MOVIE 1 OF 5">
-                <div class="clue-text" id="dailyClueText"></div>
-            </div>
-            <div class="daily-input-container">
-                <input type="text" class="daily-input" id="dailyInput" placeholder="Type your guess..." autocomplete="off" autocapitalize="off">
-            </div>
-            <div class="daily-actions">
-                <button class="btn btn-skip" id="dailySkipBtn">Skip</button>
-                <button class="btn btn-submit-daily" id="dailySubmitBtn">Submit</button>
-            </div>
-        </div>
+        <div class="daily-next-puzzle" id="dailyNextPuzzle">Next puzzle in 12:34:56</div>
     </div>
+</div>
 
-    <!-- DAILY RESULTS SCREEN -->
-    <div id="dailyResultsScreen" class="screen">
-        <div class="daily-results-card">
-            <div class="daily-results-title">Daily Challenge Complete!</div>
-            <div class="daily-results-date" id="dailyResultsDate"></div>
-            <div class="daily-score-display" id="dailyScoreDisplay"></div>
-            <div class="daily-score-text" id="dailyScoreText">3/5 Correct • 300 pts</div>
-            <div class="daily-breakdown" id="dailyBreakdown"></div>
-            <div class="daily-results-actions">
-                <button class="btn btn-share" id="dailyShareBtn">Share Results</button>
-                <button class="btn btn-menu" id="dailyMenuBtn">Main Menu</button>
-            </div>
-            <div class="daily-next-puzzle" id="dailyNextPuzzle">Next puzzle in 12:34:56</div>
+<!-- GAME OVER SCREEN -->
+<div id="gameOverScreen" class="screen">
+    <div class="game-over-card">
+        <div class="final-score-label">FINAL SCORE</div>
+        <div class="final-score" id="finalScore">0</div>
+        <div class="final-score-subtitle" id="finalSubtitle">5 of 5 movies solved</div>
+        <div class="final-breakdown" id="finalBreakdown"></div>
+        <div class="game-over-actions">
+            <button class="btn btn-play-again" id="playAgainBtn">Play Again</button>
+            <button class="btn btn-share" id="shareBtn">Share Score</button>
+            <button class="btn btn-menu" id="menuBtn">Main Menu</button>
         </div>
     </div>
+</div>
 
-    <!-- GAME OVER SCREEN -->
-    <div id="gameOverScreen" class="screen">
-        <div class="game-over-card">
-            <div class="final-score-label">FINAL SCORE</div>
-            <div class="final-score" id="finalScore">0</div>
-            <div class="final-score-subtitle" id="finalSubtitle">5 of 5 movies solved</div>
-            <div class="final-breakdown" id="finalBreakdown"></div>
-            <div class="game-over-actions">
-                <button class="btn btn-play-again" id="playAgainBtn">Play Again</button>
-                <button class="btn btn-share" id="shareBtn">Share Score</button>
-                <button class="btn btn-menu" id="menuBtn">Main Menu</button>
-            </div>
+<!-- SOLVE MODAL -->
+<div class="modal-overlay" id="solveModal">
+    <div class="solve-modal">
+        <h3>What's the movie?</h3>
+        <input type="text" class="solve-input" id="solveInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off">
+        <div class="solve-actions">
+            <button class="btn btn-cancel" id="cancelSolveBtn">Cancel</button>
+            <button class="btn btn-submit" id="submitSolveBtn">Submit</button>
         </div>
     </div>
+</div>
 
-    <!-- SOLVE MODAL -->
-    <div class="modal-overlay" id="solveModal">
-        <div class="solve-modal">
-            <h3>What's the movie?</h3>
-            <input type="text" class="solve-input" id="solveInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off">
-            <div class="solve-actions">
-                <button class="btn btn-cancel" id="cancelSolveBtn">Cancel</button>
-                <button class="btn btn-submit" id="submitSolveBtn">Submit</button>
-            </div>
+<!-- QUIT CONFIRMATION MODAL -->
+<div class="modal-overlay" id="quitModal">
+    <div class="solve-modal">
+        <h3>Quit Game?</h3>
+        <p style="color: var(--cream-muted); margin-bottom: 20px;">Your progress will be lost.</p>
+        <div class="solve-actions">
+            <button class="btn btn-cancel" id="cancelQuitBtn">Cancel</button>
+            <button class="btn btn-submit" id="confirmQuitBtn">Quit</button>
         </div>
     </div>
+</div>
 
-    <!-- QUIT CONFIRMATION MODAL -->
-    <div class="modal-overlay" id="quitModal">
-        <div class="solve-modal">
-            <h3>Quit Game?</h3>
-            <p style="color: var(--cream-muted); margin-bottom: 20px;">Your progress will be lost.</p>
-            <div class="solve-actions">
-                <button class="btn btn-cancel" id="cancelQuitBtn">Cancel</button>
-                <button class="btn btn-submit" id="confirmQuitBtn">Quit</button>
-            </div>
-        </div>
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="resultOverlay">
+    <div class="result-card">
+        <div class="result-icon" id="resultIcon">🎬</div>
+        <div class="result-title" id="resultTitle">Correct!</div>
+        <div class="result-movie" id="resultMovie">TITANIC</div>
+        <div class="result-points" id="resultPoints">+500 points</div>
+        <button class="btn btn-continue" id="continueBtn">Continue</button>
     </div>
-
-    <!-- RESULT OVERLAY -->
-    <div class="result-overlay" id="resultOverlay">
-        <div class="result-card">
-            <div class="result-icon" id="resultIcon">🎬</div>
-            <div class="result-title" id="resultTitle">Correct!</div>
-            <div class="result-movie" id="resultMovie">TITANIC</div>
-            <div class="result-points" id="resultPoints">+500 points</div>
-            <button class="btn btn-continue" id="continueBtn">Continue</button>
-        </div>
-    </div>
+</div>
+```
 
 <script>
 // ============================================
@@ -2872,6 +2909,11 @@ Can you beat me?`;
             .replace(/\s+/g, ' ')
             .trim();
     }
+    
+    // Strip numbers for more lenient matching
+    stripNumbers(str) {
+        return str.replace(/[0-9]/g, '').replace(/\s+/g, ' ').trim();
+    }
 
     getDisplayTitle(title) {
         return title.replace(/\([^)]*\)/g, '').trim();
@@ -2884,10 +2926,21 @@ Can you beat me?`;
         if (!g) return false;
         if (g === a) return true;
 
+        // Check with numbers
         const distance = this.levenshtein(g, a);
         const maxErrors = Math.floor(a.length * this.config.fuzzyThreshold);
+        if (distance <= Math.max(1, maxErrors)) return true;
         
-        return distance <= Math.max(1, maxErrors);
+        // Also check without numbers (forgive "Inside Out" for "Inside Out 2")
+        const gNoNum = this.stripNumbers(g);
+        const aNoNum = this.stripNumbers(a);
+        
+        if (gNoNum === aNoNum) return true;
+        
+        const distanceNoNum = this.levenshtein(gNoNum, aNoNum);
+        const maxErrorsNoNum = Math.floor(aNoNum.length * this.config.fuzzyThreshold);
+        
+        return distanceNoNum <= Math.max(1, maxErrorsNoNum);
     }
 
     loadSeenClues() {
@@ -2915,5 +2968,6 @@ document.addEventListener('DOMContentLoaded', () => {
     game.init();
 });
 </script>
+
 </body>
 </html>
