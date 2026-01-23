@@ -112,7 +112,7 @@
     {"title":"Wish","clue":"Girl weaponizes wishing star to fight her boss."},
     {"title":"Luca","clue":"Sea monsters pass as humans for gelato and scooters."},
     {"title":"Wish Dragon","clue":"Guy gets dragon who only grants budget-friendly wishes."},
-    {"title":"The Emoji Movie","clue":"Emojis discover existential dread inside smartphone."},
+    {"title":"The Emoji Movie","clue":"Emojis discover existential dread inside smartphone."}
   ],
   "Fantasy": [
     {"title":"Harry Potter","clue":"Orphan learns he's famous at a school that violates every safety code."},
@@ -162,7 +162,7 @@
     {"title":"Bridge to Terabithia","clue":"Kids build a kingdom in the woods to escape their boring lives until tragedy strikes."},
     {"title":"Clash of the Titans","clue":"Demi-god kills a giant medusa and a sea monster for a princess."},
     {"title":"Splash","clue":"Man falls for a woman who turns into a fish every time she takes a bath."},
-    {"title":"The Spiderwick Chronicles","clue":"Family moves into an old house and discovers a field guide to fairies."},
+    {"title":"The Spiderwick Chronicles","clue":"Family moves into an old house and discovers a field guide to fairies."}
   ],
   
   "SciFi": [
@@ -232,8 +232,8 @@
     {"title":"The Island","clue":"Clones escape farm that sells human parts as luxury items."},
     {"title":"The Host","clue":"Parasite takes girl’s body, gets stuck with girl’s opinions."},
     {"title":"Tomorrowland","clue":"Girl visits futuristic utopia with troubling fine print."},
-    {"title":"Ender’s Game","clue":"Gifted child commits accidental war crimes for extra credit."},
-  ],
+    {"title":"Ender’s Game","clue":"Gifted child commits accidental war crimes for extra credit."}
+  ]
 
   "Superhero": [
     {"title":"Iron Man","clue":"Billionaire builds a pacemaker and accidentally becomes a war machine."},
@@ -302,7 +302,7 @@
     {"title":"The Mask","clue":"Bank clerk becomes chaos gremlin with green face."},
     {"title":"Unbreakable","clue":"Man realizes he’s harder to kill than everyone else."},
     {"title":"Glass","clue":"Therapist tries group counseling on superhumans."},
-    {"title":"Sky High","clue":"Teen learns his superpower late and still graduates."},
+    {"title":"Sky High","clue":"Teen learns his superpower late and still graduates."}
   ],
   "EmotionalDamage": [
     {"title":"Up","clue":"Animated montage emotionally wrecks you before the plot starts."},
@@ -415,7 +415,7 @@
     {"title":"The Last Samurai","clue":"Soldier finds purpose and loses everything in war."},
     {"title":"Hunger Games","clue":"Trauma becomes national entertainment."},
     {"title":"The Boy Who Harnessed the Wind","clue":"Child saves village at emotional cost."},
-    {"title":"One Day","clue":"Couple meets yearly until fate ends tradition."},
+    {"title":"One Day","clue":"Couple meets yearly until fate ends tradition."}
   ],
 
   "StreamingHits": [
@@ -534,6 +534,6 @@
     {"title":"Fallout","clue":"Vault dweller explores apocalypse with cheerful violence."},
     {"title":"The Wheel of Time","clue":"Magic war fights Amazon scheduling."},
     {"title":"The Gentlemen","clue":"Rich boy inherits crime empire and vibes."},
-    {"title":"K-Pop Demon Hunters","clue":"Idol group fights demons instead of bad contracts."},
+    {"title":"K-Pop Demon Hunters","clue":"Idol group fights demons instead of bad contracts."}
   ]
 }
