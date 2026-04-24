@@ -56,12 +56,12 @@ class PlotTwisted {
             maxPot: 500,
             wrongLetterCost: 30,
             minPot: 50,
-            questionsPerRound: 5,
-            fuzzyThreshold: 0.18
+            questionsPerRound: 5
         };
         
         this.clueBank = null;
-        this.settings = { sound: false, roastMode: 'clean' };
+        this.settings = { sound: false };
+        this.lastRoastIndexByType = {};
     }
 
     async init() {
@@ -69,6 +69,7 @@ class PlotTwisted {
         this.bindEvents();
         this.loadSettings();
         this.loadSeenClues();
+        this.runAnswerMatcherSelfTest();
         
         await this.loadClueDatabase();
         
@@ -143,13 +144,11 @@ class PlotTwisted {
             resultPoints: document.getElementById('resultPoints'),
             continueBtn: document.getElementById('continueBtn'),
             soundToggle: document.getElementById('soundToggle'),
-            roastModeSelect: document.getElementById('roastModeSelect'),
             finalScore: document.getElementById('finalScore'),
             finalSubtitle: document.getElementById('finalSubtitle'),
             finalBreakdown: document.getElementById('finalBreakdown'),
             dailyQuote: document.getElementById('dailyQuote'),
             dailyQuoteSource: document.getElementById('dailyQuoteSource'),
-            resetBtn: document.getElementById('resetBtn'),
             // Daily
             dailyDateDisplay: document.getElementById('dailyDateDisplay'),
             dailyProgressTrack: document.getElementById('dailyProgressTrack'),
@@ -180,8 +179,6 @@ class PlotTwisted {
         
         // Settings
         this.dom.soundToggle.onclick = () => this.toggleSound();
-        this.dom.roastModeSelect?.addEventListener('change', (e) => this.handleRoastModeChange(e.target.value));
-        this.dom.resetBtn?.addEventListener('click', () => this.resetProgress());
         
         // Category
         document.getElementById('modeBackBtn').onclick = () => this.showScreen('start');
@@ -245,9 +242,10 @@ class PlotTwisted {
     
     loadSettings() {
         const saved = localStorage.getItem('plotTwistedSettings');
-        this.settings = saved ? JSON.parse(saved) : { sound: false, roastMode: 'clean' };
+        const parsed = saved ? JSON.parse(saved) : {};
+        this.settings = { sound: !!parsed.sound };
         this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
-        if (this.dom.roastModeSelect) this.dom.roastModeSelect.value = this.settings.roastMode;
+        localStorage.removeItem('roastIntensity');
     }
 
     saveSettings() {
@@ -258,25 +256,6 @@ class PlotTwisted {
         this.settings.sound = !this.settings.sound;
         this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
         this.saveSettings();
-    }
-
-    handleRoastModeChange(mode) {
-        if (mode === 'nsfw') {
-            if (!confirm('NSFW mode includes explicit language. Continue?')) {
-                this.dom.roastModeSelect.value = this.settings.roastMode;
-                return;
-            }
-        }
-        this.settings.roastMode = mode;
-        this.saveSettings();
-    }
-    
-    resetProgress() {
-        if (confirm('Clear all stats and seen clues?')) {
-            localStorage.removeItem('plotTwistedSeen');
-            this.state.seenClues = {};
-            this.showScreen('start');
-        }
     }
 
     // ============================================
@@ -647,11 +626,12 @@ class PlotTwisted {
 
         const q = this.state.questions[this.state.currentIndex];
         this.closeSolveModal();
-        
-        if (this.isFuzzyMatch(guess, q.title)) {
+
+        const verdict = this.isAnswerMatch(guess, q.title, q);
+        if (verdict.isMatch) {
             this.handleCorrect();
         } else {
-            this.handleIncorrect();
+            this.handleIncorrect(verdict.isNearMiss);
         }
     }
 
@@ -661,7 +641,8 @@ class PlotTwisted {
         if (!guess) return;
 
         const q = this.state.questions[this.state.currentIndex];
-        const isCorrect = this.isFuzzyMatch(guess, q.title);
+        const verdict = this.isAnswerMatch(guess, q.title, q);
+        const isCorrect = verdict.isMatch;
 
         this.dom.classicGuessInput.disabled = true;
         this.dom.classicSubmitBtn.disabled = true;
@@ -679,7 +660,8 @@ class PlotTwisted {
             this.state.strikes--;
             this.updateStrikes();
             this.state.results.push({ title: q.title, points: 0, correct: false });
-            this.setFeedback(this.getModeRoast('wrongAnswer'), 'incorrect');
+            const roastType = verdict.isNearMiss ? 'nearMiss' : 'wrongAnswer';
+            this.setFeedback(this.getModeRoast(roastType), 'incorrect');
             this.setRevealText(this.getModeRoast('revealAnswer', { TITLE: q.title.toUpperCase() }));
             this.dom.classicNextBtn.style.display = 'inline-flex';
             if (this.state.strikes <= 0) this.dom.classicNextBtn.textContent = 'Finish Game';
@@ -728,7 +710,7 @@ class PlotTwisted {
         } catch (e) {}
     }
 
-    handleIncorrect() {
+    handleIncorrect(isNearMiss = false) {
         const q = this.state.questions[this.state.currentIndex];
         
         this.state.strikes--;
@@ -741,15 +723,17 @@ class PlotTwisted {
             this.state.results.push({ title: q.title, points: 0, correct: false });
             this.showResult(false, q.title, 0, true);
         } else {
-            this.showResult(false, q.title, 0, false);
+            this.showResult(false, q.title, 0, false, false, isNearMiss);
         }
     }
 
-    showResult(isCorrect, title, points, isGameOver = false, gaveUp = false) {
+    showResult(isCorrect, title, points, isGameOver = false, gaveUp = false, isNearMiss = false) {
         const resultCard = document.querySelector('.result-card');
         resultCard.classList.remove('celebrate');
 
-        const roastType = isCorrect ? 'correctAnswer' : ((gaveUp || isGameOver) ? 'revealAnswer' : 'wrongAnswer');
+        const roastType = isCorrect
+            ? 'correctAnswer'
+            : (gaveUp ? 'giveUp' : (isGameOver ? 'revealAnswer' : (isNearMiss ? 'nearMiss' : 'wrongAnswer')));
         const commentary = this.getModeRoast(roastType, { TITLE: title });
 
         this.dom.resultIcon.textContent = isCorrect ? '🎬' : (gaveUp ? '🏳️' : '❌');
@@ -798,19 +782,22 @@ class PlotTwisted {
         this.dom.resultOverlay.classList.add('active');
     }
 
-    getRoast(type, intensity, replacements = {}) {
+    getRoast(type, replacements = {}) {
         const roastBank = window.PLOT_TWISTED_ROASTS || {};
-        const mode = intensity || this.settings?.roastMode || roastBank.defaultIntensity || 'clean';
         const fallback = roastBank.fallback || 'The theater has no notes.';
-        const bank = roastBank.byMode || {};
-
-        const modeBucket = bank[mode] || bank[roastBank.defaultIntensity] || {};
-        const defaultBucket = bank[roastBank.defaultIntensity] || {};
-        const list = modeBucket[type] || defaultBucket[type];
+        const bank = roastBank.responses || {};
+        const list = bank[type] || bank.fallback;
 
         if (!Array.isArray(list) || !list.length) return fallback;
 
-        const template = list[Math.floor(Math.random() * list.length)] || fallback;
+        let selectedIndex = Math.floor(Math.random() * list.length);
+        const lastIndex = this.lastRoastIndexByType[type];
+        if (list.length > 1 && selectedIndex === lastIndex) {
+            selectedIndex = (selectedIndex + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+        }
+        this.lastRoastIndexByType[type] = selectedIndex;
+
+        const template = list[selectedIndex] || fallback;
         return template.replace(/\[([A-Z_]+)\]/g, (_, token) => {
             const value = replacements[token];
             return value === undefined || value === null ? '' : String(value);
@@ -869,7 +856,7 @@ class PlotTwisted {
     copyToClipboard(text) {
         if (navigator.clipboard?.writeText) {
             navigator.clipboard.writeText(text).then(() => {
-                this.showCopyToast('Copied. Go emotionally damage the group chat.');
+                this.showCopyToast(this.getRoast('copyResultSuccess'));
             }).catch(() => this.copyWithFallback(text));
             return;
         }
@@ -886,7 +873,7 @@ class PlotTwisted {
         temp.select();
         try {
             document.execCommand('copy');
-            this.showCopyToast('Copied (fallback). Go emotionally damage the group chat.');
+            this.showCopyToast(this.getRoast('copyResultSuccess'));
         } catch (e) {
             this.showCopyToast('Clipboard blocked. Copy manually from the prompt.');
             prompt('Copy your result:', text);
@@ -895,7 +882,7 @@ class PlotTwisted {
     }
 
     showCopyToast(message) {
-        this.dom.copyToast.textContent = message;
+        this.dom.copyToast.textContent = message || this.getRoast('copyResultSuccess');
         this.dom.copyToast.classList.add('show');
         clearTimeout(this.toastTimer);
         this.toastTimer = setTimeout(() => this.dom.copyToast.classList.remove('show'), 2200);
@@ -1007,7 +994,8 @@ class PlotTwisted {
         if (!guess) return;
         
         const q = this.state.dailyQuestions[this.state.dailyIndex];
-        const correct = this.isFuzzyMatch(guess, q.title);
+        const verdict = this.isAnswerMatch(guess, q.title, q);
+        const correct = verdict.isMatch;
         
         this.state.dailyResults.push({
             title: q.title,
@@ -1030,6 +1018,8 @@ class PlotTwisted {
             skipped: true,
             points: 0
         });
+
+        this.showCopyToast(this.getRoast('skip'));
         
         this.nextDailyQuestion();
     }
@@ -1114,35 +1104,19 @@ class PlotTwisted {
     }
 
     getModeRoast(type, replacements = {}) {
-        if (this.state.currentScreen === 'daily' || this.state.currentScreen === 'dailyResults') {
-            return this.getRoast('dailyChallengeLine', this.settings?.roastMode, replacements);
-        }
-        const modePrefix = this.state.currentMode === 'classic' ? 'classic' : 'marquee';
-        const modeType = `${modePrefix}_${type}`;
-        const chosenType = this.hasRoastType(modeType) ? modeType : type;
-        return this.getRoast(chosenType, this.settings?.roastMode, replacements);
-    }
-
-    hasRoastType(type) {
-        const roastBank = window.PLOT_TWISTED_ROASTS || {};
-        const mode = this.settings?.roastMode || roastBank.defaultIntensity || 'clean';
-        const bank = roastBank.byMode || {};
-        const modeBucket = bank[mode] || {};
-        const fallbackBucket = bank[roastBank.defaultIntensity] || {};
-        return Array.isArray(modeBucket[type]) || Array.isArray(fallbackBucket[type]);
+        return this.getRoast(type, replacements);
     }
 
     getResultLine(solved, total) {
-        if (solved === total) return 'Perfect score. Roll credits and act humble.';
-        if (solved >= Math.ceil(total * 0.75)) return 'Your streaming history has finally paid rent.';
-        if (solved >= Math.ceil(total * 0.4)) return 'Respectable. Chaotic, but respectable.';
-        return 'Your movie memory has entered witness protection.';
+        if (solved === total) return this.getRoast('perfectScoreResult');
+        if (solved >= Math.ceil(total * 0.75)) return this.getRoast('highScoreResult');
+        if (solved >= Math.ceil(total * 0.4)) return this.getRoast('midScoreResult');
+        return this.getRoast('lowScoreResult');
     }
 
     getDailyResultLine(correct) {
-        if (correct >= 4) return 'Daily challenge complete. Your movie memory has filed a report.';
-        if (correct >= 2) return 'One clue. One ego bruise.';
-        return 'Come back tomorrow for another cinematic self-assessment.';
+        if (correct >= 3) return this.getRoast('dailyChallengeSuccess');
+        return this.getRoast('dailyChallengeMiss');
     }
 
     // ============================================
@@ -1208,47 +1182,149 @@ class PlotTwisted {
         return matrix[b.length][a.length];
     }
 
-    normalizeTitle(str) {
-        return str
+    normalizeAnswer(str = '') {
+        return String(str)
             .toLowerCase()
-            .replace(/\([^)]*\)/g, '')
-            .replace(/^the\s+/g, '')
-            .replace(/[^a-z0-9]/g, ' ')
+            .replace(/[’‘`]/g, "'")
+            .replace(/&/g, ' and ')
+            .replace(/\([^)]*\b(19|20)\d{2}\b[^)]*\)/g, ' ')
+            .replace(/[:\-–—]/g, ' ')
+            .replace(/[^a-z0-9'\s]/g, ' ')
+            .replace(/\b(the|a|an)\s+/g, '')
+            .replace(/\band\b/g, 'and')
             .replace(/\s+/g, ' ')
             .trim();
     }
-    
-    // Strip numbers for more lenient matching
-    stripNumbers(str) {
-        return str.replace(/[0-9]/g, '').replace(/\s+/g, ' ').trim();
+
+    buildFranchiseAliases(normalizedTitle) {
+        const aliases = new Set();
+        const franchiseRoots = [
+            'ice age',
+            'puss in boots',
+            'cloudy with chance of meatballs',
+            'cloudy with a chance of meatballs',
+            'spongebob movie',
+            'spongebob',
+            'star wars',
+            'jurassic world',
+            'matrix',
+            'avatar',
+            'lord of rings',
+            'lord of the rings',
+            'harry potter'
+        ];
+
+        franchiseRoots.forEach((root) => {
+            if (normalizedTitle.includes(root)) aliases.add(root);
+        });
+
+        return aliases;
+    }
+
+    getAnswerAliases(title, clueObject = {}) {
+        const aliases = new Set();
+        const add = (value) => {
+            const normalized = this.normalizeAnswer(value);
+            if (normalized) aliases.add(normalized);
+        };
+
+        add(title);
+        if (Array.isArray(clueObject.aliases)) clueObject.aliases.forEach(add);
+
+        const rawTitle = String(title || '').replace(/\([^)]*\)/g, '').trim();
+        const subtitleParts = rawTitle.split(/\s*[:\-–—]\s*/).filter(Boolean);
+        if (subtitleParts.length > 1) {
+            add(subtitleParts[0]);
+            add(subtitleParts.slice(1).join(' '));
+        }
+
+        add(rawTitle.replace(/\s+\d+$/, '').trim());
+
+        const normalizedTitle = this.normalizeAnswer(rawTitle);
+        this.buildFranchiseAliases(normalizedTitle).forEach((a) => aliases.add(a));
+
+        if (normalizedTitle.includes('spongebob movie')) add('spongebob');
+        if (normalizedTitle.startsWith('star wars ')) add(normalizedTitle.replace(/^star wars\s+/, ''));
+        if (normalizedTitle.startsWith('matrix ')) add('matrix');
+
+        return [...aliases];
     }
 
     getDisplayTitle(title) {
         return title.replace(/\([^)]*\)/g, '').trim();
     }
 
-    isFuzzyMatch(guess, actual) {
-        const g = this.normalizeTitle(guess);
-        const a = this.normalizeTitle(actual);
+    getSimilarity(a, b) {
+        if (!a || !b) return 0;
+        const distance = this.levenshtein(a, b);
+        return 1 - distance / Math.max(a.length, b.length);
+    }
 
-        if (!g) return false;
-        if (g === a) return true;
+    isAnswerMatch(userGuess, correctTitle, clueObject = {}) {
+        const guess = this.normalizeAnswer(userGuess);
+        if (!guess) return { isMatch: false, isNearMiss: false };
 
-        // Check with numbers
-        const distance = this.levenshtein(g, a);
-        const maxErrors = Math.floor(a.length * this.config.fuzzyThreshold);
-        if (distance <= Math.max(1, maxErrors)) return true;
-        
-        // Also check without numbers (forgive "Inside Out" for "Inside Out 2")
-        const gNoNum = this.stripNumbers(g);
-        const aNoNum = this.stripNumbers(a);
-        
-        if (gNoNum === aNoNum) return true;
-        
-        const distanceNoNum = this.levenshtein(gNoNum, aNoNum);
-        const maxErrorsNoNum = Math.floor(aNoNum.length * this.config.fuzzyThreshold);
-        
-        return distanceNoNum <= Math.max(1, maxErrorsNoNum);
+        const aliases = this.getAnswerAliases(correctTitle, clueObject);
+        const aliasSet = new Set(aliases);
+        if (aliasSet.has(guess)) return { isMatch: true, isNearMiss: false };
+
+        const shortestAliasLength = aliases.reduce((min, item) => Math.min(min, item.length), Infinity);
+        if (guess.length < 4 || shortestAliasLength < 4) return { isMatch: false, isNearMiss: false };
+
+        const hasMeaningfulSubstring = aliases.some((alias) =>
+            (guess.length >= 4 && alias.includes(guess)) ||
+            (alias.length >= 4 && guess.includes(alias))
+        );
+        if (hasMeaningfulSubstring) return { isMatch: true, isNearMiss: false };
+
+        const tokenSet = new Set(guess.split(' '));
+        const highTokenOverlap = aliases.some((alias) => {
+            const aliasTokens = alias.split(' ');
+            const overlap = aliasTokens.filter((t) => tokenSet.has(t)).length;
+            return overlap >= 2 && overlap / Math.max(aliasTokens.length, tokenSet.size) >= 0.65;
+        });
+        if (highTokenOverlap) return { isMatch: true, isNearMiss: false };
+
+        const highestSimilarity = aliases.reduce((best, alias) => Math.max(best, this.getSimilarity(guess, alias)), 0);
+        if (highestSimilarity >= 0.82) return { isMatch: true, isNearMiss: false };
+
+        return { isMatch: false, isNearMiss: highestSimilarity >= 0.68 };
+    }
+
+    runAnswerMatcherSelfTest() {
+        const expectedCorrect = [
+            ['Ice Age', 'Ice Age: The Meltdown'],
+            ['ice age', 'Ice Age: Continental Drift'],
+            ['Puss in Boots', 'Puss in Boots: The Last Wish'],
+            ['Star Wars', 'Star Wars: The Empire Strikes Back'],
+            ['Empire Strikes Back', 'Star Wars: The Empire Strikes Back'],
+            ['Jurassic World', 'Jurassic World: Fallen Kingdom'],
+            ['Matrix', 'The Matrix Reloaded'],
+            ['Spongebob', 'The SpongeBob Movie: Sponge Out of Water'],
+            ['Lion King', 'The Lion King'],
+            ['Cloudy with a Chance of Meatballs', 'Cloudy with a Chance of Meatballs 2']
+        ];
+        const expectedStrict = [
+            ['up', 'Up', true],
+            ['it', 'The Matrix', false],
+            ['cars', 'Cars', true],
+            ['cars', 'Scarface', false]
+        ];
+
+        const failed = [];
+        expectedCorrect.forEach(([guess, answer]) => {
+            if (!this.isAnswerMatch(guess, answer).isMatch) failed.push(`Expected match: "${guess}" vs "${answer}"`);
+        });
+        expectedStrict.forEach(([guess, answer, expected]) => {
+            const actual = this.isAnswerMatch(guess, answer).isMatch;
+            if (actual !== expected) failed.push(`Expected ${expected} for "${guess}" vs "${answer}", got ${actual}`);
+        });
+
+        if (failed.length) {
+            console.warn('Matcher self-test found issues:', failed);
+        } else {
+            console.log('✅ Answer matcher self-test passed.');
+        }
     }
 
     loadSeenClues() {
