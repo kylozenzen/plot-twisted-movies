@@ -35,6 +35,7 @@ class PlotTwisted {
         this.state = {
             currentScreen: 'start',
             selectedCategory: null,
+            currentMode: 'classic',
             questions: [],
             currentIndex: 0,
             totalScore: 0,
@@ -96,6 +97,7 @@ class PlotTwisted {
     cacheDOM() {
         this.screens = {
             start: document.getElementById('startScreen'),
+            mode: document.getElementById('modeScreen'),
             category: document.getElementById('categoryScreen'),
             howToPlay: document.getElementById('howToPlayScreen'),
             settings: document.getElementById('settingsScreen'),
@@ -108,6 +110,8 @@ class PlotTwisted {
         this.dom = {
             categoryGrid: document.getElementById('categoryGrid'),
             startGameBtn: document.getElementById('startGameBtn'),
+            modeContinueBtn: document.getElementById('modeContinueBtn'),
+            gameMeta: document.getElementById('gameMeta'),
             clueText: document.getElementById('clueText'),
             clueCategory: document.getElementById('clueCategory'),
             clueCard: document.getElementById('clueCard'),
@@ -120,6 +124,15 @@ class PlotTwisted {
             keyboard: document.getElementById('keyboard'),
             giveUpBtn: document.getElementById('giveUpBtn'),
             solveBtn: document.getElementById('solveBtn'),
+            marqueePanel: document.getElementById('marqueePanel'),
+            classicPanel: document.getElementById('classicPanel'),
+            classicGuessInput: document.getElementById('classicGuessInput'),
+            classicSubmitBtn: document.getElementById('classicSubmitBtn'),
+            classicRevealBtn: document.getElementById('classicRevealBtn'),
+            classicNextBtn: document.getElementById('classicNextBtn'),
+            feedbackText: document.getElementById('feedbackText'),
+            feedbackPanel: document.getElementById('feedbackPanel'),
+            revealText: document.getElementById('revealText'),
             solveModal: document.getElementById('solveModal'),
             solveInput: document.getElementById('solveInput'),
             quitModal: document.getElementById('quitModal'),
@@ -149,13 +162,16 @@ class PlotTwisted {
             dailyScoreText: document.getElementById('dailyScoreText'),
             dailyBreakdown: document.getElementById('dailyBreakdown'),
             dailyResultsDate: document.getElementById('dailyResultsDate'),
-            dailyNextPuzzle: document.getElementById('dailyNextPuzzle')
+            dailyNextPuzzle: document.getElementById('dailyNextPuzzle'),
+            dailyResultLine: document.getElementById('dailyResultLine'),
+            finalResultLine: document.getElementById('finalResultLine'),
+            copyToast: document.getElementById('copyToast')
         };
     }
 
     bindEvents() {
         // Start screen
-        document.getElementById('quickPlayBtn').onclick = () => this.showCategoryScreen();
+        document.getElementById('quickPlayBtn').onclick = () => this.showModeScreen();
         document.getElementById('dailyBtn').onclick = () => this.startDaily();
         document.getElementById('howToPlayBtn').onclick = () => this.showScreen('howToPlay');
         document.getElementById('howToBackBtn').onclick = () => this.showScreen('start');
@@ -168,12 +184,27 @@ class PlotTwisted {
         this.dom.resetBtn?.addEventListener('click', () => this.resetProgress());
         
         // Category
-        document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
+        document.getElementById('modeBackBtn').onclick = () => this.showScreen('start');
+        this.dom.modeContinueBtn.onclick = () => this.showCategoryScreen();
+        document.querySelectorAll('.mode-card').forEach((card) => {
+            card.addEventListener('click', () => this.selectMode(card.dataset.mode));
+        });
+
+        document.getElementById('categoryBackBtn').onclick = () => this.showScreen('mode');
         this.dom.startGameBtn.onclick = () => this.startGame();
         
         // Game
         this.dom.giveUpBtn.onclick = () => this.giveUp();
         this.dom.solveBtn.onclick = () => this.openSolveModal();
+        this.dom.classicSubmitBtn.onclick = () => this.submitClassicGuess();
+        this.dom.classicRevealBtn.onclick = () => this.revealClassicAnswer();
+        this.dom.classicNextBtn.onclick = () => this.nextQuestion();
+        this.dom.classicGuessInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.submitClassicGuess();
+            }
+        });
         
         // Quit
         document.getElementById('quitBtn').onclick = () => this.dom.quitModal.classList.add('active');
@@ -192,7 +223,7 @@ class PlotTwisted {
         
         // Game over
         document.getElementById('playAgainBtn').onclick = () => this.playAgain();
-        document.getElementById('shareBtn').onclick = () => this.shareScore();
+        document.getElementById('copyResultBtn').onclick = () => this.shareScore();
         document.getElementById('menuBtn').onclick = () => this.showScreen('start');
         
         // Daily
@@ -288,10 +319,27 @@ class PlotTwisted {
     // ============================================
 
     showCategoryScreen() {
+        if (!this.state.currentMode) {
+            this.showModeScreen();
+            return;
+        }
         this.renderCategories();
         this.state.selectedCategory = null;
         this.dom.startGameBtn.disabled = true;
         this.showScreen('category');
+    }
+
+    showModeScreen() {
+        this.state.currentMode = null;
+        this.dom.modeContinueBtn.disabled = true;
+        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+        this.showScreen('mode');
+    }
+
+    selectMode(mode) {
+        this.state.currentMode = mode;
+        document.querySelectorAll('.mode-card').forEach(c => c.classList.toggle('selected', c.dataset.mode === mode));
+        this.dom.modeContinueBtn.disabled = false;
     }
 
     renderCategories() {
@@ -329,6 +377,7 @@ class PlotTwisted {
 
     startGame() {
         const category = this.state.selectedCategory;
+        if (!this.state.currentMode) this.state.currentMode = 'classic';
         const allClues = this.clueBank[category];
         
         const seenTitles = this.state.seenClues[category] || [];
@@ -379,11 +428,43 @@ class PlotTwisted {
         });
         
         this.dom.clueText.textContent = q.clue;
-        this.dom.clueCategory.textContent = this.state.selectedCategory;
+        this.dom.clueCategory.textContent = `${this.state.selectedCategory} • ${this.state.currentMode === 'classic' ? 'Classic Mode' : 'Marquee Mode'}`;
+        this.dom.gameMeta.textContent = `${this.state.currentMode === 'classic' ? 'Classic' : 'Marquee'} • ${this.state.selectedCategory}`;
         this.updatePot();
         this.updateProgress();
-        this.renderTitle();
-        this.renderKeyboard();
+        this.renderModeLayout();
+
+        if (this.state.currentMode === 'marquee') {
+            this.renderTitle();
+            this.renderKeyboard();
+        } else {
+            this.dom.classicGuessInput.value = '';
+            this.dom.classicGuessInput.disabled = false;
+            this.dom.classicSubmitBtn.disabled = false;
+            this.dom.classicRevealBtn.disabled = false;
+            this.dom.classicNextBtn.textContent = 'Next Question';
+            this.dom.classicNextBtn.style.display = 'none';
+            this.setFeedback('Type the title. Trust your movie memory. Dangerous, but brave.', 'helper');
+            this.setRevealText('Answer reveal appears here if you need a humbling screening.');
+        }
+    }
+
+    renderModeLayout() {
+        const classic = this.state.currentMode === 'classic';
+        this.dom.classicPanel.style.display = classic ? 'flex' : 'none';
+        this.dom.marqueePanel.style.display = classic ? 'none' : 'flex';
+    }
+
+    setFeedback(text, tone='helper') {
+        this.dom.feedbackText.textContent = text;
+        this.dom.feedbackText.className = `feedback-text ${tone}`;
+        this.dom.feedbackPanel.classList.remove('feedback-animate');
+        void this.dom.feedbackPanel.offsetWidth;
+        this.dom.feedbackPanel.classList.add('feedback-animate');
+    }
+
+    setRevealText(text) {
+        this.dom.revealText.textContent = text;
     }
 
     renderTitle() {
@@ -449,6 +530,7 @@ class PlotTwisted {
     }
 
     guessLetter(letter) {
+        if (this.state.currentMode !== 'marquee') return;
         if (this.state.guessedLetters.includes(letter)) return;
         
         this.state.guessedLetters.push(letter);
@@ -573,6 +655,49 @@ class PlotTwisted {
         }
     }
 
+    submitClassicGuess() {
+        if (this.state.currentMode !== 'classic') return;
+        const guess = this.dom.classicGuessInput.value.trim();
+        if (!guess) return;
+
+        const q = this.state.questions[this.state.currentIndex];
+        const isCorrect = this.isFuzzyMatch(guess, q.title);
+
+        this.dom.classicGuessInput.disabled = true;
+        this.dom.classicSubmitBtn.disabled = true;
+        this.dom.classicRevealBtn.disabled = true;
+
+        if (isCorrect) {
+            const points = this.config.maxPot;
+            this.state.results.push({ title: q.title, points, correct: true });
+            this.state.totalScore += points;
+            this.updateTotalScore();
+            this.setFeedback(this.getModeRoast('correctAnswer'), 'correct');
+            this.setRevealText(q.title.toUpperCase());
+            this.dom.classicNextBtn.style.display = 'inline-flex';
+        } else {
+            this.state.strikes--;
+            this.updateStrikes();
+            this.state.results.push({ title: q.title, points: 0, correct: false });
+            this.setFeedback(this.getModeRoast('wrongAnswer'), 'incorrect');
+            this.setRevealText(this.getModeRoast('revealAnswer', { TITLE: q.title.toUpperCase() }));
+            this.dom.classicNextBtn.style.display = 'inline-flex';
+            if (this.state.strikes <= 0) this.dom.classicNextBtn.textContent = 'Finish Game';
+        }
+    }
+
+    revealClassicAnswer() {
+        if (this.state.currentMode !== 'classic') return;
+        const q = this.state.questions[this.state.currentIndex];
+        this.state.results.push({ title: q.title, points: 0, correct: false, gaveUp: true });
+        this.dom.classicGuessInput.disabled = true;
+        this.dom.classicSubmitBtn.disabled = true;
+        this.dom.classicRevealBtn.disabled = true;
+        this.setFeedback(this.getModeRoast('revealAnswer', { TITLE: q.title.toUpperCase() }), 'incorrect');
+        this.setRevealText(q.title.toUpperCase());
+        this.dom.classicNextBtn.style.display = 'inline-flex';
+    }
+
     handleCorrect() {
         const q = this.state.questions[this.state.currentIndex];
         const multiplier = this.getMultiplier();
@@ -625,7 +750,7 @@ class PlotTwisted {
         resultCard.classList.remove('celebrate');
 
         const roastType = isCorrect ? 'correctAnswer' : ((gaveUp || isGameOver) ? 'revealAnswer' : 'wrongAnswer');
-        const commentary = this.getRoast(roastType, this.settings?.roastMode, { TITLE: title });
+        const commentary = this.getModeRoast(roastType, { TITLE: title });
 
         this.dom.resultIcon.textContent = isCorrect ? '🎬' : (gaveUp ? '🏳️' : '❌');
         this.dom.resultTitle.textContent = commentary;
@@ -693,6 +818,10 @@ class PlotTwisted {
     }
 
     nextQuestion() {
+        if (this.state.currentMode === 'classic' && this.state.strikes <= 0) {
+            this.endGame();
+            return;
+        }
         this.state.currentIndex++;
         
         if (this.state.currentIndex >= this.state.questions.length) {
@@ -708,6 +837,7 @@ class PlotTwisted {
         
         this.dom.finalScore.textContent = this.state.totalScore;
         this.dom.finalSubtitle.textContent = `${solved} of ${total} movies solved`;
+        this.dom.finalResultLine.textContent = this.getResultLine(solved, total);
         
         this.dom.finalBreakdown.innerHTML = '';
         this.state.results.forEach(r => {
@@ -729,27 +859,46 @@ class PlotTwisted {
         const solved = this.state.results.filter(r => r.correct).length;
         const total = this.state.results.length;
         const category = this.state.selectedCategory;
-        
-        const emoji = this.state.results.map(r => r.correct ? '🟩' : (r.gaveUp ? '🟨' : '🟥')).join('');
-        
-        const text = `🎬 Plot Twisted - ${category}
-🏆 Score: ${this.state.totalScore}
-${emoji}
-${solved}/${total} correct
+        if (!this.state.currentMode) this.state.currentMode = 'classic';
+        const modeLabel = this.state.currentMode === 'classic' ? 'Classic Mode' : 'Marquee Mode';
 
-Can you beat me?`;
-        
-        if (navigator.share) {
-            navigator.share({ text }).catch(() => this.copyToClipboard(text));
-        } else {
-            this.copyToClipboard(text);
-        }
+        const text = `Plot Twisted\nI played ${modeLabel} in ${category} and scored ${this.state.totalScore} (${solved}/${total} correct).\n${this.getResultLine(solved, total)}\nPlay: ${window.location.origin || 'Open Plot Twisted and play.'}`;
+        this.copyToClipboard(text);
     }
     
     copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Score copied to clipboard!');
-        }).catch(() => {});
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                this.showCopyToast('Copied. Go emotionally damage the group chat.');
+            }).catch(() => this.copyWithFallback(text));
+            return;
+        }
+        this.copyWithFallback(text);
+    }
+
+    copyWithFallback(text) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+            document.execCommand('copy');
+            this.showCopyToast('Copied (fallback). Go emotionally damage the group chat.');
+        } catch (e) {
+            this.showCopyToast('Clipboard blocked. Copy manually from the prompt.');
+            prompt('Copy your result:', text);
+        }
+        document.body.removeChild(temp);
+    }
+
+    showCopyToast(message) {
+        this.dom.copyToast.textContent = message;
+        this.dom.copyToast.classList.add('show');
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => this.dom.copyToast.classList.remove('show'), 2200);
     }
 
     playAgain() {
@@ -921,6 +1070,7 @@ Can you beat me?`;
         }
         
         this.dom.dailyScoreText.textContent = `${correct}/5 Correct • ${total} pts`;
+        this.dom.dailyResultLine.textContent = this.getDailyResultLine(correct);
         
         // Breakdown
         this.dom.dailyBreakdown.innerHTML = '';
@@ -958,21 +1108,41 @@ Can you beat me?`;
         const results = this.state.dailyResults;
         const correct = results.filter(r => r.correct).length;
         const total = results.reduce((sum, r) => sum + r.points, 0);
-        
-        const emoji = results.map(r => r.correct ? '⭐' : '☆').join('');
-        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        
-        const text = `🎬 Plot Twisted Daily - ${today}
-${emoji} ${correct}/5
-Score: ${total}
 
-Can you beat me?`;
-        
-        if (navigator.share) {
-            navigator.share({ text }).catch(() => this.copyToClipboard(text));
-        } else {
-            this.copyToClipboard(text);
+        const text = `Today's Plot Twisted Daily\nResult: ${correct}/5 • ${total} pts\n${this.getDailyResultLine(correct)}\nPlay: ${window.location.origin || 'Open Plot Twisted and play.'}`;
+        this.copyToClipboard(text);
+    }
+
+    getModeRoast(type, replacements = {}) {
+        if (this.state.currentScreen === 'daily' || this.state.currentScreen === 'dailyResults') {
+            return this.getRoast('dailyChallengeLine', this.settings?.roastMode, replacements);
         }
+        const modePrefix = this.state.currentMode === 'classic' ? 'classic' : 'marquee';
+        const modeType = `${modePrefix}_${type}`;
+        const chosenType = this.hasRoastType(modeType) ? modeType : type;
+        return this.getRoast(chosenType, this.settings?.roastMode, replacements);
+    }
+
+    hasRoastType(type) {
+        const roastBank = window.PLOT_TWISTED_ROASTS || {};
+        const mode = this.settings?.roastMode || roastBank.defaultIntensity || 'clean';
+        const bank = roastBank.byMode || {};
+        const modeBucket = bank[mode] || {};
+        const fallbackBucket = bank[roastBank.defaultIntensity] || {};
+        return Array.isArray(modeBucket[type]) || Array.isArray(fallbackBucket[type]);
+    }
+
+    getResultLine(solved, total) {
+        if (solved === total) return 'Perfect score. Roll credits and act humble.';
+        if (solved >= Math.ceil(total * 0.75)) return 'Your streaming history has finally paid rent.';
+        if (solved >= Math.ceil(total * 0.4)) return 'Respectable. Chaotic, but respectable.';
+        return 'Your movie memory has entered witness protection.';
+    }
+
+    getDailyResultLine(correct) {
+        if (correct >= 4) return 'Daily challenge complete. Your movie memory has filed a report.';
+        if (correct >= 2) return 'One clue. One ego bruise.';
+        return 'Come back tomorrow for another cinematic self-assessment.';
     }
 
     // ============================================

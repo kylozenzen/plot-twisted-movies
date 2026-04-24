@@ -55,6 +55,28 @@
         </div>
     </div>
 
+    <!-- MODE SCREEN -->
+    <div id="modeScreen" class="screen">
+        <div class="category-header">
+            <h2>Choose Your Mode</h2>
+            <p>Classic memory flex or Marquee letter reveal</p>
+        </div>
+        <div class="mode-grid" id="modeGrid">
+            <button class="mode-card" data-mode="classic">
+                <div class="mode-title">Classic Mode</div>
+                <div class="mode-desc">Type the title from memory. One clue. One cinematic gamble.</div>
+            </button>
+            <button class="mode-card" data-mode="marquee">
+                <div class="mode-title">Marquee Mode</div>
+                <div class="mode-desc">Reveal letters, buy vowels emotionally, then solve.</div>
+            </button>
+        </div>
+        <div class="category-actions">
+            <button class="btn btn-back" id="modeBackBtn">Back</button>
+            <button class="btn btn-start" id="modeContinueBtn" disabled>Continue</button>
+        </div>
+    </div>
+
     <!-- CATEGORY SCREEN -->
     <div id="categoryScreen" class="screen">
         <div class="category-header">
@@ -77,15 +99,15 @@
         <div class="how-to-content">
             <div class="how-to-section">
                 <h3>🎬 The Goal</h3>
-                <p>Read the twisted (but technically accurate) plot summary and guess the movie title. Use the keyboard to guess letters, or go for the full solve!</p>
+                <p>Read the twisted (but technically accurate) plot summary and guess the movie title. Play Classic Mode for pure typing memory or Marquee Mode for letter reveals.</p>
             </div>
             <div class="how-to-section">
                 <h3>💰 Scoring</h3>
-                <p>Each movie starts at 500 points. Wrong consonant guesses cost 30 points (vowels are free!). Solve early with more letters hidden for bonus multipliers (1.5x or 1.25x)!</p>
+                <p>Each movie starts at 500 points. In Marquee Mode, wrong consonant guesses cost 30 points (vowels are free). In Classic Mode, correct answers bank the full pot.</p>
             </div>
             <div class="how-to-section">
                 <h3>❌ Strikes</h3>
-                <p>You have 3 strikes for the entire game. Wrong full solve attempts cost a strike. Run out and it's game over!</p>
+                <p>You have 3 strikes for the entire game. Wrong full solve attempts cost a strike. Run out and it's game over.</p>
             </div>
             <div class="how-to-section">
                 <h3>📅 Daily Challenge</h3>
@@ -143,6 +165,7 @@
     <div id="gameScreen" class="screen">
         <div class="game-header">
             <div class="game-logo">Plot Twisted</div>
+            <div class="game-meta" id="gameMeta">Marquee • Family</div>
             <div class="game-stats">
                 <div class="game-stat">
                     <div class="game-stat-label">Score</div>
@@ -161,22 +184,47 @@
         </div>
         <div class="game-content">
             <div class="progress-track" id="progressTrack"></div>
-            <div class="clue-card fade-in" id="clueCard">
-                <div class="clue-text" id="clueText"></div>
-                <div class="clue-category" id="clueCategory"></div>
-            </div>
-            <div class="points-pot">
-                <span class="pot-label">Worth</span>
-                <span class="pot-value" id="potValue">500</span>
-                <span class="pot-multiplier" id="potMultiplier"></span>
-            </div>
-            <div class="title-reveal" id="titleReveal">
-                <div class="title-letters" id="titleLetters"></div>
-            </div>
-            <div class="keyboard" id="keyboard"></div>
-            <div class="action-buttons">
-                <button class="btn btn-giveup" id="giveUpBtn">Give Up</button>
-                <button class="btn btn-solve" id="solveBtn">I Know It!</button>
+            <div class="game-main-layout">
+                <div class="clue-column">
+                    <div class="clue-card fade-in" id="clueCard">
+                        <div class="clue-text" id="clueText"></div>
+                        <div class="clue-category" id="clueCategory"></div>
+                    </div>
+                </div>
+                <div class="interaction-column">
+                    <div class="classic-panel" id="classicPanel">
+                        <div class="classic-input-wrap">
+                            <input type="text" class="classic-input" id="classicGuessInput" placeholder="Type the movie title..." autocomplete="off" autocapitalize="off">
+                            <button class="btn btn-submit-classic" id="classicSubmitBtn">Submit Guess</button>
+                        </div>
+                        <div class="feedback-panel" id="feedbackPanel" aria-live="polite">
+                            <div class="feedback-text" id="feedbackText">Type the title. Trust your movie memory. Dangerous, but brave.</div>
+                        </div>
+                        <div class="reveal-panel" id="revealPanel" aria-live="polite">
+                            <div class="reveal-text" id="revealText">Answer reveal appears here if you need a humbling screening.</div>
+                        </div>
+                        <div class="classic-actions" id="classicActions">
+                            <button class="btn btn-giveup" id="classicRevealBtn">Reveal Answer</button>
+                            <button class="btn btn-solve" id="classicNextBtn" style="display:none;">Next Question</button>
+                        </div>
+                    </div>
+
+                    <div class="marquee-panel" id="marqueePanel">
+                        <div class="points-pot">
+                            <span class="pot-label">Worth</span>
+                            <span class="pot-value" id="potValue">500</span>
+                            <span class="pot-multiplier" id="potMultiplier"></span>
+                        </div>
+                        <div class="title-reveal" id="titleReveal">
+                            <div class="title-letters" id="titleLetters"></div>
+                        </div>
+                        <div class="keyboard" id="keyboard"></div>
+                        <div class="action-buttons">
+                            <button class="btn btn-giveup" id="giveUpBtn">Give Up</button>
+                            <button class="btn btn-solve" id="solveBtn">I Know It!</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -209,9 +257,10 @@
             <div class="daily-results-date" id="dailyResultsDate"></div>
             <div class="daily-score-display" id="dailyScoreDisplay"></div>
             <div class="daily-score-text" id="dailyScoreText">3/5 Correct • 300 pts</div>
+            <div class="daily-result-line" id="dailyResultLine"></div>
             <div class="daily-breakdown" id="dailyBreakdown"></div>
             <div class="daily-results-actions">
-                <button class="btn btn-share" id="dailyShareBtn">Share Results</button>
+                <button class="btn btn-share" id="dailyShareBtn">Copy Daily Result</button>
                 <button class="btn btn-menu" id="dailyMenuBtn">Main Menu</button>
             </div>
             <div class="daily-next-puzzle" id="dailyNextPuzzle">Next puzzle in 12:34:56</div>
@@ -224,10 +273,11 @@
             <div class="final-score-label">FINAL SCORE</div>
             <div class="final-score" id="finalScore">0</div>
             <div class="final-score-subtitle" id="finalSubtitle">5 of 5 movies solved</div>
+            <div class="final-result-line" id="finalResultLine"></div>
             <div class="final-breakdown" id="finalBreakdown"></div>
             <div class="game-over-actions">
                 <button class="btn btn-play-again" id="playAgainBtn">Play Again</button>
-                <button class="btn btn-share" id="shareBtn">Share Score</button>
+                <button class="btn btn-share" id="copyResultBtn">Copy Result</button>
                 <button class="btn btn-menu" id="menuBtn">Main Menu</button>
             </div>
         </div>
@@ -267,6 +317,8 @@
             <button class="btn btn-continue" id="continueBtn">Continue</button>
         </div>
     </div>
+
+    <div class="copy-toast" id="copyToast" aria-live="polite"></div>
 
     <script src="./js/roasts.js"></script>
     <script src="./js/game.js"></script>
