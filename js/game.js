@@ -1,0 +1,1107 @@
+// ============================================
+// SVG ICONS FOR CATEGORIES
+// ============================================
+
+const CATEGORY_ICONS = {
+    "Family": `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-2 30l-8-8 2.83-2.83L22 28.34l13.17-13.17L38 18 22 34z" opacity="0"/><path d="M35 16c0-2.76-2.24-5-5-5s-5 2.24-5 5c0 1.86 1.03 3.47 2.54 4.33L24 28l-3.54-7.67C21.97 19.47 23 17.86 23 16c0-2.76-2.24-5-5-5s-5 2.24-5 5c0 1.86 1.03 3.47 2.54 4.33L8 38h32L32.46 20.33C33.97 19.47 35 17.86 35 16zM18 14c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6 20l3-8 3 8H24zm6-18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/></svg>`,
+    "Sci-Fi": `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 2L4 14v20l20 12 20-12V14L24 2zm0 4.5l14 8.4v15.2l-14 8.4-14-8.4V14.9l14-8.4zM24 16c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>`,
+    "Fantasy": `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 4l-6 18h-14l11.5 8.5-4.5 13.5 13-9.5 13 9.5-4.5-13.5L44 22H30L24 4z"/></svg>`,
+    "Superhero": `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm0 6c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 28c-5.52 0-10.29-3.23-12.54-7.9.06-4.15 8.36-6.43 12.54-6.43s12.48 2.28 12.54 6.43C33.29 34.77 29.52 38 24 38z"/><path d="M15 20l-3 4 6 2-3-6zm18 0l-3 6 6-2-3-4z"/></svg>`,
+    "Emotional Damage": `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 44l-2.5-2.27C10.3 31.52 4 25.79 4 18.5 4 12.42 8.42 8 14.5 8c3.43 0 6.73 1.6 8.86 4.11L24 12.8l.64-.69C26.77 9.6 30.07 8 33.5 8 39.58 8 44 12.42 44 18.5c0 7.29-6.3 13.02-17.5 23.23L24 44z"/><path d="M19 22l5 5 5-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
+    "Streaming Hits": `<svg viewBox="0 0 48 48" fill="currentColor"><rect x="6" y="10" width="36" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="3"/><path d="M20 18v8l7-4-7-4z"/><line x1="16" y1="38" x2="32" y2="38" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`
+};
+
+const DAILY_QUOTES = [
+    { quote: "Every great film should seem new every time you see it.", source: "Roger Ebert" },
+    { quote: "Cinema is a matter of what's in the frame and what's out.", source: "Martin Scorsese" },
+    { quote: "A film is never really good unless the camera is an eye in the head of a poet.", source: "Orson Welles" },
+    { quote: "Movies are like an expensive form of therapy for me.", source: "Tim Burton" },
+    { quote: "The cinema is truth twenty-four times per second.", source: "Jean-Luc Godard" },
+    { quote: "Film lovers are sick people.", source: "François Truffaut" },
+    { quote: "I don't dream at night, I dream all day; I dream for a living.", source: "Steven Spielberg" },
+    { quote: "Cinema is the most beautiful fraud in the world.", source: "Jean-Luc Godard" },
+    { quote: "A story should have a beginning, a middle and an end, but not necessarily in that order.", source: "Jean-Luc Godard" },
+    { quote: "Every single movie is a miracle.", source: "Guillermo del Toro" },
+    { quote: "The length of a film should be directly related to the endurance of the human bladder.", source: "Alfred Hitchcock" },
+    { quote: "If it can be written, or thought, it can be filmed.", source: "Stanley Kubrick" }
+];
+
+// ============================================
+// GAME ENGINE
+// ============================================
+
+class PlotTwisted {
+    constructor() {
+        this.state = {
+            currentScreen: 'start',
+            selectedCategory: null,
+            questions: [],
+            currentIndex: 0,
+            totalScore: 0,
+            strikes: 3,
+            currentPot: 500,
+            revealedIndices: [],
+            guessedLetters: [],
+            results: [],
+            seenClues: {},
+            // Daily
+            dailyQuestions: [],
+            dailyIndex: 0,
+            dailyResults: [],
+            dailyCompleted: false
+        };
+        
+        this.config = {
+            maxPot: 500,
+            wrongLetterCost: 30,
+            minPot: 50,
+            questionsPerRound: 5,
+            fuzzyThreshold: 0.18
+        };
+        
+        this.clueBank = null;
+        this.settings = { sound: false, roastMode: 'clean' };
+    }
+
+    async init() {
+        this.cacheDOM();
+        this.bindEvents();
+        this.loadSettings();
+        this.loadSeenClues();
+        
+        await this.loadClueDatabase();
+        
+        this.loadDailyQuote();
+        this.checkDailyStatus();
+        this.showScreen('start');
+    }
+    
+    async loadClueDatabase() {
+        try {
+            const response = await fetch('./clues.json');
+            if (!response.ok) throw new Error('Failed to load clues');
+            this.clueBank = await response.json();
+            
+            document.getElementById('quickPlayBtn').disabled = false;
+            document.getElementById('dailyBtn').disabled = false;
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            
+            console.log('✅ Clue database loaded:', Object.keys(this.clueBank));
+        } catch (err) {
+            console.error("❌ Clues failed to load:", err);
+            document.querySelector('.loading-text').textContent = 'Failed to load. Please refresh.';
+        }
+    }
+
+    cacheDOM() {
+        this.screens = {
+            start: document.getElementById('startScreen'),
+            category: document.getElementById('categoryScreen'),
+            howToPlay: document.getElementById('howToPlayScreen'),
+            settings: document.getElementById('settingsScreen'),
+            game: document.getElementById('gameScreen'),
+            daily: document.getElementById('dailyScreen'),
+            dailyResults: document.getElementById('dailyResultsScreen'),
+            gameOver: document.getElementById('gameOverScreen')
+        };
+        
+        this.dom = {
+            categoryGrid: document.getElementById('categoryGrid'),
+            startGameBtn: document.getElementById('startGameBtn'),
+            clueText: document.getElementById('clueText'),
+            clueCategory: document.getElementById('clueCategory'),
+            clueCard: document.getElementById('clueCard'),
+            titleLetters: document.getElementById('titleLetters'),
+            potValue: document.getElementById('potValue'),
+            potMultiplier: document.getElementById('potMultiplier'),
+            totalScore: document.getElementById('totalScore'),
+            strikesDisplay: document.getElementById('strikesDisplay'),
+            progressTrack: document.getElementById('progressTrack'),
+            keyboard: document.getElementById('keyboard'),
+            giveUpBtn: document.getElementById('giveUpBtn'),
+            solveBtn: document.getElementById('solveBtn'),
+            solveModal: document.getElementById('solveModal'),
+            solveInput: document.getElementById('solveInput'),
+            quitModal: document.getElementById('quitModal'),
+            resultOverlay: document.getElementById('resultOverlay'),
+            resultIcon: document.getElementById('resultIcon'),
+            resultTitle: document.getElementById('resultTitle'),
+            resultMovie: document.getElementById('resultMovie'),
+            resultPoints: document.getElementById('resultPoints'),
+            continueBtn: document.getElementById('continueBtn'),
+            soundToggle: document.getElementById('soundToggle'),
+            roastModeSelect: document.getElementById('roastModeSelect'),
+            finalScore: document.getElementById('finalScore'),
+            finalSubtitle: document.getElementById('finalSubtitle'),
+            finalBreakdown: document.getElementById('finalBreakdown'),
+            dailyQuote: document.getElementById('dailyQuote'),
+            dailyQuoteSource: document.getElementById('dailyQuoteSource'),
+            resetBtn: document.getElementById('resetBtn'),
+            // Daily
+            dailyDateDisplay: document.getElementById('dailyDateDisplay'),
+            dailyProgressTrack: document.getElementById('dailyProgressTrack'),
+            dailyClueCard: document.getElementById('dailyClueCard'),
+            dailyClueText: document.getElementById('dailyClueText'),
+            dailyInput: document.getElementById('dailyInput'),
+            dailySkipBtn: document.getElementById('dailySkipBtn'),
+            dailySubmitBtn: document.getElementById('dailySubmitBtn'),
+            dailyScoreDisplay: document.getElementById('dailyScoreDisplay'),
+            dailyScoreText: document.getElementById('dailyScoreText'),
+            dailyBreakdown: document.getElementById('dailyBreakdown'),
+            dailyResultsDate: document.getElementById('dailyResultsDate'),
+            dailyNextPuzzle: document.getElementById('dailyNextPuzzle')
+        };
+    }
+
+    bindEvents() {
+        // Start screen
+        document.getElementById('quickPlayBtn').onclick = () => this.showCategoryScreen();
+        document.getElementById('dailyBtn').onclick = () => this.startDaily();
+        document.getElementById('howToPlayBtn').onclick = () => this.showScreen('howToPlay');
+        document.getElementById('howToBackBtn').onclick = () => this.showScreen('start');
+        document.getElementById('settingsBtn').onclick = () => this.showScreen('settings');
+        document.getElementById('settingsBackBtn').onclick = () => this.showScreen('start');
+        
+        // Settings
+        this.dom.soundToggle.onclick = () => this.toggleSound();
+        this.dom.roastModeSelect?.addEventListener('change', (e) => this.handleRoastModeChange(e.target.value));
+        this.dom.resetBtn?.addEventListener('click', () => this.resetProgress());
+        
+        // Category
+        document.getElementById('categoryBackBtn').onclick = () => this.showScreen('start');
+        this.dom.startGameBtn.onclick = () => this.startGame();
+        
+        // Game
+        this.dom.giveUpBtn.onclick = () => this.giveUp();
+        this.dom.solveBtn.onclick = () => this.openSolveModal();
+        
+        // Quit
+        document.getElementById('quitBtn').onclick = () => this.dom.quitModal.classList.add('active');
+        document.getElementById('cancelQuitBtn').onclick = () => this.dom.quitModal.classList.remove('active');
+        document.getElementById('confirmQuitBtn').onclick = () => this.confirmQuit();
+        
+        // Solve modal
+        document.getElementById('cancelSolveBtn').onclick = () => this.closeSolveModal();
+        document.getElementById('submitSolveBtn').onclick = () => this.submitSolve();
+        this.dom.solveInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.submitSolve();
+            }
+        });
+        
+        // Game over
+        document.getElementById('playAgainBtn').onclick = () => this.playAgain();
+        document.getElementById('shareBtn').onclick = () => this.shareScore();
+        document.getElementById('menuBtn').onclick = () => this.showScreen('start');
+        
+        // Daily
+        this.dom.dailySubmitBtn.onclick = () => this.submitDailyGuess();
+        this.dom.dailySkipBtn.onclick = () => this.skipDailyQuestion();
+        this.dom.dailyInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.submitDailyGuess();
+            }
+        });
+        document.getElementById('dailyShareBtn').onclick = () => this.shareDailyScore();
+        document.getElementById('dailyMenuBtn').onclick = () => this.showScreen('start');
+    }
+
+    // ============================================
+    // SETTINGS
+    // ============================================
+    
+    loadSettings() {
+        const saved = localStorage.getItem('plotTwistedSettings');
+        this.settings = saved ? JSON.parse(saved) : { sound: false, roastMode: 'clean' };
+        this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
+        if (this.dom.roastModeSelect) this.dom.roastModeSelect.value = this.settings.roastMode;
+    }
+
+    saveSettings() {
+        localStorage.setItem('plotTwistedSettings', JSON.stringify(this.settings));
+    }
+
+    toggleSound() {
+        this.settings.sound = !this.settings.sound;
+        this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
+        this.saveSettings();
+    }
+
+    handleRoastModeChange(mode) {
+        if (mode === 'nsfw') {
+            if (!confirm('NSFW mode includes explicit language. Continue?')) {
+                this.dom.roastModeSelect.value = this.settings.roastMode;
+                return;
+            }
+        }
+        this.settings.roastMode = mode;
+        this.saveSettings();
+    }
+    
+    resetProgress() {
+        if (confirm('Clear all stats and seen clues?')) {
+            localStorage.removeItem('plotTwistedSeen');
+            this.state.seenClues = {};
+            this.showScreen('start');
+        }
+    }
+
+    // ============================================
+    // SCREENS
+    // ============================================
+
+    showScreen(name) {
+        Object.values(this.screens).forEach(s => s.classList.remove('active'));
+        this.screens[name]?.classList.add('active');
+        this.state.currentScreen = name;
+    }
+
+    confirmQuit() {
+        this.dom.quitModal.classList.remove('active');
+        this.showScreen('start');
+    }
+
+    // ============================================
+    // DAILY QUOTE
+    // ============================================
+
+    loadDailyQuote() {
+        const today = new Date().toDateString();
+        const stored = localStorage.getItem('ptQuoteDate');
+        let index = parseInt(localStorage.getItem('ptQuoteIndex'), 10);
+        
+        if (stored !== today || isNaN(index)) {
+            index = Math.floor(Math.random() * DAILY_QUOTES.length);
+            localStorage.setItem('ptQuoteDate', today);
+            localStorage.setItem('ptQuoteIndex', String(index));
+        }
+        
+        const quote = DAILY_QUOTES[index] || DAILY_QUOTES[0];
+        this.dom.dailyQuote.textContent = `"${quote.quote}"`;
+        this.dom.dailyQuoteSource.textContent = `— ${quote.source}`;
+    }
+
+    // ============================================
+    // CATEGORY SCREEN
+    // ============================================
+
+    showCategoryScreen() {
+        this.renderCategories();
+        this.state.selectedCategory = null;
+        this.dom.startGameBtn.disabled = true;
+        this.showScreen('category');
+    }
+
+    renderCategories() {
+        if (!this.clueBank) return;
+        
+        this.dom.categoryGrid.innerHTML = '';
+        
+        Object.keys(this.clueBank).forEach(name => {
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            card.dataset.category = name;
+            
+            const icon = CATEGORY_ICONS[name] || CATEGORY_ICONS["Family"];
+            
+            card.innerHTML = `
+                <div class="category-icon">${icon}</div>
+                <div class="category-name">${name}</div>
+            `;
+            
+            card.onclick = () => this.selectCategory(name);
+            this.dom.categoryGrid.appendChild(card);
+        });
+    }
+
+    selectCategory(name) {
+        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+        document.querySelector(`.category-card[data-category="${name}"]`)?.classList.add('selected');
+        this.state.selectedCategory = name;
+        this.dom.startGameBtn.disabled = false;
+    }
+
+    // ============================================
+    // QUICK PLAY GAME
+    // ============================================
+
+    startGame() {
+        const category = this.state.selectedCategory;
+        const allClues = this.clueBank[category];
+        
+        const seenTitles = this.state.seenClues[category] || [];
+        const unseenClues = allClues.filter(c => !seenTitles.includes(c.title));
+        const seenClues = allClues.filter(c => seenTitles.includes(c.title));
+        
+        let pool = this.shuffle(unseenClues);
+        if (pool.length < this.config.questionsPerRound) {
+            pool = [...pool, ...this.shuffle(seenClues)];
+        }
+        
+        this.state.questions = pool.slice(0, this.config.questionsPerRound);
+        
+        if (!this.state.seenClues[category]) this.state.seenClues[category] = [];
+        this.state.questions.forEach(q => {
+            if (!this.state.seenClues[category].includes(q.title)) {
+                this.state.seenClues[category].push(q.title);
+            }
+        });
+        this.saveSeenClues();
+        
+        this.state.currentIndex = 0;
+        this.state.totalScore = 0;
+        this.state.strikes = 3;
+        this.state.results = [];
+        
+        this.renderProgress();
+        this.updateTotalScore();
+        this.updateStrikes();
+        
+        this.showScreen('game');
+        this.loadQuestion();
+    }
+
+    loadQuestion() {
+        const q = this.state.questions[this.state.currentIndex];
+        
+        this.state.currentPot = this.config.maxPot;
+        this.state.revealedIndices = [];
+        this.state.guessedLetters = [];
+        
+        // Auto-reveal numbers since keyboard has no number keys
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
+            if (/[0-9]/.test(char)) {
+                this.state.revealedIndices.push(i);
+            }
+        });
+        
+        this.dom.clueText.textContent = q.clue;
+        this.dom.clueCategory.textContent = this.state.selectedCategory;
+        this.updatePot();
+        this.updateProgress();
+        this.renderTitle();
+        this.renderKeyboard();
+    }
+
+    renderTitle() {
+        const q = this.state.questions[this.state.currentIndex];
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        
+        this.dom.titleLetters.innerHTML = '';
+        
+        displayTitle.split('').forEach((char, i) => {
+            const slot = document.createElement('span');
+            slot.className = 'letter-slot';
+            
+            if (char === ' ') {
+                slot.classList.add('space');
+            } else if (/[A-Z0-9]/.test(char)) {
+                if (this.state.revealedIndices.includes(i)) {
+                    slot.textContent = char;
+                    slot.classList.add('revealed');
+                } else {
+                    slot.textContent = '_';
+                    slot.classList.add('hidden');
+                }
+            } else {
+                slot.textContent = char;
+            }
+            
+            this.dom.titleLetters.appendChild(slot);
+        });
+    }
+
+    renderKeyboard() {
+        const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+        
+        this.dom.keyboard.innerHTML = '';
+        
+        rows.forEach(row => {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'keyboard-row';
+            
+            row.split('').forEach(letter => {
+                const key = document.createElement('button');
+                key.className = 'key';
+                key.textContent = letter;
+                key.dataset.letter = letter;
+                
+                if (this.state.guessedLetters.includes(letter)) {
+                    key.disabled = true;
+                    key.classList.add(this.isLetterInTitle(letter) ? 'correct' : 'incorrect');
+                }
+                
+                key.onclick = () => this.guessLetter(letter);
+                rowEl.appendChild(key);
+            });
+            
+            this.dom.keyboard.appendChild(rowEl);
+        });
+    }
+
+    isLetterInTitle(letter) {
+        const q = this.state.questions[this.state.currentIndex];
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        return displayTitle.includes(letter);
+    }
+
+    guessLetter(letter) {
+        if (this.state.guessedLetters.includes(letter)) return;
+        
+        this.state.guessedLetters.push(letter);
+        
+        const q = this.state.questions[this.state.currentIndex];
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        
+        let found = false;
+        displayTitle.split('').forEach((char, i) => {
+            if (char === letter) {
+                this.state.revealedIndices.push(i);
+                found = true;
+            }
+        });
+        
+        // Vowels are free - no penalty for wrong vowel guesses
+        const vowels = ['A', 'E', 'I', 'O', 'U'];
+        const isVowel = vowels.includes(letter);
+        
+        if (!found && !isVowel) {
+            this.state.currentPot = Math.max(this.config.minPot, this.state.currentPot - this.config.wrongLetterCost);
+            this.updatePot(true);
+        }
+        
+        this.renderTitle();
+        this.renderKeyboard();
+        this.updateMultiplier();
+        
+        // Check if all letters revealed
+        const allLetterIndices = [];
+        displayTitle.split('').forEach((char, i) => {
+            if (/[A-Z0-9]/.test(char)) allLetterIndices.push(i);
+        });
+        
+        if (allLetterIndices.every(i => this.state.revealedIndices.includes(i))) {
+            this.autoSolve();
+        }
+    }
+
+    updateMultiplier() {
+        const q = this.state.questions[this.state.currentIndex];
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        
+        let totalLetters = 0;
+        displayTitle.split('').forEach(char => {
+            if (/[A-Z0-9]/.test(char)) totalLetters++;
+        });
+        
+        const hiddenCount = totalLetters - this.state.revealedIndices.length;
+        const hiddenPercent = hiddenCount / totalLetters;
+        
+        let multiplier = '';
+        if (hiddenPercent >= 0.8) multiplier = '1.5×';
+        else if (hiddenPercent >= 0.5) multiplier = '1.25×';
+        
+        this.dom.potMultiplier.textContent = multiplier;
+    }
+
+    getMultiplier() {
+        const q = this.state.questions[this.state.currentIndex];
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        
+        let totalLetters = 0;
+        displayTitle.split('').forEach(char => {
+            if (/[A-Z0-9]/.test(char)) totalLetters++;
+        });
+        
+        const hiddenCount = totalLetters - this.state.revealedIndices.length;
+        const hiddenPercent = hiddenCount / totalLetters;
+        
+        if (hiddenPercent >= 0.8) return 1.5;
+        if (hiddenPercent >= 0.5) return 1.25;
+        return 1;
+    }
+
+    autoSolve() {
+        const q = this.state.questions[this.state.currentIndex];
+        const multiplier = this.getMultiplier();
+        const points = Math.round(this.state.currentPot * multiplier);
+        
+        this.state.results.push({ title: q.title, points, correct: true });
+        this.state.totalScore += points;
+        this.updateTotalScore();
+        this.showResult(true, q.title, points);
+    }
+
+    giveUp() {
+        const q = this.state.questions[this.state.currentIndex];
+        
+        this.state.results.push({ title: q.title, points: 0, correct: false, gaveUp: true });
+        
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
+            if (/[A-Z0-9]/.test(char)) this.state.revealedIndices.push(i);
+        });
+        this.renderTitle();
+        
+        this.showResult(false, q.title, 0, false, true);
+    }
+
+    openSolveModal() {
+        this.dom.solveModal.classList.add('active');
+        this.dom.solveInput.value = '';
+        setTimeout(() => this.dom.solveInput.focus(), 100);
+    }
+
+    closeSolveModal() {
+        this.dom.solveModal.classList.remove('active');
+    }
+
+    submitSolve() {
+        const guess = this.dom.solveInput.value.trim();
+        if (!guess) return;
+
+        const q = this.state.questions[this.state.currentIndex];
+        this.closeSolveModal();
+        
+        if (this.isFuzzyMatch(guess, q.title)) {
+            this.handleCorrect();
+        } else {
+            this.handleIncorrect();
+        }
+    }
+
+    handleCorrect() {
+        const q = this.state.questions[this.state.currentIndex];
+        const multiplier = this.getMultiplier();
+        const points = Math.round(this.state.currentPot * multiplier);
+        
+        this.state.results.push({ title: q.title, points, correct: true });
+        this.state.totalScore += points;
+        this.updateTotalScore();
+        
+        const displayTitle = this.getDisplayTitle(q.title).toUpperCase();
+        displayTitle.split('').forEach((char, i) => {
+            if (/[A-Z0-9]/.test(char)) this.state.revealedIndices.push(i);
+        });
+        this.renderTitle();
+        
+        this.showResult(true, q.title, points);
+        
+        try {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { y: 0.6 },
+                    colors: ['#d4a853', '#f0d078', '#ffffff'],
+                    disableForReducedMotion: true
+                });
+            }
+        } catch (e) {}
+    }
+
+    handleIncorrect() {
+        const q = this.state.questions[this.state.currentIndex];
+        
+        this.state.strikes--;
+        this.updateStrikes();
+        
+        this.dom.clueCard.classList.add('shake');
+        setTimeout(() => this.dom.clueCard.classList.remove('shake'), 400);
+        
+        if (this.state.strikes <= 0) {
+            this.state.results.push({ title: q.title, points: 0, correct: false });
+            this.showResult(false, q.title, 0, true);
+        } else {
+            this.showResult(false, q.title, 0, false);
+        }
+    }
+
+    showResult(isCorrect, title, points, isGameOver = false, gaveUp = false) {
+        const resultCard = document.querySelector('.result-card');
+        resultCard.classList.remove('celebrate');
+
+        const roastType = isCorrect ? 'correctAnswer' : ((gaveUp || isGameOver) ? 'revealAnswer' : 'wrongAnswer');
+        const commentary = this.getRoast(roastType, this.settings?.roastMode, { TITLE: title });
+
+        this.dom.resultIcon.textContent = isCorrect ? '🎬' : (gaveUp ? '🏳️' : '❌');
+        this.dom.resultTitle.textContent = commentary;
+        this.dom.resultTitle.className = `result-title ${isCorrect ? 'correct' : 'incorrect'}`;
+        
+        if (isCorrect || gaveUp || isGameOver) {
+            this.dom.resultMovie.textContent = title.toUpperCase();
+            this.dom.resultMovie.style.display = 'block';
+        } else {
+            this.dom.resultMovie.style.display = 'none';
+        }
+        
+        if (isCorrect) {
+            resultCard.classList.add('celebrate');
+            this.dom.resultPoints.textContent = `+${points} points`;
+            this.dom.resultPoints.className = 'result-points';
+        } else if (isGameOver) {
+            this.dom.resultPoints.textContent = 'Out of strikes!';
+            this.dom.resultPoints.className = 'result-points zero';
+        } else if (gaveUp) {
+            this.dom.resultPoints.textContent = '0 points';
+            this.dom.resultPoints.className = 'result-points zero';
+        } else {
+            this.dom.resultPoints.textContent = `${this.state.strikes} strike${this.state.strikes !== 1 ? 's' : ''} remaining`;
+            this.dom.resultPoints.className = 'result-points zero';
+        }
+        
+        if (!isCorrect && !isGameOver && !gaveUp) {
+            this.dom.continueBtn.textContent = 'Try Again';
+            this.dom.continueBtn.onclick = () => {
+                this.dom.resultOverlay.classList.remove('active');
+            };
+        } else {
+            this.dom.continueBtn.textContent = 'Continue';
+            this.dom.continueBtn.onclick = () => {
+                this.dom.resultOverlay.classList.remove('active');
+                if (isGameOver) {
+                    this.endGame();
+                } else {
+                    this.nextQuestion();
+                }
+            };
+        }
+        
+        this.dom.resultOverlay.classList.add('active');
+    }
+
+    getRoast(type, intensity, replacements = {}) {
+        const roastBank = window.PLOT_TWISTED_ROASTS || {};
+        const mode = intensity || this.settings?.roastMode || roastBank.defaultIntensity || 'clean';
+        const fallback = roastBank.fallback || 'The theater has no notes.';
+        const bank = roastBank.byMode || {};
+
+        const modeBucket = bank[mode] || bank[roastBank.defaultIntensity] || {};
+        const defaultBucket = bank[roastBank.defaultIntensity] || {};
+        const list = modeBucket[type] || defaultBucket[type];
+
+        if (!Array.isArray(list) || !list.length) return fallback;
+
+        const template = list[Math.floor(Math.random() * list.length)] || fallback;
+        return template.replace(/\[([A-Z_]+)\]/g, (_, token) => {
+            const value = replacements[token];
+            return value === undefined || value === null ? '' : String(value);
+        });
+    }
+
+    nextQuestion() {
+        this.state.currentIndex++;
+        
+        if (this.state.currentIndex >= this.state.questions.length) {
+            this.endGame();
+        } else {
+            this.loadQuestion();
+        }
+    }
+
+    endGame() {
+        const solved = this.state.results.filter(r => r.correct).length;
+        const total = this.state.results.length;
+        
+        this.dom.finalScore.textContent = this.state.totalScore;
+        this.dom.finalSubtitle.textContent = `${solved} of ${total} movies solved`;
+        
+        this.dom.finalBreakdown.innerHTML = '';
+        this.state.results.forEach(r => {
+            const row = document.createElement('div');
+            row.className = 'breakdown-row';
+            row.innerHTML = `
+                <span class="breakdown-title">${r.title}</span>
+                <span class="breakdown-points ${r.correct ? 'earned' : 'missed'}">
+                    ${r.correct ? '+' + r.points : '—'}
+                </span>
+            `;
+            this.dom.finalBreakdown.appendChild(row);
+        });
+        
+        this.showScreen('gameOver');
+    }
+    
+    shareScore() {
+        const solved = this.state.results.filter(r => r.correct).length;
+        const total = this.state.results.length;
+        const category = this.state.selectedCategory;
+        
+        const emoji = this.state.results.map(r => r.correct ? '🟩' : (r.gaveUp ? '🟨' : '🟥')).join('');
+        
+        const text = `🎬 Plot Twisted - ${category}
+🏆 Score: ${this.state.totalScore}
+${emoji}
+${solved}/${total} correct
+
+Can you beat me?`;
+        
+        if (navigator.share) {
+            navigator.share({ text }).catch(() => this.copyToClipboard(text));
+        } else {
+            this.copyToClipboard(text);
+        }
+    }
+    
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Score copied to clipboard!');
+        }).catch(() => {});
+    }
+
+    playAgain() {
+        if (this.state.selectedCategory) {
+            this.startGame();
+        } else {
+            this.showCategoryScreen();
+        }
+    }
+
+    // ============================================
+    // DAILY CHALLENGE
+    // ============================================
+
+    getTodayKey() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    checkDailyStatus() {
+        const key = `plotTwistedDaily_${this.getTodayKey()}`;
+        const saved = localStorage.getItem(key);
+        
+        if (saved) {
+            this.state.dailyCompleted = true;
+            this.state.dailyResults = JSON.parse(saved);
+        } else {
+            this.state.dailyCompleted = false;
+            this.state.dailyResults = [];
+        }
+    }
+
+    startDaily() {
+        this.checkDailyStatus();
+        
+        if (this.state.dailyCompleted) {
+            this.showDailyResults();
+            return;
+        }
+        
+        // Seed random with today's date
+        const seed = this.getTodayKey().replace(/-/g, '');
+        const rng = this.seededRandom(parseInt(seed, 10));
+        
+        // Pick one from each category
+        const categories = Object.keys(this.clueBank);
+        const shuffledCats = this.shuffleWithRng(categories, rng);
+        
+        this.state.dailyQuestions = [];
+        for (let i = 0; i < 5; i++) {
+            const cat = shuffledCats[i % shuffledCats.length];
+            const clues = this.clueBank[cat];
+            const clueIndex = Math.floor(rng() * clues.length);
+            this.state.dailyQuestions.push({ ...clues[clueIndex], category: cat });
+        }
+        
+        this.state.dailyIndex = 0;
+        this.state.dailyResults = [];
+        
+        const today = new Date();
+        this.dom.dailyDateDisplay.textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        
+        this.renderDailyProgress();
+        this.loadDailyQuestion();
+        this.showScreen('daily');
+    }
+
+    seededRandom(seed) {
+        return function() {
+            seed = (seed * 9301 + 49297) % 233280;
+            return seed / 233280;
+        };
+    }
+
+    shuffleWithRng(arr, rng) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(rng() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    renderDailyProgress() {
+        this.dom.dailyProgressTrack.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            const pip = document.createElement('div');
+            pip.className = 'progress-pip';
+            if (i < this.state.dailyIndex) pip.classList.add('complete');
+            if (i === this.state.dailyIndex) pip.classList.add('current');
+            this.dom.dailyProgressTrack.appendChild(pip);
+        }
+    }
+
+    loadDailyQuestion() {
+        const q = this.state.dailyQuestions[this.state.dailyIndex];
+        this.dom.dailyClueCard.dataset.question = `MOVIE ${this.state.dailyIndex + 1} OF 5`;
+        this.dom.dailyClueText.textContent = q.clue;
+        this.dom.dailyInput.value = '';
+        this.dom.dailyInput.disabled = false;
+        this.dom.dailyInput.focus();
+    }
+
+    submitDailyGuess() {
+        const guess = this.dom.dailyInput.value.trim();
+        if (!guess) return;
+        
+        const q = this.state.dailyQuestions[this.state.dailyIndex];
+        const correct = this.isFuzzyMatch(guess, q.title);
+        
+        this.state.dailyResults.push({
+            title: q.title,
+            guess: guess,
+            correct: correct,
+            points: correct ? 100 : 0
+        });
+        
+        this.dom.dailyInput.disabled = true;
+        this.nextDailyQuestion();
+    }
+
+    skipDailyQuestion() {
+        const q = this.state.dailyQuestions[this.state.dailyIndex];
+        
+        this.state.dailyResults.push({
+            title: q.title,
+            guess: '',
+            correct: false,
+            skipped: true,
+            points: 0
+        });
+        
+        this.nextDailyQuestion();
+    }
+
+    nextDailyQuestion() {
+        this.state.dailyIndex++;
+        this.renderDailyProgress();
+        
+        if (this.state.dailyIndex >= 5) {
+            this.finishDaily();
+        } else {
+            this.loadDailyQuestion();
+        }
+    }
+
+    finishDaily() {
+        const key = `plotTwistedDaily_${this.getTodayKey()}`;
+        localStorage.setItem(key, JSON.stringify(this.state.dailyResults));
+        this.state.dailyCompleted = true;
+        this.showDailyResults();
+    }
+
+    showDailyResults() {
+        const results = this.state.dailyResults;
+        const correct = results.filter(r => r.correct).length;
+        const total = results.reduce((sum, r) => sum + r.points, 0);
+        
+        const today = new Date();
+        this.dom.dailyResultsDate.textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        
+        // Stars
+        this.dom.dailyScoreDisplay.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            const star = document.createElement('span');
+            star.className = `daily-star ${i < correct ? 'earned' : 'empty'}`;
+            star.textContent = '★';
+            this.dom.dailyScoreDisplay.appendChild(star);
+        }
+        
+        this.dom.dailyScoreText.textContent = `${correct}/5 Correct • ${total} pts`;
+        
+        // Breakdown
+        this.dom.dailyBreakdown.innerHTML = '';
+        results.forEach(r => {
+            const row = document.createElement('div');
+            row.className = 'daily-breakdown-row';
+            row.innerHTML = `
+                <span>${r.title}</span>
+                <span class="daily-breakdown-result">${r.correct ? '✅' : (r.skipped ? '⏭️' : '❌')}</span>
+            `;
+            this.dom.dailyBreakdown.appendChild(row);
+        });
+        
+        // Countdown
+        this.updateDailyCountdown();
+        
+        this.showScreen('dailyResults');
+    }
+
+    updateDailyCountdown() {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        
+        const diff = tomorrow - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        this.dom.dailyNextPuzzle.textContent = `Next puzzle in ${hours}h ${minutes}m`;
+    }
+
+    shareDailyScore() {
+        const results = this.state.dailyResults;
+        const correct = results.filter(r => r.correct).length;
+        const total = results.reduce((sum, r) => sum + r.points, 0);
+        
+        const emoji = results.map(r => r.correct ? '⭐' : '☆').join('');
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        const text = `🎬 Plot Twisted Daily - ${today}
+${emoji} ${correct}/5
+Score: ${total}
+
+Can you beat me?`;
+        
+        if (navigator.share) {
+            navigator.share({ text }).catch(() => this.copyToClipboard(text));
+        } else {
+            this.copyToClipboard(text);
+        }
+    }
+
+    // ============================================
+    // UTILITIES
+    // ============================================
+
+    updatePot(animate = false) {
+        if (animate) {
+            this.dom.potValue.classList.add('dropping');
+            setTimeout(() => this.dom.potValue.classList.remove('dropping'), 300);
+        }
+        this.dom.potValue.textContent = this.state.currentPot;
+        this.updateMultiplier();
+    }
+
+    updateTotalScore() {
+        this.dom.totalScore.textContent = this.state.totalScore;
+    }
+
+    updateStrikes() {
+        const pips = this.dom.strikesDisplay.querySelectorAll('.strike-pip');
+        pips.forEach((pip, i) => {
+            pip.classList.toggle('used', i >= this.state.strikes);
+        });
+    }
+
+    renderProgress() {
+        this.dom.progressTrack.innerHTML = '';
+        for (let i = 0; i < this.config.questionsPerRound; i++) {
+            const pip = document.createElement('div');
+            pip.className = 'progress-pip';
+            this.dom.progressTrack.appendChild(pip);
+        }
+    }
+
+    updateProgress() {
+        const pips = this.dom.progressTrack.querySelectorAll('.progress-pip');
+        pips.forEach((pip, i) => {
+            pip.classList.remove('current', 'complete');
+            if (i < this.state.currentIndex) pip.classList.add('complete');
+            else if (i === this.state.currentIndex) pip.classList.add('current');
+        });
+    }
+
+    levenshtein(a, b) {
+        const matrix = [];
+        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+                }
+            }
+        }
+        return matrix[b.length][a.length];
+    }
+
+    normalizeTitle(str) {
+        return str
+            .toLowerCase()
+            .replace(/\([^)]*\)/g, '')
+            .replace(/^the\s+/g, '')
+            .replace(/[^a-z0-9]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+    
+    // Strip numbers for more lenient matching
+    stripNumbers(str) {
+        return str.replace(/[0-9]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    getDisplayTitle(title) {
+        return title.replace(/\([^)]*\)/g, '').trim();
+    }
+
+    isFuzzyMatch(guess, actual) {
+        const g = this.normalizeTitle(guess);
+        const a = this.normalizeTitle(actual);
+
+        if (!g) return false;
+        if (g === a) return true;
+
+        // Check with numbers
+        const distance = this.levenshtein(g, a);
+        const maxErrors = Math.floor(a.length * this.config.fuzzyThreshold);
+        if (distance <= Math.max(1, maxErrors)) return true;
+        
+        // Also check without numbers (forgive "Inside Out" for "Inside Out 2")
+        const gNoNum = this.stripNumbers(g);
+        const aNoNum = this.stripNumbers(a);
+        
+        if (gNoNum === aNoNum) return true;
+        
+        const distanceNoNum = this.levenshtein(gNoNum, aNoNum);
+        const maxErrorsNoNum = Math.floor(aNoNum.length * this.config.fuzzyThreshold);
+        
+        return distanceNoNum <= Math.max(1, maxErrorsNoNum);
+    }
+
+    loadSeenClues() {
+        const saved = localStorage.getItem('plotTwistedSeen');
+        this.state.seenClues = saved ? JSON.parse(saved) : {};
+    }
+
+    saveSeenClues() {
+        localStorage.setItem('plotTwistedSeen', JSON.stringify(this.state.seenClues));
+    }
+
+    shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    const game = new PlotTwisted();
+    game.init();
+});
