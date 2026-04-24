@@ -3,757 +3,559 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plot Twisted | Movie Guessing Game for People Who Remember the Plot</title>
-  <meta name="description" content="Plot Twisted is a movie guessing game for people who remember the plot, not the title. Read bad-but-accurate clues, guess the movie, and survive the twist.">
-  <meta property="og:title" content="Plot Twisted | Movie Guessing Game">
-  <meta property="og:description" content="A movie guessing game for people who remember the plot, not the title. Read terrible-but-accurate clues and guess the film.">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#0a0a0f">
+  <title>Plot Twisted | Movie Guessing for the Plot-Obsessed</title>
+  <meta name="description" content="A cinematic movie guessing game for people who remember the vibes, the twists, and the snacks—but never the title.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,500&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-deep: #0a0a0f;
-      --bg-dark: #12121a;
-      --bg-card: #1a1a24;
-      --bg-elevated: #242430;
+      --bg-deep: #030305;
+      --bg-dark: #07070a;
+      --bg-card: rgba(18, 18, 26, 0.6);
+      --bg-elevated: #15151f;
       --gold-primary: #d4a853;
       --gold-light: #f0d078;
       --gold-dark: #a67c32;
-      --gold-glow: rgba(212, 168, 83, 0.35);
+      --gold-glow: rgba(212, 168, 83, 0.25);
       --red-primary: #c41e3a;
-      --red-dark: #7f0f24;
-      --red-glow: rgba(196, 30, 58, 0.45);
+      --red-glow: rgba(196, 30, 58, 0.35);
       --cream: #f5f0e6;
-      --cream-muted: #c9c4b8;
-      --text-muted: #8c8a96;
+      --cream-muted: #94918a;
       --font-display: 'Playfair Display', serif;
       --font-title: 'Bebas Neue', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-typewriter: 'Special Elite', monospace;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --shadow-soft: 0 12px 26px rgba(0, 0, 0, 0.45);
-      --shadow-hero: 0 24px 60px rgba(0, 0, 0, 0.65);
-      --border-subtle: 1px solid rgba(240, 208, 120, 0.24);
+      --radius-lg: 24px;
+      --radius-md: 12px;
+      --header-height: 72px;
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       font-family: var(--font-body);
-      background:
-        radial-gradient(circle at 20% 0%, #231e16 0%, transparent 38%),
-        radial-gradient(circle at 90% 6%, #271724 0%, transparent 36%),
-        radial-gradient(circle at top, #181722 0%, var(--bg-deep) 58%);
+      background: var(--bg-deep);
       color: var(--cream);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    img { max-width: 100%; height: auto; display: block; }
-
+    /* Cinematic Film Grain */
     .film-grain {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 5;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 999;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     }
 
     .container {
-      width: min(1160px, 92vw);
+      width: min(1300px, 92vw);
       margin: 0 auto;
-      position: relative;
-      z-index: 10;
     }
 
-    .section { padding: clamp(2.7rem, 7vw, 5.2rem) 0; }
-
+    /* Refreshed Header UI */
     .site-header {
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(8px);
-      background: rgba(10, 10, 15, 0.82);
-      border-bottom: 1px solid rgba(240, 208, 120, 0.18);
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+      background: rgba(3, 3, 5, 0.75);
+      border-bottom: 1px solid rgba(212, 168, 83, 0.1);
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
     }
 
     .nav-wrap {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      min-height: 72px;
+      width: 100%;
     }
 
     .brand {
       font-family: var(--font-title);
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
       color: var(--gold-light);
-      font-size: 1.45rem;
       text-decoration: none;
-      text-shadow: 0 0 14px var(--gold-glow);
-      white-space: nowrap;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.3s;
     }
+
+    .brand span { color: var(--red-primary); font-weight: 900; }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      gap: 1.5rem;
     }
 
-    .nav-links a {
-      color: var(--cream-muted);
+    .nav-links a:not(.nav-cta) {
+      display: none; /* Hide standard links on small mobile to save space */
+    }
+
+    .nav-cta {
+      background: rgba(212, 168, 83, 0.1);
+      border: 1px solid var(--gold-dark);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      color: var(--gold-primary) !important;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .nav-links a:hover,
-    .nav-links a:focus-visible {
-      color: var(--gold-light);
-      outline: none;
-    }
-
-    .btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 9px;
-      padding: 0.88rem 1.3rem;
-      text-decoration: none;
+      gap: 8px;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
       text-transform: uppercase;
-      transition: transform .16s ease, box-shadow .16s ease, background .2s ease;
-      border: none;
-      cursor: pointer;
-      min-height: 44px;
+      letter-spacing: 1px;
     }
 
-    .btn:hover,
-    .btn:focus-visible { transform: translateY(-1px); outline: none; }
-
-    .btn-primary {
-      background: linear-gradient(145deg, var(--gold-primary), var(--gold-dark));
-      color: var(--bg-deep);
-      box-shadow: 0 4px 18px var(--gold-glow);
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--gold-primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--gold-glow);
+      animation: pulse 2s infinite;
     }
 
-    .btn-primary:hover,
-    .btn-primary:focus-visible { box-shadow: 0 8px 24px var(--gold-glow); }
-
-    .btn-secondary {
-      background: rgba(24, 24, 32, 0.72);
-      border: var(--border-subtle);
-      color: var(--gold-light);
-    }
-
-    .hero .marquee {
-      border: var(--border-subtle);
-      border-radius: var(--radius-lg);
-      background: linear-gradient(160deg, rgba(212,168,83,0.07), rgba(10,10,15,0.56));
-      box-shadow: 0 0 36px var(--gold-glow);
-      padding: clamp(1.5rem, 4.5vw, 3rem);
+    /* Enhanced Hero Section */
+    .hero {
+      padding: calc(var(--header-height) + 40px) 0 60px;
+      position: relative;
+      background-image: 
+        radial-gradient(circle at 70% 40%, rgba(212, 168, 83, 0.08), transparent 40%),
+        linear-gradient(to right, var(--bg-deep) 20%, rgba(3, 3, 5, 0.7) 50%, var(--bg-deep) 100%),
+        url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2000');
+      background-size: cover;
+      background-position: center;
     }
 
     .hero-layout {
       display: grid;
-      gap: clamp(1.4rem, 4vw, 2.8rem);
-      align-items: center;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: flex-start;
     }
 
     .eyebrow {
-      display: inline-block;
       font-family: var(--font-typewriter);
-      letter-spacing: 0.08em;
-      font-size: 0.85rem;
-      color: var(--gold-light);
-      border: 1px solid rgba(240,208,120,0.4);
-      padding: 0.35rem 0.6rem;
-      border-radius: 999px;
-      margin-bottom: 1rem;
+      color: var(--red-primary);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      margin-bottom: 1.5rem;
+      display: block;
+      background: rgba(196, 30, 58, 0.1);
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 4px;
     }
 
     h1 {
-      margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(2.25rem, 7vw, 4.7rem);
-      line-height: 0.98;
-      text-shadow: 0 0 22px var(--gold-glow);
-      max-width: 11ch;
+      font-size: clamp(3.5rem, 12vw, 8.5rem);
+      line-height: 0.85;
+      margin: 0 0 2rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      text-transform: uppercase;
     }
 
-    .title-accent {
+    h1 .accent-word {
       display: block;
-      color: var(--red-primary);
+      color: var(--gold-primary);
       font-family: var(--font-title);
-      letter-spacing: 0.18em;
-      font-size: clamp(1.25rem, 4.4vw, 2.4rem);
-      text-shadow: 0 0 16px var(--red-glow);
-      margin-top: 0.45rem;
+      font-size: 0.55em;
+      letter-spacing: clamp(10px, 4vw, 24px);
+      margin-top: 5px;
+      text-shadow: 0 0 30px var(--gold-glow);
     }
 
     .tagline {
-      font-size: clamp(1.05rem, 2.8vw, 1.28rem);
-      color: var(--cream);
-      margin: 1rem 0 0.7rem;
-      max-width: 42ch;
-    }
-
-    .lede {
+      font-size: clamp(1rem, 3vw, 1.25rem);
       color: var(--cream-muted);
-      max-width: 52ch;
-      margin: 0;
+      max-width: 500px;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+      line-height: 1.6;
+      border-left: 2px solid var(--gold-dark);
+      padding-left: 15px;
     }
 
-    .cta-row {
-      display: flex;
-      gap: 0.85rem;
-      flex-wrap: wrap;
-      margin-top: 1.5rem;
-    }
-
-    .hero-mockups {
+    /* Dossier-Style Clue Card */
+    .clue-box {
+      background: #0a0a0f;
+      border: 1px solid rgba(212, 168, 83, 0.25);
+      padding: clamp(2rem, 5vw, 3.5rem);
+      border-radius: 4px;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+      transform: rotate(1deg);
       position: relative;
-      min-height: 440px;
-      isolation: isolate;
     }
 
-    .hero-mockups::before {
+    .clue-label {
+      font-family: var(--font-typewriter);
+      color: var(--gold-dark);
+      font-size: 0.65rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clue-label::after { content: ""; flex: 1; height: 1px; background: rgba(212, 168, 83, 0.15); }
+
+    .clue-text {
+      font-family: var(--font-typewriter);
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      min-height: 100px;
+      margin-bottom: 2rem;
+      color: var(--cream);
+      line-height: 1.6;
+    }
+
+    /* Film Strip Stats */
+    .proof-section {
+      background: #050508;
+      border-top: 1px solid rgba(212, 168, 83, 0.2);
+      border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-right: 1px solid rgba(212, 168, 83, 0.1);
+      border-bottom: 1px solid rgba(212, 168, 83, 0.1);
+    }
+
+    .stat-card:nth-child(2n) { border-right: none; }
+    .stat-card:nth-last-child(-n+2) { border-bottom: none; }
+
+    .stat-card h3 {
+      font-family: var(--font-title);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--gold-primary);
+      margin: 0;
+      line-height: 1;
+    }
+
+    .stat-card p {
+      font-size: 0.65rem;
+      color: var(--cream-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+
+    /* Theater Pass Cards */
+    .theater-pass {
+      background: linear-gradient(145deg, rgba(25, 25, 35, 0.4), rgba(10, 10, 15, 0.6));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 168, 83, 0.15);
+      padding: clamp(2rem, 8vw, 3.5rem) 2rem;
+      border-radius: var(--radius-md);
+      position: relative;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .theater-pass::before, .theater-pass::after {
       content: "";
       position: absolute;
-      inset: 8% 12% 2% 7%;
-      background: radial-gradient(circle at 60% 30%, rgba(212,168,83,0.22), rgba(0,0,0,0));
-      z-index: -1;
-      filter: blur(8px);
-    }
-
-    .mockup {
-      border-radius: 18px;
-      border: 1px solid rgba(240,208,120,0.32);
-      background: linear-gradient(170deg, #221e2d, #13121a);
-      box-shadow: var(--shadow-hero), 0 0 28px rgba(212,168,83,0.15);
-      overflow: hidden;
-      position: absolute;
-    }
-
-    .mockup img { width: 100%; height: 100%; object-fit: cover; }
-
-    .desktop-mockup {
-      width: min(100%, 520px);
-      aspect-ratio: 16 / 10;
-      top: 2%;
-      right: 0;
-      z-index: 1;
-    }
-
-    .mobile-mockup {
-      width: clamp(130px, 21vw, 185px);
-      aspect-ratio: 9 / 19;
-      border-radius: 28px;
-      border-color: rgba(240,208,120,0.44);
-      background: linear-gradient(180deg, #281d2a, #140f18);
-    }
-
-    .mobile-left {
-      bottom: 4%;
-      left: 2%;
-      transform: rotate(-8deg);
-      z-index: 3;
-    }
-
-    .mobile-right {
-      bottom: 0;
-      left: 31%;
-      transform: rotate(7deg);
+      width: 24px;
+      height: 24px;
+      background: var(--bg-deep);
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 2;
     }
+    .theater-pass::before { left: -12px; border-right: 1px solid rgba(212, 168, 83, 0.15); }
+    .theater-pass::after { right: -12px; border-left: 1px solid rgba(212, 168, 83, 0.15); }
 
-    .mockup::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0));
-      opacity: 0.25;
-    }
-
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.9rem, 5vw, 2.7rem);
-      margin: 0 0 0.8rem;
-    }
-
-    .section-copy {
-      margin: 0 0 1.2rem;
-      color: var(--cream-muted);
-      max-width: 70ch;
-    }
-
-    .proof-strip {
-      border-top: var(--border-subtle);
-      border-bottom: var(--border-subtle);
-      background: linear-gradient(180deg, rgba(166,124,50,0.12), rgba(20,18,30,0.36));
-      padding: 1.1rem 0;
-    }
-
-    .proof-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-
-    .proof-card {
-      border: var(--border-subtle);
-      border-radius: var(--radius-md);
-      background: rgba(18, 18, 27, 0.72);
-      padding: 0.82rem 0.85rem;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .proof-card strong {
-      display: block;
-      color: var(--gold-light);
-      font-size: 1.02rem;
-      line-height: 1.3;
-    }
-
-    .proof-card span {
-      color: var(--cream-muted);
-      font-size: 0.9rem;
-    }
-
-    .steps-grid,
-    .modes-grid,
-    .blog-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .card {
-      background: linear-gradient(180deg, var(--bg-card), var(--bg-elevated));
-      border: var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.1rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), var(--shadow-soft);
-    }
-
-    .step-card {
-      min-height: 185px;
-      position: relative;
-      padding-top: 1.5rem;
-    }
-
-    .step-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold-dark));
-      color: var(--bg-deep);
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 0.7rem;
-      box-shadow: 0 0 18px var(--gold-glow);
-    }
-
-    .card h3 { margin: 0 0 0.45rem; font-size: 1.15rem; color: var(--gold-light); }
-    .card p { margin: 0; color: var(--cream-muted); }
-
-    .mode-sub {
-      font-size: 0.89rem;
-      color: #f9deb1;
-      margin-bottom: 0.55rem;
-      letter-spacing: 0.02em;
-    }
-
-    .mode-card { position: relative; min-height: 210px; }
-
-    .badge {
-      position: absolute;
-      right: 0.8rem;
-      top: 0.8rem;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 0.27rem 0.6rem;
-      color: #fbeac4;
-      background: linear-gradient(130deg, rgba(196,30,58,0.85), rgba(127,15,36,0.85));
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-
-    .showcase-wrap {
-      border-radius: var(--radius-lg);
-      border: var(--border-subtle);
-      background: linear-gradient(160deg, rgba(166,124,50,0.13), rgba(17,15,24,0.96));
-      padding: clamp(1.2rem, 3.5vw, 1.8rem);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .showcase-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1.3fr 1fr;
-      align-items: start;
-    }
-
-    .showcase-desktop {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(240,208,120,0.34);
-      box-shadow: var(--shadow-soft);
-      background: linear-gradient(170deg, #261f34, #120f18);
-      aspect-ratio: 16 / 10;
-    }
-
-    .showcase-mobile-stack {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .showcase-mobile {
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(240,208,120,0.34);
-      aspect-ratio: 9 / 18;
-      background: linear-gradient(170deg, #261f34, #120f18);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .caption {
-      margin: 0.55rem 0 0;
-      color: var(--cream-muted);
-      font-size: 0.9rem;
-    }
-
-    .blog-card-title {
+    .theater-pass h4 {
       font-family: var(--font-title);
-      letter-spacing: 0.05em;
-      font-size: 1.27rem;
-      margin-bottom: 0.42rem;
-      color: var(--cream);
+      font-size: 1.8rem;
+      margin: 0 0 1rem;
+      color: var(--gold-light);
+      letter-spacing: 1px;
     }
 
-    .blog-featured {
-      grid-column: span 2;
-      min-height: 220px;
-      background:
-        linear-gradient(180deg, rgba(196,30,58,0.14), rgba(36,36,48,0.95)),
-        linear-gradient(180deg, var(--bg-card), var(--bg-elevated));
-    }
-
-    .final-cta {
-      text-align: center;
-      border-top: var(--border-subtle);
-      border-bottom: var(--border-subtle);
-      background:
-        radial-gradient(circle at center top, rgba(196,30,58,0.22), rgba(10,10,15,0) 56%),
-        linear-gradient(180deg, rgba(212,168,83,0.08), rgba(10,10,15,0));
-    }
-
-    .final-cta .section-title {
-      font-size: clamp(2rem, 5.2vw, 3.1rem);
-      max-width: 18ch;
-      margin-inline: auto;
-    }
-
+    /* Footer - Restored & Polished */
     footer {
-      padding: 1.8rem 0 2.3rem;
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      padding: 60px 0 40px;
+      border-top: 1px solid rgba(212, 168, 83, 0.1);
+      background: #030305;
       text-align: center;
     }
 
     .footer-brand {
-      color: var(--gold-light);
       font-family: var(--font-title);
-      letter-spacing: 0.08em;
-      font-size: 1.2rem;
-      margin-bottom: 0.55rem;
+      font-size: 2rem;
+      color: var(--gold-dark);
+      letter-spacing: 6px;
+      margin-bottom: 2rem;
+      display: block;
+      text-decoration: none;
     }
 
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 2rem;
       flex-wrap: wrap;
+      margin-bottom: 2.5rem;
     }
 
     .footer-links a {
       color: var(--cream-muted);
       text-decoration: none;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      transition: color 0.3s;
     }
 
-    .footer-links a:hover,
-    .footer-links a:focus-visible {
-      color: var(--gold-light);
-      outline: none;
+    .footer-links a:hover { color: var(--gold-light); }
+
+    .nobody-tag {
+      font-family: var(--font-typewriter);
+      font-size: 0.7rem;
+      color: var(--cream-muted);
+      opacity: 0.5;
+      max-width: 320px;
+      margin: 0 auto;
+      line-height: 1.5;
     }
 
-    @media (max-width: 1000px) {
-      .hero-layout { grid-template-columns: 1fr; }
-      .hero-copy { text-align: left; }
-      .hero-mockups {
-        min-height: 360px;
-        margin-top: 0.5rem;
-      }
-      .desktop-mockup { left: 50%; transform: translateX(-50%); }
-      .mobile-left { left: 9%; }
-      .mobile-right { left: auto; right: 9%; }
-      h1 { max-width: 14ch; }
-      .showcase-grid { grid-template-columns: 1fr; }
+    /* Utils */
+    .btn-primary {
+      background: var(--gold-primary);
+      color: var(--bg-deep);
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      padding: 1rem 2.5rem;
+      letter-spacing: 3px;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 10px 25px var(--gold-glow);
     }
 
-    @media (max-width: 860px) {
-      .proof-grid,
-      .steps-grid,
-      .modes-grid,
-      .blog-grid { grid-template-columns: 1fr 1fr; }
-      .blog-featured { grid-column: span 2; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
-    @media (max-width: 680px) {
-      .site-header { position: static; }
-      .nav-wrap { min-height: 62px; }
-      .nav-links { gap: 0.7rem; }
-      .hero-mockups { min-height: 325px; }
-      .desktop-mockup { width: 100%; max-width: 430px; }
-      .mobile-mockup { width: clamp(112px, 34vw, 150px); }
-      .mobile-left { left: 3%; bottom: 1%; }
-      .mobile-right { right: 3%; bottom: 0; }
-      .showcase-mobile-stack { grid-template-columns: 1fr; }
-      .showcase-mobile { max-width: 240px; }
+    /* Desktop Overrides */
+    @media (min-width: 1025px) {
+      .nav-links a:not(.nav-cta) { display: block; }
+      .hero { padding: calc(var(--header-height) + 60px) 0 100px; }
+      .hero-layout { grid-template-columns: 1.2fr 0.8fr; text-align: left; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+      .stat-card:nth-child(2n) { border-right: 1px solid rgba(212, 168, 83, 0.1); }
+      .stat-card:last-child { border-right: none; }
+      .stat-card { border-bottom: none; padding: 5rem 2rem; }
+      .modes-grid { grid-template-columns: repeat(3, 1fr); display: grid; gap: 2rem; }
+      .theater-pass { margin-bottom: 0; }
     }
 
-    @media (max-width: 620px) {
-      .section { padding: 2.2rem 0; }
-      .proof-grid,
-      .steps-grid,
-      .modes-grid,
-      .blog-grid { grid-template-columns: 1fr; }
-      .blog-featured { grid-column: auto; }
-      .cta-row { flex-direction: column; }
-      .btn { width: 100%; }
-      .hero-mockups {
-        min-height: 300px;
-        display: flex;
-        align-items: flex-end;
-      }
-      .desktop-mockup {
-        top: 0;
-        right: auto;
-        left: 50%;
-        width: 90%;
-      }
-      .mobile-left { left: 4%; transform: rotate(-6deg); }
-      .mobile-right { right: 4%; transform: rotate(6deg); }
-      .showcase-mobile { margin-inline: auto; }
+    @media (max-width: 1024px) {
+      .hero-layout { grid-template-columns: 1fr; text-align: center; }
+      .tagline { margin-inline: auto; border-left: none; border-top: 2px solid var(--gold-dark); padding: 15px 0 0; }
+      .clue-box { max-width: 500px; margin: 0 auto; transform: none; }
     }
   </style>
 </head>
 <body>
-  <div class="film-grain" aria-hidden="true"></div>
+  <div class="film-grain"></div>
 
-  <header class="site-header" aria-label="Top navigation">
+  <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="/landing.html">Plot Twisted</a>
-      <nav class="nav-links" aria-label="Primary">
-        <a href="/index.html">Play</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#modes">Modes</a>
-        <a href="#blog">Blog</a>
+      <a href="#" class="brand"><span>_</span>PLOT TWISTED</a>
+      <nav class="nav-links">
+        <a href="#how-it-works">Dossier</a>
+        <a href="#modes">Theater</a>
+        <a href="#editorial">Cinema</a>
+        <a href="/index.html" class="nav-cta">
+          <div class="status-dot"></div>
+          Enter Screening
+        </a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="section hero">
-      <div class="container marquee">
-        <div class="hero-layout">
-          <div class="hero-copy">
-            <span class="eyebrow">Now Showing: Twisted Plot Recall</span>
-            <h1>Plot Twisted <span class="title-accent">Movie Guessing Night</span></h1>
-            <p class="tagline">A premium movie guessing game for people who remember every scene... except the title.</p>
-            <p class="lede">Read beautifully bad clues, shout your answer before the reveal, and flex your film memory across Classic, Marquee, and Daily Challenge modes.</p>
-            <div class="cta-row">
-              <a class="btn btn-primary" href="/index.html">Play the Game</a>
-              <a class="btn btn-secondary" href="#how-it-works">See How It Works</a>
-            </div>
-          </div>
+    <section class="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <span class="eyebrow">A _Nobody Studios Production</span>
+          <h1>Plot <span class="accent-word">Twisted</span></h1>
+          <p class="tagline">The premium movie guessing ritual for those who remember every frame of the climax, but couldn't name the film if their life depended on it.</p>
+          <a href="/index.html" class="btn-primary">Play Daily Clue</a>
+        </div>
 
-          <div class="hero-mockups" aria-label="Plot Twisted screenshots">
-            <figure class="mockup desktop-mockup">
-              <img src="/assets/plot-twisted-desktop.png" alt="Desktop browser view of Plot Twisted with a movie clue and answer input">
-            </figure>
-            <figure class="mockup mobile-mockup mobile-left">
-              <img src="/assets/plot-twisted-mobile-1.png" alt="Mobile screen showing Plot Twisted clue card and score panel">
-            </figure>
-            <figure class="mockup mobile-mockup mobile-right">
-              <img src="/assets/plot-twisted-mobile-2.png" alt="Mobile screen showing Plot Twisted reveal and next prompt button">
-            </figure>
+        <div class="hero-visual">
+          <div class="clue-box" id="demoClue">
+            <div class="clue-label">FILE #042 // DECLASSIFIED</div>
+            <div class="clue-text" id="clueContent">"A billionaire spends his entire inheritance on high-tech cosplay to avoid going to therapy."</div>
+            <button class="clue-reveal" onclick="revealClue()" style="
+              width: 100%;
+              background: transparent;
+              border: 1px dashed var(--gold-dark);
+              color: var(--gold-light);
+              padding: 1.1rem;
+              font-family: var(--font-title);
+              font-size: 1.2rem;
+              letter-spacing: 2px;
+              cursor: pointer;
+              border-radius: 4px;
+            ">REVEAL TITLE</button>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="proof-strip" aria-label="Quick proof points">
-      <div class="container proof-grid">
-        <article class="proof-card">
-          <strong>Bad clues</strong>
-          <span>Terrible summaries. Shockingly accurate answers.</span>
-        </article>
-        <article class="proof-card">
-          <strong>Real movies</strong>
-          <span>No fake films. Just memory-testing favorites.</span>
-        </article>
-        <article class="proof-card">
-          <strong>Daily challenge</strong>
-          <span>One fresh twist every day.</span>
-        </article>
-        <article class="proof-card">
-          <strong>Classic + Marquee</strong>
-          <span>Play hard mode or preview when your brain stalls.</span>
-        </article>
-      </div>
-    </section>
-
-    <section id="how-it-works" class="section">
-      <div class="container">
-        <h2 class="section-title">How It Works</h2>
-        <p class="section-copy">Three quick steps from “I know this plot” to “why couldn’t I remember that title?”</p>
-        <div class="steps-grid">
-          <article class="card step-card">
-            <span class="step-badge" aria-hidden="true">1</span>
-            <h3>Read the clue</h3>
-            <p>Each round starts with a wildly unfair but technically accurate movie description.</p>
-          </article>
-          <article class="card step-card">
-            <span class="step-badge" aria-hidden="true">2</span>
-            <h3>Guess the title</h3>
-            <p>Type your answer from memory and trust your inner late-night film critic.</p>
-          </article>
-          <article class="card step-card">
-            <span class="step-badge" aria-hidden="true">3</span>
-            <h3>Survive the twist</h3>
-            <p>Reveal the answer, score the round, and jump straight into the next chaotic clue.</p>
-          </article>
+    <!-- Stats Section -->
+    <section class="proof-section">
+      <div class="container stats-grid">
+        <div class="stat-card">
+          <h3>1.2K+</h3>
+          <p>Twisted Plots</p>
+        </div>
+        <div class="stat-card">
+          <h3>94%</h3>
+          <p>Failure Rate</p>
+        </div>
+        <div class="stat-card">
+          <h3>1</h3>
+          <p>Shared Daily</p>
+        </div>
+        <div class="stat-card">
+          <h3>0</h3>
+          <p>Hints Allowed</p>
         </div>
       </div>
     </section>
 
-    <section id="modes" class="section">
+    <!-- Theater Passes Section -->
+    <section id="modes" style="padding: 80px 0;">
       <div class="container">
-        <h2 class="section-title">Choose Your Mode</h2>
-        <p class="section-copy">Pick your theater seat and decide how much movie-memory pressure you want tonight.</p>
+        <div style="text-align: center; margin-bottom: 4rem;">
+          <h2 style="font-family: var(--font-display); font-size: clamp(2.5rem, 8vw, 3.5rem); margin: 0;">Choose Your Pass</h2>
+          <p style="color: var(--cream-muted); letter-spacing: 2px; text-transform: uppercase; font-size: 0.7rem; margin-top: 12px;">Secure your seat in the theater</p>
+        </div>
+
         <div class="modes-grid">
-          <article class="card mode-card">
-            <span class="badge">Recommended</span>
-            <h3>Classic Mode</h3>
-            <p class="mode-sub">For confident movie brains</p>
-            <p>No peeking. Enter the exact title and prove your recall under full spotlight pressure.</p>
-          </article>
-          <article class="card mode-card">
-            <h3>Marquee Mode</h3>
-            <p class="mode-sub">For strategic reveal lovers</p>
-            <p>Need a hint? Reveal the answer after your guess and still keep the game rolling fast.</p>
-          </article>
-          <article class="card mode-card">
-            <h3>Daily Challenge</h3>
-            <p class="mode-sub">For a quick nightly ritual</p>
-            <p>Show up once a day for a new clue and keep your streak alive between movie nights.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+          <div class="theater-pass">
+            <span class="pass-number" style="font-family: var(--font-typewriter); font-size: 0.6rem; color: var(--gold-dark); display: block; margin-bottom: 1rem;">PASS: CLC-01</span>
+            <h4>Classic Hardcase</h4>
+            <p>The purist's route. Read the description, face the pressure, and type the title from pure memory. No lifelines. No second takes.</p>
+          </div>
+          
+          <div class="theater-pass" style="border-color: var(--red-primary); background: rgba(196, 30, 58, 0.03);">
+            <span class="pass-number" style="font-family: var(--font-typewriter); font-size: 0.6rem; color: var(--red-primary); display: block; margin-bottom: 1rem;">PASS: DLY-01 // LIVE</span>
+            <h4>The Daily Twist</h4>
+            <p>One shared mystery for the entire collective. Guess correctly to build your streak and climb the global leaderboards.</p>
+          </div>
 
-    <section class="section" aria-labelledby="showcase-heading">
-      <div class="container">
-        <h2 class="section-title" id="showcase-heading">See the chaos in action</h2>
-        <p class="section-copy">A quick look at how Plot Twisted plays across desktop and mobile when the clue gets weird.</p>
-        <div class="showcase-wrap">
-          <div class="showcase-grid">
-            <figure>
-              <div class="showcase-desktop">
-                <img src="/assets/plot-twisted-desktop.png" alt="Large desktop screenshot of Plot Twisted gameplay interface">
-              </div>
-              <figcaption class="caption">Desktop mode for living-room trivia battles and second-screen movie nights.</figcaption>
-            </figure>
-            <div class="showcase-mobile-stack">
-              <figure>
-                <div class="showcase-mobile">
-                  <img src="/assets/plot-twisted-mobile-1.png" alt="Mobile screenshot showing clue presentation in Plot Twisted">
-                </div>
-                <figcaption class="caption">Readable clue cards built for one-thumb play.</figcaption>
-              </figure>
-              <figure>
-                <div class="showcase-mobile">
-                  <img src="/assets/plot-twisted-mobile-2.png" alt="Mobile screenshot showing answer reveal state in Plot Twisted">
-                </div>
-                <figcaption class="caption">Fast reveals so each round keeps its momentum.</figcaption>
-              </figure>
-            </div>
+          <div class="theater-pass">
+            <span class="pass-number" style="font-family: var(--font-typewriter); font-size: 0.6rem; color: var(--gold-dark); display: block; margin-bottom: 1rem;">PASS: MRQ-01</span>
+            <h4>Marquee Mode</h4>
+            <p>For strategic viewers. Make your guess, then reveal the answer to verify. Perfect for training your film-buff intuition.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="blog" class="section">
+    <!-- Editorial Section -->
+    <section id="editorial" style="padding: 80px 0; background: #050508;">
       <div class="container">
-        <h2 class="section-title">After Bedtime Cinema</h2>
-        <p class="section-copy">Editorial picks for tired parents, night owls, and anyone hunting for great movies without doom-scrolling for an hour.</p>
-        <div class="blog-grid">
-          <article class="card blog-featured">
-            <div class="blog-card-title">Best Movies Under 90 Minutes for Tired Parents</div>
-            <p>Our short-list of high-payoff films that respect your bedtime, your energy, and your patience for filler scenes.</p>
-          </article>
-          <article class="card">
-            <div class="blog-card-title">Movies to Watch After the Kids Go to Bed</div>
-            <p>Quiet-house picks with big emotional payoff and zero cartoon sidekicks singing at midnight.</p>
-          </article>
-          <article class="card">
-            <div class="blog-card-title">Family Movies Parents Will Actually Enjoy</div>
-            <p>Smart, rewatchable titles that keep kids engaged while adults avoid checking the runtime every 12 minutes.</p>
-          </article>
+        <div style="text-align: center; margin-bottom: 4rem;">
+          <h2 style="font-family: var(--font-display); font-size: 2.8rem; margin: 0;">After Bedtime Cinema</h2>
+          <p style="color: var(--cream-muted); margin-top: 10px; font-size: 0.9rem;">Curation for the exhausted parents and late-night thinkers.</p>
         </div>
-      </div>
-    </section>
 
-    <section class="section final-cta">
-      <div class="container">
-        <h2 class="section-title">Your memory knows the plot. Prove it can name the movie.</h2>
-        <p class="section-copy">Step into Plot Twisted and turn wildly vague clues into satisfying “I KNEW IT” moments.</p>
-        <a class="btn btn-primary" href="/index.html">Play Plot Twisted</a>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+          <div class="theater-pass" style="opacity: 0.5; filter: grayscale(1);">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); background: var(--gold-dark); color: white; padding: 5px 20px; font-family: var(--font-title); letter-spacing: 2px; z-index: 10; font-size: 0.8rem;">COMING SOON</div>
+            <h4 style="font-size: 1.4rem;">The 90-Minute Mercy List</h4>
+            <p style="font-size: 0.85rem;">High-stakes thrillers that respect your sleep schedule. No filler, no 3-hour runtimes.</p>
+          </div>
+          <div class="theater-pass" style="opacity: 0.5; filter: grayscale(1);">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); background: var(--gold-dark); color: white; padding: 5px 20px; font-family: var(--font-title); letter-spacing: 2px; z-index: 10; font-size: 0.8rem;">COMING SOON</div>
+            <h4 style="font-size: 1.4rem;">The Silent House Guide</h4>
+            <p style="font-size: 0.85rem;">Movies best enjoyed when the kids are finally asleep. Zero cartoon sidekicks guaranteed.</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <div class="footer-brand">Plot Twisted</div>
-      <nav class="footer-links" aria-label="Footer links">
+      <a href="#" class="footer-brand">PLOT TWISTED</a>
+      <nav class="footer-links">
         <a href="/index.html">Play</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#modes">Modes</a>
-        <a href="#blog">Blog</a>
+        <a href="#how-it-works">Dossier</a>
+        <a href="#modes">Theater</a>
+        <a href="#editorial">Cinema</a>
       </nav>
+      <div class="nobody-tag">
+        AN ORIGINAL _NOBODY STUDIOS PRODUCTION &copy; 2026<br>
+        <span style="display: block; margin-top: 8px; font-size: 0.6rem; opacity: 0.7;">Dedicated to the ones who remember the vibe, but never the title.</span>
+      </div>
     </div>
   </footer>
+
+  <script>
+    const clues = [
+      { text: "\"A billionaire spends his entire inheritance on high-tech cosplay to avoid going to therapy.\"", answer: "BATMAN BEGINS" },
+      { text: "\"A group of guys spend a weekend looking for their friend because he slept on a roof.\"", answer: "THE HANGOVER" },
+      { text: "\"An old man takes his house for a walk to avoid a nursing home.\"", answer: "UP" }
+    ];
+    let currentIdx = 0;
+
+    function revealClue() {
+      const btn = document.querySelector('.clue-reveal');
+      const content = document.getElementById('clueContent');
+      
+      if (btn.innerText === "REVEAL TITLE") {
+        btn.innerText = clues[currentIdx].answer;
+        btn.style.borderColor = "var(--red-primary)";
+        btn.style.color = "var(--red-primary)";
+        btn.style.background = "rgba(196, 30, 58, 0.1)";
+        btn.style.borderStyle = "solid";
+      } else {
+        currentIdx = (currentIdx + 1) % clues.length;
+        content.innerText = clues[currentIdx].text;
+        btn.innerText = "REVEAL TITLE";
+        btn.style.borderColor = "var(--gold-dark)";
+        btn.style.color = "var(--gold-light)";
+        btn.style.background = "transparent";
+        btn.style.borderStyle = "dashed";
+      }
+    }
+  </script>
 </body>
 </html>
