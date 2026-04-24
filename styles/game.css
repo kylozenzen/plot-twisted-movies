@@ -1385,6 +1385,10 @@ html, body {
     margin-bottom: 10px;
 }
 
+.setting-row-volume {
+    gap: 14px;
+}
+
 .setting-info {
     flex: 1;
 }
@@ -1430,27 +1434,14 @@ html, body {
     transform: translateX(22px);
 }
 
-#roastModeSelect {
-    padding: 8px 12px;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    background: var(--bg-elevated);
-    color: var(--cream);
-    border: 1px solid var(--text-muted);
-    border-radius: 6px;
+#musicVolume {
+    width: 170px;
+    accent-color: var(--gold-primary);
     cursor: pointer;
 }
 
-.btn-reset {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-    background: var(--red-primary);
-    color: var(--cream);
-    border-radius: 6px;
-}
-
-.btn-reset:hover {
-    background: var(--red-light);
+#musicVolumeValue {
+    font-variant-numeric: tabular-nums;
 }
 
 .settings-about {

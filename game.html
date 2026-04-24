@@ -124,13 +124,20 @@
         </div>
         <div class="settings-content">
             <div class="settings-section">
-                <h3>Game Options</h3>
+                <h3>Audio</h3>
                 <div class="setting-row">
                     <div class="setting-info">
-                        <div class="setting-label">Sound Effects</div>
-                        <div class="setting-desc">Play sounds for correct/incorrect</div>
+                        <div class="setting-label">Music</div>
+                        <div class="setting-desc">Optional background music for menu and gameplay</div>
                     </div>
-                    <div class="toggle" id="soundToggle"></div>
+                    <div class="toggle" id="musicToggle"></div>
+                </div>
+                <div class="setting-row setting-row-volume">
+                    <div class="setting-info">
+                        <div class="setting-label">Music Volume</div>
+                        <div class="setting-desc" id="musicVolumeValue">35%</div>
+                    </div>
+                    <input type="range" id="musicVolume" min="0" max="1" step="0.01" value="0.35" aria-label="Music Volume">
                 </div>
             </div>
             <div class="settings-section">
@@ -300,6 +307,7 @@
     <div class="copy-toast" id="copyToast" aria-live="polite"></div>
 
     <script src="./js/roasts.js"></script>
+    <script src="./js/audio.js"></script>
     <script src="./js/game.js"></script>
 </body>
 </html>
