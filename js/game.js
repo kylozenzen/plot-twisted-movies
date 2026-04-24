@@ -60,7 +60,11 @@ class PlotTwisted {
         };
         
         this.clueBank = null;
-        this.settings = { sound: false };
+        this.settings = {
+            musicEnabled: false,
+            musicVolume: 0.35
+        };
+        this.audioManager = null;
         this.lastRoastIndexByType = {};
     }
 
@@ -143,7 +147,9 @@ class PlotTwisted {
             resultMovie: document.getElementById('resultMovie'),
             resultPoints: document.getElementById('resultPoints'),
             continueBtn: document.getElementById('continueBtn'),
-            soundToggle: document.getElementById('soundToggle'),
+            musicToggle: document.getElementById('musicToggle'),
+            musicVolume: document.getElementById('musicVolume'),
+            musicVolumeValue: document.getElementById('musicVolumeValue'),
             finalScore: document.getElementById('finalScore'),
             finalSubtitle: document.getElementById('finalSubtitle'),
             finalBreakdown: document.getElementById('finalBreakdown'),
@@ -178,7 +184,10 @@ class PlotTwisted {
         document.getElementById('settingsBackBtn').onclick = () => this.showScreen('start');
         
         // Settings
-        this.dom.soundToggle.onclick = () => this.toggleSound();
+        this.dom.musicToggle.onclick = () => this.toggleMusic();
+        this.dom.musicVolume?.addEventListener('input', (event) => {
+            this.updateMusicVolume(event.target.value);
+        });
         
         // Category
         document.getElementById('modeBackBtn').onclick = () => this.showScreen('start');
@@ -241,21 +250,53 @@ class PlotTwisted {
     // ============================================
     
     loadSettings() {
-        const saved = localStorage.getItem('plotTwistedSettings');
-        const parsed = saved ? JSON.parse(saved) : {};
-        this.settings = { sound: !!parsed.sound };
-        this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
-        localStorage.removeItem('roastIntensity');
+        if (window.PlotTwistedAudioManager) {
+            this.audioManager = new window.PlotTwistedAudioManager();
+            const audioPrefs = this.audioManager.initAudio();
+            this.settings.musicEnabled = !!audioPrefs.enabled;
+            this.settings.musicVolume = Number.isFinite(audioPrefs.volume) ? audioPrefs.volume : 0.35;
+        } else {
+            this.settings.musicEnabled = localStorage.getItem('plotTwistedMusicEnabled') === 'true';
+            const savedVolume = Number.parseFloat(localStorage.getItem('plotTwistedMusicVolume'));
+            this.settings.musicVolume = Number.isFinite(savedVolume) ? Math.min(1, Math.max(0, savedVolume)) : 0.35;
+        }
+
+        this.renderMusicSettings();
     }
 
     saveSettings() {
-        localStorage.setItem('plotTwistedSettings', JSON.stringify(this.settings));
+        localStorage.setItem('plotTwistedMusicEnabled', String(this.settings.musicEnabled));
+        localStorage.setItem('plotTwistedMusicVolume', String(this.settings.musicVolume));
     }
 
-    toggleSound() {
-        this.settings.sound = !this.settings.sound;
-        this.dom.soundToggle?.classList.toggle('active', this.settings.sound);
+    toggleMusic() {
+        this.settings.musicEnabled = !this.settings.musicEnabled;
+        this.dom.musicToggle?.classList.toggle('active', this.settings.musicEnabled);
+        this.audioManager?.setMusicEnabled(this.settings.musicEnabled);
+
+        if (this.settings.musicEnabled) {
+            this.syncMusicForScreen(this.state.currentScreen);
+        }
+
         this.saveSettings();
+    }
+
+    updateMusicVolume(value) {
+        const volume = Math.min(1, Math.max(0, Number.parseFloat(value)));
+        this.settings.musicVolume = Number.isFinite(volume) ? volume : 0.35;
+        this.audioManager?.setMusicVolume(this.settings.musicVolume);
+        this.renderMusicSettings();
+        this.saveSettings();
+    }
+
+    renderMusicSettings() {
+        this.dom.musicToggle?.classList.toggle('active', this.settings.musicEnabled);
+        if (this.dom.musicVolume) {
+            this.dom.musicVolume.value = String(this.settings.musicVolume);
+        }
+        if (this.dom.musicVolumeValue) {
+            this.dom.musicVolumeValue.textContent = `${Math.round(this.settings.musicVolume * 100)}%`;
+        }
     }
 
     // ============================================
@@ -266,6 +307,26 @@ class PlotTwisted {
         Object.values(this.screens).forEach(s => s.classList.remove('active'));
         this.screens[name]?.classList.add('active');
         this.state.currentScreen = name;
+        this.syncMusicForScreen(name);
+    }
+
+    syncMusicForScreen(screenName) {
+        if (!this.audioManager) return;
+
+        const gameplayScreens = new Set(['game', 'daily']);
+        if (gameplayScreens.has(screenName)) {
+            this.playGameplayMusic();
+            return;
+        }
+        this.playMenuMusic();
+    }
+
+    playMenuMusic() {
+        this.audioManager?.playMenuMusic();
+    }
+
+    playGameplayMusic() {
+        this.audioManager?.playGameplayMusic();
     }
 
     confirmQuit() {
